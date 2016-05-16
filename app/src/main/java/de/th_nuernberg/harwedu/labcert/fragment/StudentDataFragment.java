@@ -1,15 +1,16 @@
-package de.th_nuernberg.harwedu.labcert;
+package de.th_nuernberg.harwedu.labcert.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import de.th_nuernberg.harwedu.labcert.R;
+import de.th_nuernberg.harwedu.labcert.database.GroupDBController;
 
-/**
+
+/*
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link StudentDataFragment.OnFragmentInteractionListener} interface
@@ -26,8 +27,10 @@ public class StudentDataFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    GroupDBController controller = new GroupDBController(getActivity());
 
-    private OnFragmentInteractionListener mListener;
+
+    //private OnFragmentInteractionListener mListener;
 
     public StudentDataFragment() {
         // Required empty public constructor
@@ -64,9 +67,11 @@ public class StudentDataFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_student_data, container, false);
+        ViewGroup mRootView = (ViewGroup) inflater.inflate(R.layout.fragment_student_data,
+                container, false);
+        return mRootView;
     }
-
+/*
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -90,7 +95,7 @@ public class StudentDataFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
+*/
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -101,8 +106,8 @@ public class StudentDataFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+   /* public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
+    }*/
 }

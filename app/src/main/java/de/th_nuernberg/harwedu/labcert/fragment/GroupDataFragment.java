@@ -1,14 +1,8 @@
-package de.th_nuernberg.harwedu.labcert;
+package de.th_nuernberg.harwedu.labcert.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.app.ListFragment;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 
@@ -16,8 +10,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import de.th_nuernberg.harwedu.labcert.CsvParser;
+import de.th_nuernberg.harwedu.labcert.R;
 
-/**
+
+/*
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link GroupDataFragment.OnFragmentInteractionListener} interface
@@ -35,7 +32,7 @@ public class GroupDataFragment extends ListFragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    //private OnFragmentInteractionListener mListener;
 
     ArrayList<HashMap<String, String>> csvData;
 
@@ -68,7 +65,6 @@ public class GroupDataFragment extends ListFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
         new Mytask().execute();
     }
     class Mytask extends AsyncTask<Void, Void, Void> {
@@ -101,14 +97,14 @@ public class GroupDataFragment extends ListFragment {
 
         }
     }
-
+    /*
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_group_data, container, false);
-    }
-
+    }*/
+/* $$$$ Listener $$$$
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -132,7 +128,8 @@ public class GroupDataFragment extends ListFragment {
         super.onDetach();
         mListener = null;
     }
-
+    $$$$ Listener End $$$$*/
+/* $$$$ Interface $$$$
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -143,8 +140,9 @@ public class GroupDataFragment extends ListFragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+   /* public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+    $$$$ End Interface $$$$*/
 }

@@ -1,10 +1,8 @@
 package de.th_nuernberg.harwedu.labcert;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,12 +18,14 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import de.th_nuernberg.harwedu.labcert.fragment.GroupDataFragment;
+import de.th_nuernberg.harwedu.labcert.fragment.SwitchGroupFragment;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private TextView scanFormatTxt;
     private TextView scanContentTxt;
-
     // Initialize
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -60,10 +60,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (savedInstanceState == null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment f = new GroupDataFragment();
-            ft.replace(R.id.content_frame, f);
+        if (savedInstanceState == null){
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            GroupDataFragment fragment = new GroupDataFragment();
+            transaction.replace(R.id.fragment_container,fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
     }
 
@@ -130,16 +132,25 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_manage_group) {
-            // TODO: Code für Fragmentinput überarbeiten
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment f = new GroupDataFragment();
-            ft.replace(R.id.content_frame, f);
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            GroupDataFragment fragment = new GroupDataFragment();
+            transaction.replace(R.id.fragment_container,fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
         else if (id == R.id.nav_switch_group) {
-
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            SwitchGroupFragment fragment = new SwitchGroupFragment();
+            transaction.replace(R.id.fragment_container,fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
         else if (id == R.id.nav_new_group) {
-
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            SwitchGroupFragment fragment = new SwitchGroupFragment();
+            transaction.replace(R.id.fragment_container,fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
         else if (id == R.id.nav_export_csv) {
 

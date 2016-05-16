@@ -8,19 +8,6 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <!-- Main Content View -->
-    <FrameLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textColor="@android:color/black"
-            android:textSize="30dp"
-            android:text="TestTestTest"/>
-    </FrameLayout>
-
     <include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
