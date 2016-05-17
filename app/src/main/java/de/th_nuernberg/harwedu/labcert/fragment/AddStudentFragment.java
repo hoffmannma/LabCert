@@ -48,7 +48,7 @@ public class AddStudentFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_add_student, container, false);
 
-        final StudentDataSource dataSource = new StudentDataSource(getContext());
+        final StudentDataSource dataSource = new StudentDataSource(getActivity());
         dataSource.openW();
 
         final EditText editTextSurname = (EditText) rootView.findViewById(R.id.editText_surname);

@@ -36,7 +36,7 @@ public class StudentTableFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_student_table, container, false);
 
         Log.d(LOG_TAG, "Das Datenquellen-Objekt wird angelegt.");
-        dataSource = new StudentDataSource(getContext());
+        dataSource = new StudentDataSource(getActivity());
 
 
         /*
@@ -67,7 +67,7 @@ public class StudentTableFragment extends Fragment {
 
         //Einfügen in Adapter
         ArrayAdapter<Student> studentArrayAdapter = new ArrayAdapter<>(
-                getContext(),
+                getActivity(),
                 android.R.layout.simple_list_item_1,
                 studentList);
         //Array-Adapter an ListView des MainActivity-Layouts binden
