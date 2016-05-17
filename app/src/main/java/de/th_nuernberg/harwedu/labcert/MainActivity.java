@@ -18,8 +18,14 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import de.th_nuernberg.harwedu.labcert.fragment.GroupDataFragment;
+import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
+import de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment;
+import de.th_nuernberg.harwedu.labcert.fragment.CreateGroupFragment;
+import de.th_nuernberg.harwedu.labcert.fragment.CsvSampleFragment;
+import de.th_nuernberg.harwedu.labcert.fragment.StudentTableFragment;
+import de.th_nuernberg.harwedu.labcert.fragment.StudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.SwitchGroupFragment;
+import de.th_nuernberg.harwedu.labcert.fragment.UnknownStudentFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -62,7 +68,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null){
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            GroupDataFragment fragment = new GroupDataFragment();
+            CsvSampleFragment fragment = new CsvSampleFragment();
             transaction.replace(R.id.fragment_container,fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -81,8 +87,28 @@ public class MainActivity extends AppCompatActivity
         if (scanningResult != null) {
             String scanFormat = scanningResult.getFormatName();
             String scanContent = scanningResult.getContents();
-           // scanFormatTxt.setText(scanFormat);
-           // scanContentTxt.setText(scanContent);
+
+            StudentDataSource dataSource = new StudentDataSource(this);
+            dataSource.openR();
+
+            if(dataSource.studentExists(scanContent))
+            {
+                dataSource.close();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                StudentFragment fragment = new StudentFragment();
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+            else
+            {
+                dataSource.close();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                UnknownStudentFragment fragment = new UnknownStudentFragment();
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
         }
         else{
             Toast toast = Toast.makeText(getApplicationContext(),
@@ -91,14 +117,22 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    // Called when (hardware) back key pressed
+    // Verhalten von Back-Button am Smartphone
     @Override
     public void onBackPressed() {
+        int count = getFragmentManager().getBackStackEntryCount();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        // Drawer schließen falls geöffnet
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        // App schließen falls nur ein Fragment geöffnet ist
+        else if (count == 1) {
             super.onBackPressed();
+        }
+        // ...sonst zurück zu vorheriger Ansicht
+        else {
+            getFragmentManager().popBackStack();
         }
     }
 
@@ -131,9 +165,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_manage_group) {
+        if (id == R.id.nav_group) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            GroupDataFragment fragment = new GroupDataFragment();
+            StudentTableFragment fragment = new StudentTableFragment();
+            transaction.replace(R.id.fragment_container,fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+        else if (id == R.id.nav_add_member) {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            AddStudentFragment fragment = new AddStudentFragment();
             transaction.replace(R.id.fragment_container,fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -147,15 +188,22 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_new_group) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            SwitchGroupFragment fragment = new SwitchGroupFragment();
+            CreateGroupFragment fragment = new CreateGroupFragment();
             transaction.replace(R.id.fragment_container,fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         }
-        else if (id == R.id.nav_export_csv) {
+        else if (id == R.id.nav_csv_sample) {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            CsvSampleFragment fragment = new CsvSampleFragment();
+            transaction.replace(R.id.fragment_container,fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+        else if (id == R.id.nav_export_db) {
 
         }
-        else if (id == R.id.nav_accompl) {
+        else if (id == R.id.nav_cert) {
 
         }
 

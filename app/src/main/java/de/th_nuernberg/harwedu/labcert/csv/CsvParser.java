@@ -1,4 +1,4 @@
-package de.th_nuernberg.harwedu.labcert;
+package de.th_nuernberg.harwedu.labcert.csv;
 
 /**
  * Created by Edu on 15.05.2016.

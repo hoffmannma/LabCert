@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_surname"
+        android:inputType="text"
+        android:id="@+id/editText_surname" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_firstname"
+        android:inputType="text"
+        android:id="@+id/editText_firstname" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_matr"
+        android:inputType="number"
+        android:id="@+id/editText_matr" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_bib"
+        android:inputType="number"
+        android:id="@+id/editText_bib" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_labteam"
+        android:inputType="text"
+        android:id="@+id/editText_labteam" />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_add_member"
+        android:id="@+id/button_add_student" />
+
+</LinearLayout>

@@ -1,0 +1,34 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:id="@+id/textview_unknow_student"
+            android:text="@string/unknown_student"
+            android:layout_marginTop="120dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textAlignment="center" />
+        <Button
+            android:id="@+id/button_add_unknown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_add_member"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+        <Button
+            android:id="@+id/button_drop_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Verwerfen"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+
+</LinearLayout>

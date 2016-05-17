@@ -3,9 +3,13 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_manage_group"
-            android:icon="@drawable/ic_m_manage_group"
-            android:title="@string/manage_group" />
+            android:id="@+id/nav_group"
+            android:icon="@drawable/ic_m_group"
+            android:title="@string/group" />
+        <item
+            android:id="@+id/nav_add_member"
+            android:icon="@drawable/ic_m_add_member"
+            android:title="@string/add_member" />
         <item
             android:id="@+id/nav_switch_group"
             android:icon="@drawable/ic_m_switch_group"
@@ -19,13 +23,17 @@
     <item android:title="Dateien">
         <menu>
             <item
-            android:id="@+id/nav_export_csv"
-            android:icon="@drawable/ic_m_export_csv"
-            android:title="Datenbank exportieren (.csv)" />
+                android:id="@+id/nav_csv_sample"
+                android:icon="@drawable/ic_m_extract_csv"
+                android:title="@string/sample_csv" />
             <item
-                android:id="@+id/nav_accompl"
+            android:id="@+id/nav_export_db"
+            android:icon="@drawable/ic_m_export_db"
+            android:title="@string/export_db" />
+            <item
+                android:id="@+id/nav_cert"
                 android:icon="@drawable/ic_m_accomp_txt"
-                android:title="Leistungsnachweis erzeugen" />
+                android:title="@string/create_cert" />
         </menu>
     </item>
 </menu>

@@ -8,6 +8,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Platzhalter Gruppen" />
+        android:textSize="30sp"
+        android:text="Gruppenwechsel wird zukünftig hier möglich sein."
+        android:layout_margin="20dp" />
 
 </FrameLayout>

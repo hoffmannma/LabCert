@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="#1B920E"
-        android:textSize="18dp"
+        android:textSize="12dp"
         android:textStyle="bold" />
     <TextView
         android:id="@+id/first_name"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="#1B920E"
-        android:textSize="18dp"
+        android:textSize="12dp"
         android:textStyle="bold" />
     <TextView
         android:id="@+id/mat_no"
@@ -26,13 +26,13 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="#1B920E"
-        android:textSize="18dp"
+        android:textSize="12dp"
         android:textStyle="bold" />
     <TextView
         android:id="@+id/cert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#0E2092"
-        android:textSize="18dp"
+        android:textSize="12dp"
         android:textStyle="bold" />
 </LinearLayout>

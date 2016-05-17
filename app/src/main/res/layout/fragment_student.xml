@@ -1,17 +1,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="1"
-    tools:context=".fragment.StudentDataFragment">
+    tools:context=".fragment.StudentFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="StudentDataActivity"
-        android:textAlignment="center"
-        android:layout_gravity="right|top"
-        android:textSize="24dp" />
+        android:textSize="30sp"
+        android:text="Studentendaten werden zukünftig hier angezeigt.
+        \nSQL Query hierfür fehlt noch."
+        android:layout_margin="20dp" />
 
 </FrameLayout>
