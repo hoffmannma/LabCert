@@ -1,6 +1,7 @@
 package de.th_nuernberg.harwedu.labcert.fragment;
 
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.TextUtils;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import de.th_nuernberg.harwedu.labcert.R;
+import de.th_nuernberg.harwedu.labcert.database.Student;
 import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
 
 /**
@@ -56,6 +58,7 @@ public class AddStudentFragment extends Fragment {
         final EditText editTextMatr = (EditText) rootView.findViewById(R.id.editText_matr);
         final EditText editTextBib = (EditText) rootView.findViewById(R.id.editText_bib);
         final EditText editTextLabteam = (EditText) rootView.findViewById(R.id.editText_labteam);
+        final EditText editTextComment = (EditText) rootView.findViewById(R.id.editText_comment);
 
         Button addStudentButton = (Button) rootView.findViewById(R.id.button_add_student);
 
@@ -71,6 +74,7 @@ public class AddStudentFragment extends Fragment {
                 String matrString = editTextMatr.getText().toString();
                 String bibString = editTextBib.getText().toString();
                 String labteamString = editTextLabteam.getText().toString();
+                String commentString = editTextComment.getText().toString();
 
                 if(TextUtils.isEmpty(surnameString)) {
                     editTextSurname.setError(getString(R.string.editText_errorMessage));
@@ -89,14 +93,22 @@ public class AddStudentFragment extends Fragment {
                     return;
                 }
 
+
                 editTextSurname.setText("");
                 editTextFirstname.setText("");
                 editTextMatr.setText("");
                 editTextBib.setText("");
                 editTextLabteam.setText("");
 
-                dataSource.createStudent(surnameString, firstnameString, "", "",
-                        labteamString, matrString, bibString, 1, 1);
+                Student student = dataSource.createStudent(surnameString, firstnameString,
+                        commentString, "", labteamString, matrString, bibString, 1, 1);
+
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                StudentFragment fragment = new StudentFragment();
+                fragment.newInstance(student);
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
 
             }
         });

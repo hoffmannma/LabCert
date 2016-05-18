@@ -112,6 +112,15 @@ public class Student {
         this.tasks = tasks;
     }
 
+    public String getStudentData(){
+        String output = surname + ", " + firstname + "\n" +
+                "\nGruppe: " + group +
+                "\nTeam: " + team +
+                "\nAnwesenheit: " + attd +
+                "\nAufgabenstatus: " + tasks;
+                return output;
+    }
+
     @Override
     public String toString() {
         String output = surname + ", " + firstname + "\t\t\t\t" + "Team " + team

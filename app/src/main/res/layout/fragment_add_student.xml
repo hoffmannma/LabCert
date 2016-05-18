@@ -10,41 +10,63 @@
         android:layout_height="wrap_content"
         android:hint="@string/editText_hint_surname"
         android:inputType="text"
-        android:id="@+id/editText_surname" />
+        android:id="@+id/editText_surname"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/editText_hint_firstname"
         android:inputType="text"
-        android:id="@+id/editText_firstname" />
+        android:id="@+id/editText_firstname"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/editText_hint_matr"
         android:inputType="number"
-        android:id="@+id/editText_matr" />
+        android:id="@+id/editText_matr"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/editText_hint_bib"
         android:inputType="number"
-        android:id="@+id/editText_bib" />
+        android:id="@+id/editText_bib"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/editText_hint_labteam"
         android:inputType="text"
-        android:id="@+id/editText_labteam" />
+        android:id="@+id/editText_labteam"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_comment"
+        android:inputType="text"
+        android:id="@+id/editText_comment"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_add_member"
-        android:id="@+id/button_add_student" />
+        android:id="@+id/button_add_student"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
 </LinearLayout>

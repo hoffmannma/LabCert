@@ -11,7 +11,7 @@
     <string name="switch_group">Gruppe wechseln</string>
     <string name="new_group">Neue Gruppe</string>
 
-    <string name="export_db">Datenbank exportieren (.csv)</string>
+    <string name="import_csv">CSV importieren</string>
     <string name="sample_csv">sample.csv extrahieren</string>
     <string name="create_cert">Leistungsnachweis erzeugen</string>
 
@@ -26,4 +26,6 @@
     <string name="editText_hint_labteam">Team</string>
     <string name="editText_hint_bib">Bibliotheksnummer</string>
     <string name="editText_errorMessage">Angabe erforderlich!</string>
+    <string name="editText_hint_comment">Kommentar</string>
+    <string name="button_save_comment">Kommentar speichern</string>
 </resources>

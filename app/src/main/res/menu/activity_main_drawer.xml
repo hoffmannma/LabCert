@@ -27,9 +27,9 @@
                 android:icon="@drawable/ic_m_extract_csv"
                 android:title="@string/sample_csv" />
             <item
-            android:id="@+id/nav_export_db"
-            android:icon="@drawable/ic_m_export_db"
-            android:title="@string/export_db" />
+            android:id="@+id/nav_import_db"
+            android:icon="@drawable/ic_m_import_csv"
+            android:title="@string/import_csv" />
             <item
                 android:id="@+id/nav_cert"
                 android:icon="@drawable/ic_m_accomp_txt"

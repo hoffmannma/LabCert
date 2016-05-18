@@ -7,10 +7,26 @@
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:text="Studentendaten werden zukünftig hier angezeigt.
-        \nSQL Query hierfür fehlt noch."
+        android:layout_height="wrap_content"
+        android:id="@+id/textview_student"
+        android:textSize="20sp"
         android:layout_margin="20dp" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edittext_comm"
+        android:hint="@string/editText_hint_comment"
+        android:textSize="20sp"
+        android:layout_marginTop="200dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_save_comment"
+        android:id="@+id/button_save_data"
+        android:layout_marginTop="250dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
 </FrameLayout>

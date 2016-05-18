@@ -35,8 +35,8 @@ public class StudentDbHelper extends SQLiteOpenHelper {
                     COLUMN_COMMENT + " TEXT NOT NULL, " +
                     COLUMN_LABGROUP + " TEXT NOT NULL, " +
                     COLUMN_LABTEAM + " TEXT NOT NULL, " +
-                    COLUMN_MATR + " INTEGER NOT NULL, " +
-                    COLUMN_BIB + " INTEGER NOT NULL, " +
+                    COLUMN_MATR + " TEXT NOT NULL, " +
+                    COLUMN_BIB + " TEXT NOT NULL, " +
                     COLUMN_ATTD + " INTEGER NOT NULL, " +
                     COLUMN_TASKS + " INTEGER NOT NULL);";
 

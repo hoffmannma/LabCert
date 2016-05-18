@@ -7,8 +7,16 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import de.th_nuernberg.harwedu.labcert.csv.CsvParser;
 
 /**
  * Created by Edu on 17.05.2016.
@@ -93,6 +101,19 @@ public class StudentDataSource {
         return student;
     }
 
+    public Student getStudent(String bibNo) {
+        //Cursor cursor = database.query(StudentDbHelper.TABLE_STUDENT,
+          //      columns, null, null, null, null, null);
+        openR();
+        Cursor cursor = database.rawQuery("SELECT * FROM " + "student_list" + " WHERE bib = '" + bibNo + "'", null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        Student student = cursorToStudent(cursor);
+        cursor.close();
+        close();
+        return student;
+    }
+
     public List<Student> getAllStudents() {
         List<Student> studentList = new ArrayList<>();
 
@@ -106,7 +127,7 @@ public class StudentDataSource {
             student = cursorToStudent(cursor);
             studentList.add(student);
             Log.d(LOG_TAG, "ID: " + student.getId() + ", Inhalt: " + student.getSurname()
-            + " " + student.getFirstname() + " " + student.getGroup());
+                    + " " + student.getFirstname() + " " + student.getGroup());
             cursor.moveToNext();
         }
 
@@ -115,19 +136,61 @@ public class StudentDataSource {
         return studentList;
     }
 
-    // Prüft, ob Student in Datenbank vorhanden
-    /*
-    public boolean studentExists(String bib) {
-        return DatabaseUtils.queryNumEntries(database, "student_list", "bib=?", new String[] {"1"}) > 0;
-    }*/
-
     public boolean studentExists(String bibNo) {
+        openR();
         Cursor cursor = database.rawQuery("SELECT * FROM " + "student_list" + " WHERE bib = '" + bibNo + "'", null);
         boolean exist = (cursor.getCount() > 0);
         cursor.close();
-        database.close();
+        close();
         return exist;
+    }
 
+    public void updateComment(long id, String newComment) {
+        openW();
+        ContentValues values = new ContentValues();
+        values.put(StudentDbHelper.COLUMN_COMMENT, newComment);
+
+        database.update(StudentDbHelper.TABLE_STUDENT,
+                values,
+                StudentDbHelper.COLUMN_ID + "=" + id,
+                null);
+
+        close();
+    }
+
+    public void importCSV(Context context, String file_name) {
+        InputStream instream = null;
+        try {
+            instream = context.getAssets().open(file_name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        InputStreamReader instreamreader = new InputStreamReader(instream);
+        BufferedReader buffer = new BufferedReader(instreamreader);
+        String line;
+
+        openW();
+        try {
+            while ((line = buffer.readLine()) != null) {
+                String[] str = line.split(",");
+
+                ContentValues values = new ContentValues();
+                values.put(StudentDbHelper.COLUMN_SURNAME, str[0]);
+                values.put(StudentDbHelper.COLUMN_FIRSTNAME, str[1]);
+                values.put(StudentDbHelper.COLUMN_COMMENT, str[2]);
+                values.put(StudentDbHelper.COLUMN_LABGROUP, str[3]);
+                values.put(StudentDbHelper.COLUMN_LABTEAM, str[4]);
+                values.put(StudentDbHelper.COLUMN_MATR, str[5]);
+                values.put(StudentDbHelper.COLUMN_BIB,str[6]);
+                values.put(StudentDbHelper.COLUMN_ATTD, str[7]);
+                values.put(StudentDbHelper.COLUMN_TASKS, str[8]);
+
+                database.insert(StudentDbHelper.TABLE_STUDENT, null, values);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        close();
     }
 
     public void openW() {

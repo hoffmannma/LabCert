@@ -1,12 +1,14 @@
 package de.th_nuernberg.harwedu.labcert.fragment;
 
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -74,6 +76,22 @@ public class StudentTableFragment extends Fragment {
         //-> Tabelle wird auf Gerät angezeigt
         ListView studentListView = (ListView) rootView.findViewById(R.id.listview_student_table);
         studentListView.setAdapter(studentArrayAdapter);
+
+        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position,
+                                    long arg3)
+            {
+                Student student = (Student)adapter.getItemAtPosition(position);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                StudentFragment fragment = new StudentFragment();
+                fragment.newInstance(student);
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
     }
 
     @Override
