@@ -28,4 +28,5 @@
     <string name="editText_errorMessage">Angabe erforderlich!</string>
     <string name="editText_hint_comment">Kommentar</string>
     <string name="button_save_comment">Kommentar speichern</string>
+    <string name="button_switch_group">Übernehmen</string>
 </resources>

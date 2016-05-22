@@ -2,6 +2,7 @@ package de.th_nuernberg.harwedu.labcert;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -37,8 +38,16 @@ import de.th_nuernberg.harwedu.labcert.fragment.UnknownStudentFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private TextView scanFormatTxt;
-    private TextView scanContentTxt;
+    private static String userName;
+    private static String userMail;
+    private static String currentLab;
+    private static String currentGroup;
+
+
+    private static TextView userNameTxt;
+    private static TextView userMailTxt;
+    private static TextView currentLabTxt;
+    private static TextView currentGroupTxt;
 
     private static NavigationView navigationView;
     // Initialize
@@ -46,9 +55,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //scanFormatTxt = (TextView)findViewById(R.id.scan_format_TV);
-        //scanContentTxt = (TextView)findViewById(R.id.scan_content_TV);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,6 +80,20 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View header=navigationView.getHeaderView(0);
+        userNameTxt = (TextView)header.findViewById(R.id.textview_user_name);
+        userMailTxt = (TextView)header.findViewById(R.id.textview_user_mail);
+        currentLabTxt = (TextView)header.findViewById(R.id.textview_current_lab);
+        currentGroupTxt = (TextView)header.findViewById(R.id.textview_current_group);
+        userName = "Eduard Harwart";
+        userMail = "harwartedu58020@th-nuernberg.de";
+        currentLab = "INF2/1";
+        currentGroup = "Gruppe 2";
+        userNameTxt.setText(userName);
+        userMailTxt.setText(userMail);
+        currentLabTxt.setText(currentLab);
+        currentGroupTxt.setText(currentGroup);
 
         if (savedInstanceState == null){
             navigationView.getMenu().getItem(0).setChecked(true);
@@ -112,13 +132,17 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     UnknownStudentFragment fragment = new UnknownStudentFragment();
-                    fragment.newInstance(scanContent, scanFormat);
+                    fragment.newInstance(scanFormat, scanContent);
                     transaction.replace(R.id.fragment_container, fragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
             }
-            else backToHome();
+            else
+            {
+                backToHome();
+                toastMsg("Scan abgebrochen");
+            }
         }
         else{
             Toast toast = Toast.makeText(getApplicationContext(),
@@ -190,6 +214,7 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.nav_switch_group) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             SwitchGroupFragment fragment = new SwitchGroupFragment();
+            fragment.newInstance(currentGroup);
             transaction.replace(R.id.fragment_container,fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -212,9 +237,10 @@ public class MainActivity extends AppCompatActivity
 
             StudentDataSource dataSource = new StudentDataSource(this);
             dataSource.importCSV(this, "students.csv");
+            toastMsg("students.csv importiert");
         }
         else if (id == R.id.nav_cert) {
-
+            toastMsg("Noch nicht verfügbar");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -230,6 +256,20 @@ public class MainActivity extends AppCompatActivity
         transaction.addToBackStack(null);
         transaction.commit();
         navigationView.getMenu().getItem(0).setChecked(true);
+    }
+
+    private void toastMsg(String msg)
+    {
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, msg, duration);
+        toast.show();
+    }
+
+    public void setGroup(String grp)
+    {
+        this.currentGroup = grp;
+        currentGroupTxt.setText(grp);
     }
 
 }

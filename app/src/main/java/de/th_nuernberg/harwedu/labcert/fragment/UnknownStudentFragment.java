@@ -17,8 +17,8 @@ public class UnknownStudentFragment extends Fragment {
     private static final String ARG_FORMAT = "format";
     private static final String ARG_CONTENT = "content";
 
-    private String mFormat;
-    private String mContent;
+    private static String mFormat;
+    private static String mContent;
 
     public UnknownStudentFragment() {
         // Required empty public constructor
@@ -26,20 +26,22 @@ public class UnknownStudentFragment extends Fragment {
 
     public static UnknownStudentFragment newInstance(String format, String content) {
         UnknownStudentFragment fragment = new UnknownStudentFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_FORMAT, format);
-        args.putString(ARG_CONTENT, content);
-        fragment.setArguments(args);
+        //Bundle args = new Bundle();
+        //args.putString(ARG_FORMAT, format);
+        //args.putString(ARG_CONTENT, content);
+        //fragment.setArguments(args);
+        mFormat = format;
+        mContent = content;
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+       /* if (getArguments() != null) {
             mFormat = getArguments().getString(ARG_FORMAT);
             mContent = getArguments().getString(ARG_CONTENT);
-        }
+        }*/
     }
 
     @Override
@@ -65,6 +67,7 @@ public class UnknownStudentFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 AddStudentFragment fragment = new AddStudentFragment();
+                fragment.newInstance(mContent);
                 transaction.replace(R.id.fragment_container,fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();

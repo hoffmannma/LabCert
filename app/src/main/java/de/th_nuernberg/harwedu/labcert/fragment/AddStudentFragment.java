@@ -22,7 +22,7 @@ public class AddStudentFragment extends Fragment {
 
     private static final String ARG_PARAM = "param";
 
-    private String mParam;
+    private static String mParam;
 
     public AddStudentFragment() {
         // Required empty public constructor
@@ -30,18 +30,19 @@ public class AddStudentFragment extends Fragment {
 
     public static AddStudentFragment newInstance(String param) {
         AddStudentFragment fragment = new AddStudentFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM, param);
-        fragment.setArguments(args);
+        //Bundle args = new Bundle();
+        //args.putString(ARG_PARAM, param);
+        //fragment.setArguments(args);
+        mParam = param;
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        /*if (getArguments() != null) {
             mParam = getArguments().getString(ARG_PARAM);
-        }
+        }*/
     }
 
     @Override
@@ -62,7 +63,7 @@ public class AddStudentFragment extends Fragment {
 
         Button addStudentButton = (Button) rootView.findViewById(R.id.button_add_student);
 
-        if(mParam != null)
+        //if(mParam != null)
             editTextBib.setText(mParam);
 
         addStudentButton.setOnClickListener(new View.OnClickListener() {

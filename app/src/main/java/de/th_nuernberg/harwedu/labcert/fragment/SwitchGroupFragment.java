@@ -5,58 +5,86 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+
+import java.util.Objects;
 
 import de.th_nuernberg.harwedu.labcert.R;
 
 
 public class SwitchGroupFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static String mGroup;
+    private static String checkedStr;
 
-    //private OnFragmentInteractionListener mListener;
+    // Testvariablen
+    private String[] grpStrArray = {"Gruppe 1", "Gruppe 2", "Gruppe 3", "Gruppe 4",
+            "Gruppe 5", "Gruppe 6"};
+
+    private static int grp_count = 5;
 
     public SwitchGroupFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SwitchGroupFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SwitchGroupFragment newInstance(String param1, String param2) {
+    public static SwitchGroupFragment newInstance(String grp) {
         SwitchGroupFragment fragment = new SwitchGroupFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        mGroup = grp;
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_switch_group, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_switch_group, container, false);
+
+        RadioGroup switchRadioGroup = (RadioGroup) rootView.findViewById(R.id.radiogroup_switch);
+        Button switchButton = (Button) rootView.findViewById(R.id.button_switch);
+        final TextView switchTextView = (TextView) rootView.findViewById(R.id.textview_switch);
+
+        for(int i =0; i<grp_count;i++)
+        {
+            RadioButton radioButton = new RadioButton(getActivity());
+            radioButton.setText(grpStrArray[i]);
+            radioButton.setTextSize(32);
+            switchRadioGroup.addView(radioButton);
+        }
+
+        switchRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                for(int i=0; i<radioGroup.getChildCount(); i++) {
+                    RadioButton btn = (RadioButton) radioGroup.getChildAt(i);
+                    if(btn.getId() == checkedId) {
+                        checkedStr = (String) btn.getText();
+                        if (!Objects.equals(checkedStr, mGroup))
+                            switchTextView.setText("Achtung: Änderung der aktuellen Gruppe");
+                        else
+                            switchTextView.setText("");
+                        return;
+                    }
+                }
+            }
+        });
+
+        switchButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getFragmentManager().popBackStack();
+            }
+        });
+
+        return rootView;
     }
 /* $$$$
     // TODO: Rename method, update argument and hook method into UI event

@@ -5,11 +5,31 @@
     tools:context=".fragment.SwitchGroupFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RadioGroup
+        android:id="@+id/radiogroup_switch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:text="Gruppenwechsel wird zukünftig hier möglich sein."
-        android:layout_margin="20dp" />
+        android:orientation="vertical"
+        android:gravity="top|center">
+
+    </RadioGroup>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_switch"
+        android:layout_marginTop="260dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:text="@string/button_switch_group"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textview_switch"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        android:layout_marginTop="230dp"
+        android:textColor="#c81212" />
 
 </FrameLayout>
