@@ -1,8 +1,16 @@
 package de.th_nuernberg.harwedu.labcert.database;
 
+import java.util.Arrays;
+
 /**
  * Created by Edu on 17.05.2016.
  */
+
+/* TODO:
+- Constructors ergänzen
+- attd / tasks -> array
+ */
+
 public class Student {
 
     private String surname;
@@ -13,13 +21,23 @@ public class Student {
     private String matr;
     private String bib;
     private long id;
-    private int attd;
-    private int tasks;
+    private int[] attd;
+    private int[] tasks;
 
+
+    public Student(){
+
+    }
+
+    public Student(String surname, String firstname, int[] attd){
+        this.surname = surname;
+        this.firstname = firstname;
+        this.attd = attd;
+    }
 
     public Student(String surname, String firstname, String comment,
                    String group, String team, String matr,
-                   String bib, int attd, int tasks, long id) {
+                   String bib, int[] attd, int[] tasks, long id) {
         this.surname = surname;
         this.firstname = firstname;
         this.comment = comment;
@@ -96,19 +114,19 @@ public class Student {
         this.id = id;
     }
 
-    public int getAttd() {
+    public int[] getAttd() {
         return attd;
     }
 
-    public void setAttd(int attd) {
+    public void setAttd(int[] attd) {
         this.attd = attd;
     }
 
-    public int getTasks() {
+    public int[] getTasks() {
         return tasks;
     }
 
-    public void setTasks(int tasks) {
+    public void setTasks(int[] tasks) {
         this.tasks = tasks;
     }
 
@@ -116,8 +134,8 @@ public class Student {
         String output = surname + ", " + firstname + "\n" +
                 "\nGruppe: " + group +
                 "\nTeam: " + team +
-                "\nAnwesenheit: " + attd +
-                "\nAufgabenstatus: " + tasks;
+                "\nAnwesenheit: " + intToString(attd)/* +
+                "\nAufgabenstatus: " + intToString(tasks)*/;
                 return output;
     }
 
@@ -128,4 +146,17 @@ public class Student {
 
         return output;
     }
+
+    private String intToString(int[] intArray) {
+        String delimiter = " | ";
+        StringBuilder sb = new StringBuilder();
+        for (int element : intArray) {
+            if (sb.length() > 0) {
+                sb.append(delimiter);
+            }
+            sb.append(element);
+        }
+        return sb.toString();
+    }
+
 }

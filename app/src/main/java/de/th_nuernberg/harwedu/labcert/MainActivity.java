@@ -35,6 +35,16 @@ import de.th_nuernberg.harwedu.labcert.fragment.StudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.SwitchGroupFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.UnknownStudentFragment;
 
+/* TODO
+
+- Datenbank: Items löschen
+- Datenbank: 3 Tables - Studenten / Anwesenheit / Testate
+- Datenbank: Zeitstempel
+- pdf erzeugen
+- email im Hintergrund versenden
+
+ */
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 

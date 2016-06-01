@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,14 @@ import de.th_nuernberg.harwedu.labcert.csv.CsvParser;
 
 /**
  * Created by Edu on 17.05.2016.
+ */
+
+/* TODO
+
+- CreateStudent Fach-ID übergeben -> Switch-Case-Anweisung mit entsprechenden Einträgen
+- cursorToStudent + getStudent anpassen
+- joins
+
  */
 public class StudentDataSource {
     private static final String LOG_TAG = StudentDataSource.class.getSimpleName();
@@ -48,28 +57,48 @@ public class StudentDataSource {
     public Student createStudent(String surname, String firstname, String comment,
                                  String group, String team, String matr,
                                  String bib, int attd, int tasks) {
-        ContentValues values = new ContentValues();
-        values.put(StudentDbHelper.COLUMN_SURNAME, surname);
-        values.put(StudentDbHelper.COLUMN_FIRSTNAME, firstname);
-        values.put(StudentDbHelper.COLUMN_COMMENT, comment);
-        values.put(StudentDbHelper.COLUMN_LABGROUP, group);
-        values.put(StudentDbHelper.COLUMN_LABTEAM, team);
-        values.put(StudentDbHelper.COLUMN_MATR, matr);
-        values.put(StudentDbHelper.COLUMN_BIB, bib);
-        values.put(StudentDbHelper.COLUMN_ATTD, attd);
-        values.put(StudentDbHelper.COLUMN_TASKS, tasks);
 
-        long insertId = database.insert(StudentDbHelper.TABLE_STUDENT, null, values);
+        ContentValues valuesStudent = new ContentValues();
+        ContentValues valuesAttendance = new ContentValues();
+        ContentValues valuesTasks = new ContentValues();
 
+        valuesStudent.put(StudentDbHelper.COLUMN_SURNAME, surname);
+        valuesStudent.put(StudentDbHelper.COLUMN_FIRSTNAME, firstname);
+        valuesStudent.put(StudentDbHelper.COLUMN_COMMENT, comment);
+        valuesStudent.put(StudentDbHelper.COLUMN_LABGROUP, group);
+        valuesStudent.put(StudentDbHelper.COLUMN_LABTEAM, team);
+        valuesStudent.put(StudentDbHelper.COLUMN_MATR, matr);
+        valuesStudent.put(StudentDbHelper.COLUMN_BIB, bib);
+        valuesStudent.put(StudentDbHelper.COLUMN_ATTD, attd);
+        valuesStudent.put(StudentDbHelper.COLUMN_TASKS, tasks);
+
+        valuesAttendance.put(StudentDbHelper.COLUMN_MATR, matr);
+        valuesAttendance.put(StudentDbHelper.COLUMN_ATTD1, 1);
+        valuesAttendance.put(StudentDbHelper.COLUMN_ATTD2, 1);
+        valuesAttendance.put(StudentDbHelper.COLUMN_ATTD3, 1);
+        valuesAttendance.put(StudentDbHelper.COLUMN_ATTD4, 1);
+        valuesAttendance.put(StudentDbHelper.COLUMN_ATTD5, 1);
+
+        valuesTasks.put(StudentDbHelper.COLUMN_MATR, matr);
+        valuesTasks.put(StudentDbHelper.COLUMN_TASK1, 1);
+        valuesTasks.put(StudentDbHelper.COLUMN_TASK2, 1);
+        valuesTasks.put(StudentDbHelper.COLUMN_TASK3, 1);
+        valuesTasks.put(StudentDbHelper.COLUMN_TASK4, 1);
+        valuesTasks.put(StudentDbHelper.COLUMN_TASK5, 1);
+
+        long insertIdStudent = database.insert(StudentDbHelper.TABLE_STUDENT, null, valuesStudent);
+        long insertIdAttd = database.insert(StudentDbHelper.TABLE_ATTENDANCE, null, valuesAttendance);
+
+        /*
         Cursor cursor = database.query(StudentDbHelper.TABLE_STUDENT,
-                columns, StudentDbHelper.COLUMN_ID + "=" + insertId,
+                columns, StudentDbHelper.COLUMN_ID + "=" + insertIdStudent,
                 null, null, null, null);
 
         cursor.moveToFirst();
         Student student = cursorToStudent(cursor);
         cursor.close();
-
-        return student;
+*/
+        return getStudent(bib);
     }
 
     private Student cursorToStudent(Cursor cursor) {
@@ -92,11 +121,34 @@ public class StudentDataSource {
         String matr = cursor.getString(idMatr);
         String bib = cursor.getString(idBib);
         int attd = cursor.getInt(idAttd);
-        int tasks = cursor.getInt(idTasks);
+        int task = cursor.getInt(idTasks);
         long id = cursor.getLong(idIndex);
 
+        int[] attendance = new int[20];
+        attendance[0] = attd;
+        int[] tasks = new int[20];
+        attendance[0] = task;
+
+
         Student student = new Student(surname, firstname, comment,
-                group, team, matr, bib, attd, tasks, id);
+                group, team, matr, bib, attendance, tasks, id);
+
+        return student;
+    }
+
+    private Student cursorToStudent_b(Cursor cursor) {
+        int idSurname = cursor.getColumnIndex(StudentDbHelper.COLUMN_SURNAME);
+        int idFirstname = cursor.getColumnIndex(StudentDbHelper.COLUMN_FIRSTNAME);
+        int idAttd = cursor.getColumnIndex(StudentDbHelper.COLUMN_ATTD1);
+
+        String surname = cursor.getString(idSurname);
+        String firstname = cursor.getString(idFirstname);
+        int attd1 = cursor.getInt(idAttd);
+
+        int[] attendance = new int[1];
+        attendance[0] = attd1;
+
+        Student student = new Student(surname, firstname, attendance);
 
         return student;
     }
@@ -114,6 +166,7 @@ public class StudentDataSource {
         return student;
     }
 
+    /*
     public List<Student> getAllStudents() {
         List<Student> studentList = new ArrayList<>();
 
@@ -134,7 +187,40 @@ public class StudentDataSource {
         cursor.close();
 
         return studentList;
+    }*/
+
+
+public List<Student> getAllStudents() {
+    List<Student> studentList = new ArrayList<>();
+
+    String query = "SELECT * FROM "
+       /*     + StudentDbHelper.COLUMN_SURNAME + ", "
+            + StudentDbHelper.COLUMN_FIRSTNAME + ", "
+            + StudentDbHelper.COLUMN_ATTD1 + ", "
+            + " FROM "*/
+            + StudentDbHelper.TABLE_STUDENT + ", "
+            + StudentDbHelper.TABLE_ATTENDANCE
+            + " WHERE " + StudentDbHelper.TABLE_STUDENT + "."
+            + StudentDbHelper.COLUMN_MATR + " = "
+            + StudentDbHelper.TABLE_ATTENDANCE + "."
+            + StudentDbHelper.COLUMN_MATR;
+
+    Cursor cursor = database.rawQuery(query, null);
+    cursor.moveToFirst();
+    Student student;
+
+    while(!cursor.isAfterLast()) {
+        student = cursorToStudent_b(cursor);
+        studentList.add(student);
+        Log.d(LOG_TAG, "ID: " + student.getId() + ", Inhalt: " + student.getSurname()
+                + " " + student.getFirstname() + " " + student.getGroup());
+        cursor.moveToNext();
     }
+
+    cursor.close();
+
+    return studentList;
+}
 
     public boolean studentExists(String bibNo) {
         openR();
