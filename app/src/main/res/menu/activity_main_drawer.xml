@@ -23,9 +23,9 @@
     <item android:title="Dateien">
         <menu>
             <item
-                android:id="@+id/nav_csv_sample"
-                android:icon="@drawable/ic_m_extract_csv"
-                android:title="@string/sample_csv" />
+                android:id="@+id/nav_sync_db"
+                android:icon="@drawable/ic_m_sync_db"
+                android:title="@string/sync_db" />
             <item
             android:id="@+id/nav_import_db"
             android:icon="@drawable/ic_m_import_csv"
@@ -33,7 +33,7 @@
             <item
                 android:id="@+id/nav_cert"
                 android:icon="@drawable/ic_m_accomp_txt"
-                android:title="@string/create_cert" />
+                android:title="@string/show_cert" />
         </menu>
     </item>
 </menu>

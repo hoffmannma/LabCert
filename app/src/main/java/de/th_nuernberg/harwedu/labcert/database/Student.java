@@ -1,38 +1,41 @@
 package de.th_nuernberg.harwedu.labcert.database;
 
-import java.util.Arrays;
 
-/**
- * Created by Edu on 17.05.2016.
- */
-
-/* TODO:
+/** TODO:
 - Constructors ergänzen
 - attd / tasks -> array
  */
+
 
 public class Student {
 
     private String surname;
     private String firstname;
-    private String comment;
+    private String comment_student;
     private String group;
     private String team;
     private String matr;
     private String bib;
+
+    private String[] comment_attd;
+    private String[] comment_task;
+
     private long id;
     private int[] attd;
     private int[] tasks;
+    private int attd_count;
+    private int task_count;
 
 
     public Student(){
 
     }
 
-    public Student(String surname, String firstname, int[] attd){
+    public Student(String surname, String firstname, int[] attd, int[] tasks){
         this.surname = surname;
         this.firstname = firstname;
         this.attd = attd;
+        this.tasks = tasks;
     }
 
     public Student(String surname, String firstname, String comment,
@@ -40,7 +43,7 @@ public class Student {
                    String bib, int[] attd, int[] tasks, long id) {
         this.surname = surname;
         this.firstname = firstname;
-        this.comment = comment;
+        this.comment_student = comment;
         this.group = group;
         this.team = team;
         this.matr = matr;
@@ -66,12 +69,12 @@ public class Student {
         this.firstname = firstname;
     }
 
-    public String getComment() {
-        return comment;
+    public String getCommentStudent() {
+        return comment_student;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setCommentStudent(String comment) {
+        this.comment_student = comment;
     }
 
     public String getGroup() {
@@ -130,15 +133,35 @@ public class Student {
         this.tasks = tasks;
     }
 
+    public String[] getComment_attd() {
+        return comment_attd;
+    }
+
+    public void setComment_attd(String[] comment_attd) {
+        this.comment_attd = comment_attd;
+    }
+
     public String getStudentData(){
+        attd_count = 5;
         String output = surname + ", " + firstname + "\n" +
                 "\nGruppe: " + group +
                 "\nTeam: " + team +
-                "\nAnwesenheit: " + intToString(attd)/* +
+                "\nAnwesenheit: " + intToString(attd, attd_count)/* +
                 "\nAufgabenstatus: " + intToString(tasks)*/;
                 return output;
     }
 
+    public String getAttdString(){
+        attd_count = 5;
+         return intToString(attd, attd_count);
+    }
+
+    public String getTaskString(){
+        task_count = 5;
+        return intToString(tasks, task_count);
+    }
+
+    /*
     @Override
     public String toString() {
         String output = surname + ", " + firstname + "\t\t\t\t" + "Team " + team
@@ -146,15 +169,29 @@ public class Student {
 
         return output;
     }
+    */
 
-    private String intToString(int[] intArray) {
+    /*
+    public void addAttd()
+    {
+        attd_count = 5;
+        for (int i=0; i<attd_count; i++) {
+            if (attd[i]==0) {
+                attd[i]++;
+                return;
+            }
+        }
+    }
+    */
+
+    private String intToString(int[] intArray, int count) {
         String delimiter = " | ";
         StringBuilder sb = new StringBuilder();
-        for (int element : intArray) {
+        for (int i=0; i<count; i++) {
             if (sb.length() > 0) {
                 sb.append(delimiter);
             }
-            sb.append(element);
+            sb.append(intArray[i]);
         }
         return sb.toString();
     }

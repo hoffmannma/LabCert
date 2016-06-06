@@ -4,8 +4,8 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,45 +14,47 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import de.th_nuernberg.harwedu.labcert.csv.CsvParser;
 import de.th_nuernberg.harwedu.labcert.database.Student;
 import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
 import de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.CreateGroupFragment;
-import de.th_nuernberg.harwedu.labcert.fragment.CsvSampleFragment;
-import de.th_nuernberg.harwedu.labcert.fragment.StudentTableFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.StudentFragment;
+import de.th_nuernberg.harwedu.labcert.fragment.StudentTableFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.SwitchGroupFragment;
+import de.th_nuernberg.harwedu.labcert.fragment.SyncFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.UnknownStudentFragment;
 
-/* TODO
-
-- Datenbank: Items löschen
-- Datenbank: 3 Tables - Studenten / Anwesenheit / Testate
-- Datenbank: Zeitstempel
-- pdf erzeugen
-- email im Hintergrund versenden
-
+/**
+ *  TODO
+ * - Datenbank:
+ *      Zeitstempel und Sync
+ *      email im Hintergrund versenden
+ * - Anwesenheit:
+ *      Im Objekt Student: Daten mit Terminen (1,2,3..) mappen
+ *      Nach Scan automatisch anhand Datum eintragen
+ *      Kein passendes Datum: manueller / automatischer Eintrag wählen
+ *      -> manuell: Termin wählen
+ *      -> automatisch: Erster Null-Eintrag wird inkrementiert
+ *
  */
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static boolean readExtAccepted;
+    private static boolean writeExtAccepted;
+
     private static String userName;
     private static String userMail;
     private static String currentLab;
     private static String currentGroup;
-
 
     private static TextView userNameTxt;
     private static TextView userMailTxt;
@@ -64,22 +66,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //permissions
+        String[] perms = {"android.permission.READ_EXTERNAL_STORAGE",
+                "android.permission.WRITE_EXTERNAL_STORAGE"};
+        int permsRequestCode = 200;
+        requestPermissions(perms, permsRequestCode);
+
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        /*assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "<Call Scanner>", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                IntentIntegrator scanIntegrator = new IntentIntegrator();
-                scanIntegrator.initiateScan();
-            }
-        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -115,6 +112,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // Verwenden, um auf vorhandene Berechtigungen zu prüfen
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions,
+                                           int[] grantResults){
+        switch(permsRequestCode){
+            case 200:
+                readExtAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
+                writeExtAccepted = grantResults[1]== PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+    }
+
     public void fabClicked(View v){
         IntentIntegrator scanIntegrator = new IntentIntegrator(this);
         scanIntegrator.initiateScan();
@@ -132,6 +141,7 @@ public class MainActivity extends AppCompatActivity
                 StudentDataSource dataSource = new StudentDataSource(this);
 
                 if (dataSource.studentExists(scanContent)) {
+                    dataSource.insertAttd(scanContent, getEditor());
                     Student student = dataSource.getStudent(scanContent);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     StudentFragment fragment = new StudentFragment();
@@ -236,9 +246,9 @@ public class MainActivity extends AppCompatActivity
             transaction.addToBackStack(null);
             transaction.commit();
         }
-        else if (id == R.id.nav_csv_sample) {
+        else if (id == R.id.nav_sync_db) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            CsvSampleFragment fragment = new CsvSampleFragment();
+            SyncFragment fragment = new SyncFragment();
             transaction.replace(R.id.fragment_container,fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -250,7 +260,7 @@ public class MainActivity extends AppCompatActivity
             toastMsg("students.csv importiert");
         }
         else if (id == R.id.nav_cert) {
-            toastMsg("Noch nicht verfügbar");
+            toastMsg("Aktuell keine Funktion");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -280,6 +290,12 @@ public class MainActivity extends AppCompatActivity
     {
         this.currentGroup = grp;
         currentGroupTxt.setText(grp);
+    }
+
+    // Hardcoding zu Testzwecken
+    private String getEditor()
+    {
+        return "11";
     }
 
 }

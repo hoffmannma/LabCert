@@ -1,7 +1,7 @@
 package de.th_nuernberg.harwedu.labcert.csv;
 
 /**
- * Created by Edu on 15.05.2016.
+ *
  */
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class CsvParser {
             HashMap<String, String> hm = new HashMap<>();
 
             for (int i = 0; i < row.length; i++) {
-                hm.put("row[" + i + "]", row[i]);
+                hm.put("list_row[" + i + "]", row[i]);
             }
             CSVData.add(hm);
         }

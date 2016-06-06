@@ -45,7 +45,7 @@ public class CsvSampleFragment extends ListFragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             // Keys der Hashmap
-            String[] from = { "row[0]", "row[1]", "row[2]", "row[3]" };
+            String[] from = { "list_row[0]", "list_row[1]", "list_row[2]", "list_row[3]" };
             // Elemente, in die die Daten eingefügt werden
             int[] to = { R.id.surname, R.id.first_name, R.id.mat_no, R.id.cert };
             // Adapter erstellen

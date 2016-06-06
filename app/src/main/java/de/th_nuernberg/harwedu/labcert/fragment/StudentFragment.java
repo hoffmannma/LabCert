@@ -1,11 +1,8 @@
 package de.th_nuernberg.harwedu.labcert.fragment;
 
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +10,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import de.th_nuernberg.harwedu.labcert.MainActivity;
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.Student;
 import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
 
 /**
- * A simple {@link Fragment} subclass.
+ *
  */
+
 public class StudentFragment extends Fragment {
 
     private static Student student;
@@ -46,8 +43,10 @@ public class StudentFragment extends Fragment {
         final EditText commEditTxt = (EditText) rootView.findViewById(R.id.edittext_comm);
         Button saveDataButton = (Button) rootView.findViewById(R.id.button_save_data);
 
+
         studentTxt.setText(student.getStudentData());
-        commEditTxt.setText(student.getComment());
+        commEditTxt.setText(student.getCommentStudent());
+
 
         saveDataButton.setOnClickListener(new View.OnClickListener() {
             @Override

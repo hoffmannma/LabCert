@@ -11,16 +11,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.itextpdf.text.DocumentException;
+
+import java.io.FileNotFoundException;
+
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.Student;
 import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
+import de.th_nuernberg.harwedu.labcert.pdf.PdfFile;
 
 /**
- * A simple {@link Fragment} subclass.
+ *
  */
 public class AddStudentFragment extends Fragment {
 
-    private static final String ARG_PARAM = "param";
+    //private static final String ARG_PARAM = "param";
 
     private static String mParam;
 
@@ -101,8 +106,19 @@ public class AddStudentFragment extends Fragment {
                 editTextBib.setText("");
                 editTextLabteam.setText("");
 
-                Student student = dataSource.createStudent(surnameString, firstnameString,
-                        commentString, "", labteamString, matrString, bibString, 1, 1);
+                dataSource.createStudent(surnameString, firstnameString,
+                        commentString, "", labteamString, matrString, bibString);
+                Student student = dataSource.getStudent(bibString);
+
+                // pdf erzeugen (Test)
+                PdfFile pdfCreator = new PdfFile();
+                try {
+                    pdfCreator.createPdf(getActivity(), student);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (DocumentException e) {
+                    e.printStackTrace();
+                }
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 StudentFragment fragment = new StudentFragment();

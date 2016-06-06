@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import de.th_nuernberg.harwedu.labcert.R;
 
 /**
- * A simple {@link Fragment} subclass.
+ *
  */
 public class CreateGroupFragment extends Fragment {
 

@@ -12,10 +12,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.th_nuernberg.harwedu.labcert.MainActivity;
 import de.th_nuernberg.harwedu.labcert.R;
+import de.th_nuernberg.harwedu.labcert.adapter.StudentTableAdapter;
 import de.th_nuernberg.harwedu.labcert.database.Student;
 import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
 
@@ -40,43 +42,20 @@ public class StudentTableFragment extends Fragment {
         Log.d(LOG_TAG, "Das Datenquellen-Objekt wird angelegt.");
         dataSource = new StudentDataSource(getActivity());
 
-
-        /*
-        *   Testroutine: Anlegen von Studenten direkt beim Fragmentaufruf
-        *   --> Datenbank wird bei jedem Aufruf des Fragments um
-        *       einen Eintrag erweitert
-        *   --> Logs zum Debuggen
-        *       Filter: MainActivity|StudentTableFragment|Student
-        *
-        Log.d(LOG_TAG, "Die Datenquelle wird geöffnet.");
-        dataSource.openW();
-        Student student = dataSource.createStudent("Harwart","Eduard",
-                "Kommentar","3/2","4",2,1,0,0);
-        Log.d(LOG_TAG, "Es wurde der folgende Eintrag in die Datenbank geschrieben:");
-        Log.d(LOG_TAG, "ID: " + student.getId() + ", Inhalt: " + student.getSurname());
-        Log.d(LOG_TAG, "Folgende Einträge sind in der Datenbank vorhanden:");
-        showAllListEntries(rootView);
-        Log.d(LOG_TAG, "Die Datenquelle wird geschlossen.");
-        dataSource.close();
-        */
-
         return rootView;
     }
 
     private void showAllListEntries (View rootView) {
-        //Liefert alle Datensätze
-        List<Student> studentList = dataSource.getAllStudents();
 
-        //Einfügen in Adapter
-        ArrayAdapter<Student> studentArrayAdapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                studentList);
-        //Array-Adapter an ListView des MainActivity-Layouts binden
-        //-> Tabelle wird auf Gerät angezeigt
+        // Liefert alle Datensätze
+        ArrayList<Student> studentList = dataSource.getAllStudents();
+
         ListView studentListView = (ListView) rootView.findViewById(R.id.listview_student_table);
-        studentListView.setAdapter(studentArrayAdapter);
+        StudentTableAdapter adapter = new StudentTableAdapter(getActivity(), studentList);
 
+        studentListView.setAdapter(adapter);
+
+        // Auf Klicks auf Items reagieren
         studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -94,6 +73,7 @@ public class StudentTableFragment extends Fragment {
         });
     }
 
+    // Fragment tritt in den Vordergrund: Datenbank neu aufrufen
     @Override
     public void onResume() {
         super.onResume();
@@ -104,6 +84,7 @@ public class StudentTableFragment extends Fragment {
         showAllListEntries(getView());
     }
 
+    // Fragment pausiert: Datenbankzugriff schließen
     @Override
     public void onPause() {
         super.onPause();
