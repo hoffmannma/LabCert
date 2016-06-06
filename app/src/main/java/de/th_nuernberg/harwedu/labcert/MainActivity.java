@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -67,11 +68,14 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         //permissions
-        String[] perms = {"android.permission.READ_EXTERNAL_STORAGE",
-                "android.permission.WRITE_EXTERNAL_STORAGE"};
-        int permsRequestCode = 200;
-        requestPermissions(perms, permsRequestCode);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+            String[] perms = {"android.permission.READ_EXTERNAL_STORAGE",
+                    "android.permission.WRITE_EXTERNAL_STORAGE"};
+            int permsRequestCode = 200;
+            requestPermissions(perms, permsRequestCode);
+        }
 
         setContentView(R.layout.activity_main);
 
