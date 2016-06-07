@@ -1,5 +1,6 @@
 package de.th_nuernberg.harwedu.labcert;
 
+import android.annotation.TargetApi;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity
 
     private static NavigationView navigationView;
     // Initialize
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,7 +148,9 @@ public class MainActivity extends AppCompatActivity
 
                 if (dataSource.studentExists(scanContent)) {
                     dataSource.insertAttd(scanContent, getEditor());
+                    toastMsg("Anwesenheit aktualisiert");
                     Student student = dataSource.getStudent(scanContent);
+                    student.setAttd(dataSource.getAttdRecord(student));
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     StudentFragment fragment = new StudentFragment();
                     fragment.newInstance(student);
@@ -262,6 +266,7 @@ public class MainActivity extends AppCompatActivity
             StudentDataSource dataSource = new StudentDataSource(this);
             dataSource.importCSV(this, "students.csv");
             toastMsg("students.csv importiert");
+            backToHome();
         }
         else if (id == R.id.nav_cert) {
             toastMsg("Aktuell keine Funktion");

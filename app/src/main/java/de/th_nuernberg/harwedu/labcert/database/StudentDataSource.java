@@ -123,6 +123,7 @@ public class StudentDataSource {
         valuesStudent.put(StudentDbHelper.COLUMN_MATR, matr);
         valuesStudent.put(StudentDbHelper.COLUMN_BIB, bib);
 
+        /*
         // Tabelle Anwesenheit füllen
         valuesAttendance.put(StudentDbHelper.COLUMN_MATR, matr);
         valuesAttendance.put(StudentDbHelper.COLUMN_TS,
@@ -134,10 +135,10 @@ public class StudentDataSource {
         valuesAttendance.put(StudentDbHelper.COLUMN_NEW_ENTRY, new_entry);
 
         valuesTasks.put(StudentDbHelper.COLUMN_MATR, matr);
-
+        */
 
         database.insert(StudentDbHelper.TABLE_STUDENT, null, valuesStudent);
-        database.insert(StudentDbHelper.TABLE_ATTENDANCE, null, valuesAttendance);
+//        database.insert(StudentDbHelper.TABLE_ATTENDANCE, null, valuesAttendance);
 
         /*
         Cursor cursor = database.query(StudentDbHelper.TABLE_STUDENT,
@@ -271,6 +272,7 @@ public class StudentDataSource {
 
         while(!cursor.isAfterLast()) {
             student = cursorToStudent(cursor);
+            student.setAttd(getAttdRecord(student));
             studentList.add(student);
             Log.d(LOG_TAG, "ID: " + student.getId() + ", Inhalt: " + student.getSurname()
                     + " " + student.getFirstname() + " " + student.getGroup());
@@ -341,7 +343,7 @@ public class StudentDataSource {
      * @param queryValues
      */
     public void updateAttd(HashMap<String, String> queryValues) {
-        openR();
+        openW();
         ContentValues values = new ContentValues();
         values.put(StudentDbHelper.COLUMN_MATR, queryValues.get("matr"));
         values.put(StudentDbHelper.COLUMN_TS, queryValues.get("ts"));
@@ -356,7 +358,7 @@ public class StudentDataSource {
     }
 
     public void insertAttd(String matr, String editor){
-        openR();
+        openW();
         ContentValues values = new ContentValues();
         values.put(StudentDbHelper.COLUMN_MATR, matr);
         values.put(StudentDbHelper.COLUMN_TS,
@@ -369,6 +371,43 @@ public class StudentDataSource {
         values.put(StudentDbHelper.COLUMN_NEW_ENTRY, "yes");
         database.insert(StudentDbHelper.TABLE_ATTENDANCE, null, values);
         close();
+    }
+
+    public int[] getAttdRecord(Student student){
+        int[] attdRecords = new int[5];
+        for (int i=0; i<5; i++)
+            attdRecords[i] = 0;
+        openR();
+        Cursor cursor = database.rawQuery("SELECT * FROM " + StudentDbHelper.TABLE_ATTENDANCE +
+                " WHERE " + StudentDbHelper.COLUMN_MATR + " = '" + student.getBib() + "'", null);
+        int n = cursor.getCount();
+        if (n>5)
+            n = 5;
+        for (int i=0; i<n; i++)
+            attdRecords[i] = 1;
+        cursor.close();
+        close();
+        return attdRecords;
+    }
+
+    /**
+     * Löscht die Anwesenheitsdaten zu einer Matrikelnummer
+     *
+     * @param student
+     */
+    public void deleteAttdRecords(Student student) {
+        openW();
+
+        database.delete(StudentDbHelper.TABLE_ATTENDANCE,
+                StudentDbHelper.COLUMN_MATR + "= '" + student.getBib() + "'",
+                null);
+
+        /*
+        database.rawQuery("DELETE FROM " + StudentDbHelper.TABLE_ATTENDANCE +
+                " WHERE " + StudentDbHelper.COLUMN_MATR + " = '" +  student.getBib() + "';", null);
+                */
+        close();
+        Log.d(LOG_TAG, "Einträge gelöscht! Matrikel: " + student.getBib());
     }
 
     /**

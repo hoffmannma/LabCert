@@ -110,15 +110,6 @@ public class AddStudentFragment extends Fragment {
                         commentString, "", labteamString, matrString, bibString);
                 Student student = dataSource.getStudent(bibString);
 
-                // pdf erzeugen (Test)
-                PdfFile pdfCreator = new PdfFile();
-                try {
-                    pdfCreator.createPdf(getActivity(), student);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (DocumentException e) {
-                    e.printStackTrace();
-                }
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 StudentFragment fragment = new StudentFragment();

@@ -3,6 +3,7 @@ package de.th_nuernberg.harwedu.labcert.pdf;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -52,14 +53,16 @@ public class PdfFile {
         Date date = new Date();
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(date);
 
+        String fileName = (student.getMatr() +"_"+ timeStamp + ".pdf");
         // falls möglich: externen Speicher verwenden
         if (isExternalStorageWritable()) {
-            pdfFile = new File(getExtStorageDir(context),
-                    (student.getMatr() +"_"+ timeStamp + ".pdf"));
+            pdfFile = new File(getExtStorageDir(context), (fileName));
         }
 
         // pdf mit Daten füllen
         writeToPdf(pdfFile, student);
+        toastMsg(context, "PDF " + fileName + " für " + student.getFirstname() + " " +
+                student.getSurname() + " erstellt");
     }
 
     private void writeToPdf(File pdfFile, Student student) throws
@@ -89,6 +92,13 @@ public class PdfFile {
         }
         else Log.e(LOG_TAG, "Directory created!");
         return file;
+    }
+
+    private void toastMsg(Context context, String msg)
+    {
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, msg, duration);
+        toast.show();
     }
 
 }
