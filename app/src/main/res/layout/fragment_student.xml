@@ -20,13 +20,43 @@
         android:layout_marginTop="200dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
-    <Button
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_save_comment"
-        android:id="@+id/button_save_data"
-        android:layout_marginTop="250dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
+        android:orientation="vertical"
+        android:layout_marginTop="250dp">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_save_comment"
+            android:id="@+id/button_save_comment"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PDF erzeugen"
+            android:id="@+id/button_create_pdf"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Student löschen"
+            android:id="@+id/button_del_student"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Anwesenheitsdaten löschen"
+            android:id="@+id/button_del_attd"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+    </LinearLayout>
 
 </FrameLayout>

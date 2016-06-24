@@ -352,7 +352,7 @@ public class StudentDataSource {
         values.put(StudentDbHelper.COLUMN_COMMENT, queryValues.get("comment"));
         values.put(StudentDbHelper.COLUMN_UPDATE_STATUS, queryValues.get("status"));
         values.put(StudentDbHelper.COLUMN_NEW_ENTRY, queryValues.get("new_entry"));
-        //database.rawQuery("TRUNCATE " + StudentDbHelper.TABLE_ATTENDANCE, null);
+        database.rawQuery("DELETE FROM " + StudentDbHelper.TABLE_ATTENDANCE + ";", null);
         database.insert(StudentDbHelper.TABLE_ATTENDANCE, null, values);
         close();
     }
@@ -509,7 +509,8 @@ public class StudentDataSource {
         Cursor cursor = database.rawQuery(selectQuery, null);
         count = cursor.getCount();
         close();
-        return count;
+        //return count;
+        return 1;
     }
 
     /**

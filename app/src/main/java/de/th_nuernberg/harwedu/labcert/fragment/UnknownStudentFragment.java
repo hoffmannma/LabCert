@@ -2,6 +2,7 @@ package de.th_nuernberg.harwedu.labcert.fragment;
 
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
 
@@ -78,10 +80,19 @@ public class UnknownStudentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getFragmentManager().popBackStack();
+                toastMsg("Scan verworfen");
             }
         });
 
         return rootView;
+    }
+
+    private void toastMsg(String msg)
+    {
+        Context context = getActivity().getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, msg, duration);
+        toast.show();
     }
 
 }

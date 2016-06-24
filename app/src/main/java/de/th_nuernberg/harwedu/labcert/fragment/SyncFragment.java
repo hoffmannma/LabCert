@@ -2,6 +2,7 @@ package de.th_nuernberg.harwedu.labcert.fragment;
 
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,7 +63,7 @@ public class SyncFragment extends Fragment {
 
         syncSQLiteMySQLDB();
 
-        getFragmentManager().popBackStack();
+        //getFragmentManager().popBackStack();
 
         return rootView;
     }
@@ -72,10 +73,10 @@ public class SyncFragment extends Fragment {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         ArrayList<HashMap<String, String>> userList =  controller.getAttendance();
-
+        int a = 1;
         client.setTimeout(DEFAULT_TIMEOUT);
 
-        if(userList.size()!=0){
+        if(a == 1/*userList.size()!=0*/){
             if(controller.dbSyncCount() != 0){
 
                 prgDialog.show();
@@ -130,6 +131,11 @@ public class SyncFragment extends Fragment {
                                 //       .toString(),obj.get("status").toString());
                             }
                             Log.d(LOG_TAG, "DB Sync completed!");
+                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                            StudentTableFragment fragment = new StudentTableFragment();
+                            transaction.replace(R.id.fragment_container,fragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
                         } catch (JSONException e) {
                             Log.d(LOG_TAG, "Error Occured - Server's JSON response might be invalid");
                             e.printStackTrace();
@@ -155,5 +161,6 @@ public class SyncFragment extends Fragment {
                  Log.d(LOG_TAG, "SQLite and Remote MySQL DBs are in Sync!");
         } else
              Log.d(LOG_TAG,  "No data in SQLite DB");
+
     }
 }
