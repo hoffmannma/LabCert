@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import de.th_nuernberg.harwedu.labcert.database.OracleConn;
+import de.th_nuernberg.harwedu.labcert.database.OracleJDBC;
 import de.th_nuernberg.harwedu.labcert.database.Student;
 import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
 import de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment;
@@ -153,14 +155,14 @@ public class MainActivity extends AppCompatActivity
                     student.setAttd(dataSource.getAttdRecord(student));
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     StudentFragment fragment = new StudentFragment();
-                    fragment.newInstance(student);
+                    StudentFragment.newInstance(student);
                     transaction.replace(R.id.fragment_container, fragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
                 } else {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     UnknownStudentFragment fragment = new UnknownStudentFragment();
-                    fragment.newInstance(scanFormat, scanContent);
+                    UnknownStudentFragment.newInstance(scanFormat, scanContent);
                     transaction.replace(R.id.fragment_container, fragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
@@ -242,7 +244,7 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.nav_switch_group) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             SwitchGroupFragment fragment = new SwitchGroupFragment();
-            fragment.newInstance(currentGroup);
+            SwitchGroupFragment.newInstance(currentGroup);
             transaction.replace(R.id.fragment_container,fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -270,6 +272,17 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_cert) {
             toastMsg("Aktuell keine Funktion");
+            OracleJDBC ojdbc = new OracleJDBC();
+            ojdbc.execute();
+            //OracleConn oracleConn = new OracleConn();
+            /*
+            try {
+                oracleConn.connect();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("CONNECTION FAILED");
+            }
+            */
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -297,7 +310,7 @@ public class MainActivity extends AppCompatActivity
 
     public void setGroup(String grp)
     {
-        this.currentGroup = grp;
+        currentGroup = grp;
         currentGroupTxt.setText(grp);
     }
 

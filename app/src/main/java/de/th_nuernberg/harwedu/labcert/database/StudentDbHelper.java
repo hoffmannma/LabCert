@@ -27,7 +27,7 @@ public class StudentDbHelper extends SQLiteOpenHelper {
      * - Studentendaten
      * - Anwesenheit
      * - Aufgaben
-     * - Praktika (Fächer)
+     * - Praktika (Fächer)ww
      */
     public static final String TABLE_STUDENT = "student_list";
     public static final String TABLE_ATTENDANCE = "attendance_list";
