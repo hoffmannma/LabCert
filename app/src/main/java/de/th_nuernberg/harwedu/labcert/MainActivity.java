@@ -23,9 +23,9 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.OracleDataSource;
 import de.th_nuernberg.harwedu.labcert.database.Student;
-import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
 import de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.CreateGroupFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.StudentFragment;
@@ -110,12 +110,15 @@ public class MainActivity extends AppCompatActivity
         currentGroupTxt.setText(currentGroup);
 
         if (savedInstanceState == null){
-            navigationView.getMenu().getItem(0).setChecked(true);
+            //navigationView.getMenu().getItem(0).setChecked(true);
+            backToHome();
+            /*
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             StudentTableFragment fragment = new StudentTableFragment();
             transaction.replace(R.id.fragment_container,fragment);
             transaction.addToBackStack(null);
             transaction.commit();
+            */
         }
     }
 
@@ -145,13 +148,13 @@ public class MainActivity extends AppCompatActivity
             String scanContent = scanningResult.getContents();
 
             if((scanContent != null) && (scanFormat != null)) {
-                StudentDataSource dataSource = new StudentDataSource(this);
+                DataSource dataSource = new DataSource(this);
 
                 if (dataSource.studentExists(scanContent)) {
                     dataSource.insertAttd(scanContent, getEditor());
                     toastMsg("Anwesenheit aktualisiert");
                     Student student = dataSource.getStudent(scanContent);
-                    student.setAttd(dataSource.getAttdRecord(student));
+                    student.setAttd(dataSource.getAttdCount(student));
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     StudentFragment fragment = new StudentFragment();
                     StudentFragment.newInstance(student);
@@ -190,8 +193,9 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         }
         // App schließen falls nur ein Fragment geöffnet ist
-        else if (count == 1) {
-            super.onBackPressed();
+        else if (count == 0) {
+            //super.onBackPressed();
+            this.moveTaskToBack(true);
         }
         // ...sonst zurück zu vorheriger Ansicht
         else {
@@ -267,14 +271,18 @@ public class MainActivity extends AppCompatActivity
              * Zu Testzwecken:
              * Datensatz in Oracle-Datenbank schreiben
              */
+            /*
             OracleDataSource ds = new OracleDataSource(this);
             ds.openCon();
             ds.insertAttd("12345", "05-05-2016", "EH", "05-04-2016", "Kein Kommentar", "lab1");
             ds.closeCon();
+            */
+            DataSource dataSource = new DataSource(this);
+            dataSource.syncAttdRecords();
         }
         else if (id == R.id.nav_import_db) {
 
-            StudentDataSource dataSource = new StudentDataSource(this);
+            DataSource dataSource = new DataSource(this);
             dataSource.importCSV(this, "students.csv");
             toastMsg("students.csv importiert");
             backToHome();
@@ -293,7 +301,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         StudentTableFragment fragment = new StudentTableFragment();
         transaction.replace(R.id.fragment_container,fragment);
-        transaction.addToBackStack(null);
+        //transaction.addToBackStack(null);
         transaction.commit();
         navigationView.getMenu().getItem(0).setChecked(true);
     }

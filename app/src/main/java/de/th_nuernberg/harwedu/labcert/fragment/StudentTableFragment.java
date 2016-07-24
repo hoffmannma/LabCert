@@ -9,24 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.th_nuernberg.harwedu.labcert.MainActivity;
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.adapter.StudentTableAdapter;
+import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.Student;
-import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
 
 
 public class StudentTableFragment extends Fragment {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private StudentDataSource dataSource;
+    private DataSource dataSource;
 
 
     public StudentTableFragment() {
@@ -40,7 +38,7 @@ public class StudentTableFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_student_table, container, false);
 
         Log.d(LOG_TAG, "Das Datenquellen-Objekt wird angelegt.");
-        dataSource = new StudentDataSource(getActivity());
+        dataSource = new DataSource(getActivity());
 
         return rootView;
     }

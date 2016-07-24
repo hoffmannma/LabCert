@@ -14,7 +14,7 @@ import java.sql.Statement;
 
 /**
  * Created by Edu on 23.07.2016.
- * <p/>
+ *
  * TODO
  */
 
@@ -30,7 +30,6 @@ public class OracleDataSource {
     public static final String COLUMN_DATE = "DATE_";
     public static final String COLUMN_COMMENT = "COMMENT_";
     public static final String COLUMN_LAB_ID = "LAB_ID";
-
 
     private static final String LOG_TAG = OracleDataSource.class.getSimpleName();
     private static final String TABLE_ATTD = "Attendance";
@@ -48,6 +47,7 @@ public class OracleDataSource {
     /**
      * Konstruktor:
      * Erlaubt das Ausführen einer Netzwerk-Verbindung im Main-Thread
+     * Zeigt Progress-Dialog
      */
     public OracleDataSource(Context app_context) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -80,7 +80,7 @@ public class OracleDataSource {
             public void run() {
                 prgDialog.dismiss();
             }
-        }, 1000);
+        }, 500);
     }
 
     /**

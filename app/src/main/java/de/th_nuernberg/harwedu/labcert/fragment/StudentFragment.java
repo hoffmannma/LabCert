@@ -17,8 +17,8 @@ import com.itextpdf.text.DocumentException;
 import java.io.FileNotFoundException;
 
 import de.th_nuernberg.harwedu.labcert.R;
+import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.Student;
-import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
 import de.th_nuernberg.harwedu.labcert.pdf.PdfFile;
 
 /**
@@ -62,7 +62,7 @@ public class StudentFragment extends Fragment {
 
                 String commentString = commEditTxt.getText().toString();
 
-                StudentDataSource dataSource = new StudentDataSource(getActivity());
+                DataSource dataSource = new DataSource(getActivity());
                 dataSource.updateComment(student.getId(), commentString);
 
                 getActivity().getFragmentManager().popBackStack();
@@ -90,7 +90,7 @@ public class StudentFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                StudentDataSource dataSource = new StudentDataSource(getActivity());
+                DataSource dataSource = new DataSource(getActivity());
                 dataSource.deleteAttdRecords(student);
                 dataSource.deleteStudent(student);
 
@@ -104,7 +104,7 @@ public class StudentFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                StudentDataSource dataSource = new StudentDataSource(getActivity());
+                DataSource dataSource = new DataSource(getActivity());
                 dataSource.deleteAttdRecords(student);
                 Student student_new = dataSource.getStudent(student.getBib());
                 studentTxt.setText(student_new.getStudentData());

@@ -25,7 +25,7 @@ import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
 import de.th_nuernberg.harwedu.labcert.R;
-import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
+import de.th_nuernberg.harwedu.labcert.database.DataSource;
 
 /**
  * TODO
@@ -40,7 +40,7 @@ public class SyncFragment extends Fragment {
             "http://josuaa.de/labcert/sync/insert_attendance.php";
     private final int DEFAULT_TIMEOUT = 30 * 1000;
 
-    StudentDataSource controller;
+    DataSource controller;
     ProgressDialog prgDialog;
     HashMap<String, String> queryValues;
 
@@ -55,7 +55,7 @@ public class SyncFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_sync, container, false);
 
-        controller = new StudentDataSource(getActivity());
+        controller = new DataSource(getActivity());
         prgDialog = new ProgressDialog(getActivity());
 
         prgDialog.setMessage("Datenbank wird synchronisiert. Bitte warten...");
@@ -126,7 +126,7 @@ public class SyncFragment extends Fragment {
                                 queryValues.put("status", obj.get("status").toString());
                                 queryValues.put("new_entry", obj.get("new_entry").toString());
 
-                                controller.updateAttd(queryValues);
+                                controller.insertAttd(queryValues);
                                 //controller.updateSyncStatus(obj.get("id")
                                 //       .toString(),obj.get("status").toString());
                             }

@@ -12,12 +12,12 @@ import android.util.Log;
  */
 
 
-public class StudentDbHelper extends SQLiteOpenHelper {
+public class DbHelper extends SQLiteOpenHelper {
 
     /**
      * Konstanten
      */
-    private static final String LOG_TAG = StudentDbHelper.class.getSimpleName();
+    private static final String LOG_TAG = DbHelper.class.getSimpleName();
     public static final String DB_NAME = "labcert_group.db";
     public static final int DB_VERSION = 1;
 
@@ -179,9 +179,9 @@ public class StudentDbHelper extends SQLiteOpenHelper {
                     COLUMN_COMMENT + " TEXT NOT NULL, " +
                     COLUMN_UPDATE_STATUS + " TEXT NOT NULL);";
 
-    public StudentDbHelper(Context context) {
+    public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
-        Log.d(LOG_TAG, "StudentDbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
+        Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
     }
 
     @Override

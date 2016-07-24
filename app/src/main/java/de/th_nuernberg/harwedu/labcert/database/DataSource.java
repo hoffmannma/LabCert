@@ -22,7 +22,7 @@ import de.th_nuernberg.harwedu.labcert.R;
 
 
 /**
- * StudentDataSource
+ * DataSource
  *
  * Diese Klasse enhält die Datenbank-Schnittstelle und wird als Datenquelle verwendet.
  * Sie ermöglicht CRUD Operationen.
@@ -35,31 +35,36 @@ import de.th_nuernberg.harwedu.labcert.R;
  *
  */
 
-public class StudentDataSource {
-    private static final String LOG_TAG = StudentDataSource.class.getSimpleName();
+public class DataSource {
+    private static final String LOG_TAG = DataSource.class.getSimpleName();
+    private static final String YES = "yes";
+    private static final String NO = "no";
 
     private SQLiteDatabase database;
-    private StudentDbHelper dbHelper;
+    private DbHelper dbHelper;
 
     private String columns[] = {
-            StudentDbHelper.COLUMN_ID,
-            StudentDbHelper.COLUMN_SURNAME,
-            StudentDbHelper.COLUMN_FIRSTNAME,
-            StudentDbHelper.COLUMN_COMMENT,
-            StudentDbHelper.COLUMN_LABGROUP,
-            StudentDbHelper.COLUMN_LABTEAM,
-            StudentDbHelper.COLUMN_MATR,
-            StudentDbHelper.COLUMN_BIB,
+            DbHelper.COLUMN_ID,
+            DbHelper.COLUMN_SURNAME,
+            DbHelper.COLUMN_FIRSTNAME,
+            DbHelper.COLUMN_COMMENT,
+            DbHelper.COLUMN_LABGROUP,
+            DbHelper.COLUMN_LABTEAM,
+            DbHelper.COLUMN_MATR,
+            DbHelper.COLUMN_BIB,
     };
+
+    Context context;
 
     /**
      * Konstruktor
      *
-     * @param context Übergabe der ausführenden Activity
+     * @param app_context Übergabe der ausführenden Activity
      */
-    public StudentDataSource(Context context){
-        Log.d(LOG_TAG, "StudentDataSource erzeugt jetzt dbHelper.");
-        dbHelper = new StudentDbHelper(context);
+    public DataSource(Context app_context){
+        context = app_context;
+        Log.d(LOG_TAG, "DataSource erzeugt jetzt dbHelper.");
+        dbHelper = new DbHelper(context);
     }
 
     /**
@@ -115,34 +120,34 @@ public class StudentDataSource {
         String new_entry = "yes";
 
         // Tabelle Student füllen
-        valuesStudent.put(StudentDbHelper.COLUMN_SURNAME, surname);
-        valuesStudent.put(StudentDbHelper.COLUMN_FIRSTNAME, firstname);
-        valuesStudent.put(StudentDbHelper.COLUMN_COMMENT, comment);
-        valuesStudent.put(StudentDbHelper.COLUMN_LABGROUP, group);
-        valuesStudent.put(StudentDbHelper.COLUMN_LABTEAM, team);
-        valuesStudent.put(StudentDbHelper.COLUMN_MATR, matr);
-        valuesStudent.put(StudentDbHelper.COLUMN_BIB, bib);
+        valuesStudent.put(DbHelper.COLUMN_SURNAME, surname);
+        valuesStudent.put(DbHelper.COLUMN_FIRSTNAME, firstname);
+        valuesStudent.put(DbHelper.COLUMN_COMMENT, comment);
+        valuesStudent.put(DbHelper.COLUMN_LABGROUP, group);
+        valuesStudent.put(DbHelper.COLUMN_LABTEAM, team);
+        valuesStudent.put(DbHelper.COLUMN_MATR, matr);
+        valuesStudent.put(DbHelper.COLUMN_BIB, bib);
 
         /*
         // Tabelle Anwesenheit füllen
-        valuesAttendance.put(StudentDbHelper.COLUMN_MATR, matr);
-        valuesAttendance.put(StudentDbHelper.COLUMN_TS,
+        valuesAttendance.put(DbHelper.COLUMN_MATR, matr);
+        valuesAttendance.put(DbHelper.COLUMN_TS,
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        valuesAttendance.put(StudentDbHelper.COLUMN_EDITOR, editor );
-        valuesAttendance.put(StudentDbHelper.COLUMN_DATE, date);
-        valuesAttendance.put(StudentDbHelper.COLUMN_COMMENT, comment);
-        valuesAttendance.put(StudentDbHelper.COLUMN_UPDATE_STATUS, upd_status);
-        valuesAttendance.put(StudentDbHelper.COLUMN_NEW_ENTRY, new_entry);
+        valuesAttendance.put(DbHelper.COLUMN_EDITOR, editor );
+        valuesAttendance.put(DbHelper.COLUMN_DATE, date);
+        valuesAttendance.put(DbHelper.COLUMN_COMMENT, comment);
+        valuesAttendance.put(DbHelper.COLUMN_UPDATE_STATUS, upd_status);
+        valuesAttendance.put(DbHelper.COLUMN_NEW_ENTRY, new_entry);
 
-        valuesTasks.put(StudentDbHelper.COLUMN_MATR, matr);
+        valuesTasks.put(DbHelper.COLUMN_MATR, matr);
         */
 
-        database.insert(StudentDbHelper.TABLE_STUDENT, null, valuesStudent);
-//        database.insert(StudentDbHelper.TABLE_ATTENDANCE, null, valuesAttendance);
+        database.insert(DbHelper.TABLE_STUDENT, null, valuesStudent);
+//        database.insert(DbHelper.TABLE_ATTENDANCE, null, valuesAttendance);
 
         /*
-        Cursor cursor = database.query(StudentDbHelper.TABLE_STUDENT,
-                columns, StudentDbHelper.COLUMN_ID + "=" + insertIdStudent,
+        Cursor cursor = database.query(DbHelper.TABLE_STUDENT,
+                columns, DbHelper.COLUMN_ID + "=" + insertIdStudent,
                 null, null, null, null);
 
         cursor.moveToFirst();
@@ -161,8 +166,8 @@ public class StudentDataSource {
     public void deleteStudent(Student student) {
         long id = student.getId();
         openW();
-        database.delete(StudentDbHelper.TABLE_STUDENT,
-                StudentDbHelper.COLUMN_ID + "=" + id,
+        database.delete(DbHelper.TABLE_STUDENT,
+                DbHelper.COLUMN_ID + "=" + id,
                 null);
         close();
         Log.d(LOG_TAG, "Eintrag gelöscht! ID: " + id + " Inhalt: " + student.toString());
@@ -177,14 +182,14 @@ public class StudentDataSource {
      * @return
      */
     private Student cursorToStudent(Cursor cursor) {
-        int idIndex = cursor.getColumnIndex(StudentDbHelper.COLUMN_ID);
-        int idSurname = cursor.getColumnIndex(StudentDbHelper.COLUMN_SURNAME);
-        int idFirstname = cursor.getColumnIndex(StudentDbHelper.COLUMN_FIRSTNAME);
-        int idComment = cursor.getColumnIndex(StudentDbHelper.COLUMN_COMMENT);
-        int idGroup = cursor.getColumnIndex(StudentDbHelper.COLUMN_LABGROUP);
-        int idTeam = cursor.getColumnIndex(StudentDbHelper.COLUMN_LABTEAM);
-        int idMatr = cursor.getColumnIndex(StudentDbHelper.COLUMN_MATR);
-        int idBib = cursor.getColumnIndex(StudentDbHelper.COLUMN_BIB);
+        int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
+        int idSurname = cursor.getColumnIndex(DbHelper.COLUMN_SURNAME);
+        int idFirstname = cursor.getColumnIndex(DbHelper.COLUMN_FIRSTNAME);
+        int idComment = cursor.getColumnIndex(DbHelper.COLUMN_COMMENT);
+        int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_LABGROUP);
+        int idTeam = cursor.getColumnIndex(DbHelper.COLUMN_LABTEAM);
+        int idMatr = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
+        int idBib = cursor.getColumnIndex(DbHelper.COLUMN_BIB);
 
         String surname = cursor.getString(idSurname);
         String firstname = cursor.getString(idFirstname);
@@ -224,11 +229,11 @@ public class StudentDataSource {
      * @return Objekt Student, dass alle Daten enthält.
      */
     public Student getStudent(String bibNo) {
-        //Cursor cursor = database.query(StudentDbHelper.TABLE_STUDENT,
+        //Cursor cursor = database.query(DbHelper.TABLE_STUDENT,
           //      columns, null, null, null, null, null);
         openR();
-        Cursor cursor = database.rawQuery("SELECT * FROM " + StudentDbHelper.TABLE_STUDENT +
-                " WHERE " + StudentDbHelper.COLUMN_BIB + " = '" + bibNo + "'", null);
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_STUDENT +
+                " WHERE " + DbHelper.COLUMN_BIB + " = '" + bibNo + "'", null);
         if (cursor != null)
             cursor.moveToFirst();
         Student student = cursorToStudent(cursor);
@@ -247,23 +252,23 @@ public class StudentDataSource {
         ArrayList<Student> studentList = new ArrayList<>();
     /*
         String query = "SELECT * FROM "
-           /*     + StudentDbHelper.COLUMN_SURNAME + ", "
-                + StudentDbHelper.COLUMN_FIRSTNAME + ", "
-                + StudentDbHelper.COLUMN_ATTD1 + ", "
+           /*     + DbHelper.COLUMN_SURNAME + ", "
+                + DbHelper.COLUMN_FIRSTNAME + ", "
+                + DbHelper.COLUMN_ATTD1 + ", "
                 + " FROM "
-                + StudentDbHelper.TABLE_STUDENT/* + ", "
-                + StudentDbHelper.TABLE_ATTENDANCE
-                + " WHERE " + StudentDbHelper.TABLE_STUDENT + "."
-                + StudentDbHelper.COLUMN_MATR + " = "
-                + StudentDbHelper.TABLE_ATTENDANCE + "."
-                + StudentDbHelper.COLUMN_MATR; */
+                + DbHelper.TABLE_STUDENT/* + ", "
+                + DbHelper.TABLE_ATTENDANCE
+                + " WHERE " + DbHelper.TABLE_STUDENT + "."
+                + DbHelper.COLUMN_MATR + " = "
+                + DbHelper.TABLE_ATTENDANCE + "."
+                + DbHelper.COLUMN_MATR; */
 
-        String query = "SELECT * FROM " + StudentDbHelper.TABLE_STUDENT;
+        String query = "SELECT * FROM " + DbHelper.TABLE_STUDENT;
 
         Cursor cursor = database.rawQuery(query, null);
 
         /* Query mit StudentDBHelper
-        Cursor cursor = database.query(StudentDbHelper.TABLE_STUDENT,
+        Cursor cursor = database.query(DbHelper.TABLE_STUDENT,
                 columns, null, null, null, null, null);
         */
 
@@ -272,7 +277,7 @@ public class StudentDataSource {
 
         while(!cursor.isAfterLast()) {
             student = cursorToStudent(cursor);
-            student.setAttd(getAttdRecord(student));
+            student.setAttd(getAttdCount(student));
             studentList.add(student);
             Log.d(LOG_TAG, "ID: " + student.getId() + ", Inhalt: " + student.getSurname()
                     + " " + student.getFirstname() + " " + student.getGroup());
@@ -301,14 +306,19 @@ public class StudentDataSource {
         return exists;
     }
 
+    /**
+     *
+     * @param id
+     * @param newComment
+     */
     public void updateComment(long id, String newComment) {
         openW();
         ContentValues commentValue = new ContentValues();
-        commentValue.put(StudentDbHelper.COLUMN_COMMENT, newComment);
+        commentValue.put(DbHelper.COLUMN_COMMENT, newComment);
 
-        database.update(StudentDbHelper.TABLE_STUDENT,
+        database.update(DbHelper.TABLE_STUDENT,
                 commentValue,
-                StudentDbHelper.COLUMN_ID + "=" + id,
+                DbHelper.COLUMN_ID + "=" + id,
                 null);
 
         setSyncMissing(id);
@@ -323,18 +333,22 @@ public class StudentDataSource {
 
     }
 
+    /**
+     *
+     * @param id
+     */
     private void setSyncMissing(long id){
         ContentValues updateValue = new ContentValues();
-        updateValue.put(StudentDbHelper.COLUMN_UPDATE_STATUS, "no");
+        updateValue.put(DbHelper.COLUMN_UPDATE_STATUS, "no");
 
-        database.update(StudentDbHelper.TABLE_ATTENDANCE,
+        database.update(DbHelper.TABLE_ATTENDANCE,
                 updateValue,
-                StudentDbHelper.COLUMN_ID + "=" + id,
+                DbHelper.COLUMN_ID + "=" + id,
                 null);
 
-        database.update(StudentDbHelper.TABLE_TASKS,
+        database.update(DbHelper.TABLE_TASKS,
                 updateValue,
-                StudentDbHelper.COLUMN_ID + "=" + id,
+                DbHelper.COLUMN_ID + "=" + id,
                 null);
     }
 
@@ -342,44 +356,75 @@ public class StudentDataSource {
      * Anwesenheit einfügen
      * @param queryValues
      */
-    public void updateAttd(HashMap<String, String> queryValues) {
+    public void insertAttd(HashMap<String, String> queryValues) {
         openW();
         ContentValues values = new ContentValues();
-        values.put(StudentDbHelper.COLUMN_MATR, queryValues.get("matr"));
-        values.put(StudentDbHelper.COLUMN_TS, queryValues.get("ts"));
-        values.put(StudentDbHelper.COLUMN_EDITOR, queryValues.get("editor"));
-        values.put(StudentDbHelper.COLUMN_DATE, queryValues.get("a_date"));
-        values.put(StudentDbHelper.COLUMN_COMMENT, queryValues.get("comment"));
-        values.put(StudentDbHelper.COLUMN_UPDATE_STATUS, queryValues.get("status"));
-        values.put(StudentDbHelper.COLUMN_NEW_ENTRY, queryValues.get("new_entry"));
-        database.rawQuery("DELETE FROM " + StudentDbHelper.TABLE_ATTENDANCE + ";", null);
-        database.insert(StudentDbHelper.TABLE_ATTENDANCE, null, values);
+        values.put(DbHelper.COLUMN_MATR, queryValues.get("matr"));
+        values.put(DbHelper.COLUMN_TS, queryValues.get("ts"));
+        values.put(DbHelper.COLUMN_EDITOR, queryValues.get("editor"));
+        values.put(DbHelper.COLUMN_DATE, queryValues.get("a_date"));
+        values.put(DbHelper.COLUMN_COMMENT, queryValues.get("comment"));
+        values.put(DbHelper.COLUMN_UPDATE_STATUS, queryValues.get("status"));
+        values.put(DbHelper.COLUMN_NEW_ENTRY, queryValues.get("new_entry"));
+        database.rawQuery("DELETE FROM " + DbHelper.TABLE_ATTENDANCE + ";", null);
+        database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
         close();
     }
 
+    /**
+     *
+     * @param matr
+     * @param editor
+     */
     public void insertAttd(String matr, String editor){
         openW();
         ContentValues values = new ContentValues();
-        values.put(StudentDbHelper.COLUMN_MATR, matr);
-        values.put(StudentDbHelper.COLUMN_TS,
+        values.put(DbHelper.COLUMN_MATR, matr);
+        values.put(DbHelper.COLUMN_TS,
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        values.put(StudentDbHelper.COLUMN_EDITOR, editor);
-        values.put(StudentDbHelper.COLUMN_DATE,
+        values.put(DbHelper.COLUMN_EDITOR, editor);
+        values.put(DbHelper.COLUMN_DATE,
                 new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        values.put(StudentDbHelper.COLUMN_COMMENT, "");
-        values.put(StudentDbHelper.COLUMN_UPDATE_STATUS, "no");
-        values.put(StudentDbHelper.COLUMN_NEW_ENTRY, "yes");
-        database.insert(StudentDbHelper.TABLE_ATTENDANCE, null, values);
+        values.put(DbHelper.COLUMN_COMMENT, "");
+        values.put(DbHelper.COLUMN_UPDATE_STATUS, "no");
+        values.put(DbHelper.COLUMN_NEW_ENTRY, "yes");
+        database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
         close();
     }
 
-    public int[] getAttdRecord(Student student){
+    /**
+     *
+     * @param matr
+     * @param editor
+     */
+    public void insertAttd(String matr, String editor, String date, String comment){
+        openW();
+        ContentValues values = new ContentValues();
+        values.put(DbHelper.COLUMN_MATR, matr);
+        values.put(DbHelper.COLUMN_TS,
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        values.put(DbHelper.COLUMN_EDITOR, editor);
+        values.put(DbHelper.COLUMN_DATE,
+                new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        values.put(DbHelper.COLUMN_COMMENT, "");
+        values.put(DbHelper.COLUMN_UPDATE_STATUS, "no");
+        values.put(DbHelper.COLUMN_NEW_ENTRY, "yes");
+        database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
+        close();
+    }
+
+    /**
+     *
+     * @param student
+     * @return
+     */
+    public int[] getAttdCount(Student student){
         int[] attdRecords = new int[5];
         for (int i=0; i<5; i++)
             attdRecords[i] = 0;
         openR();
-        Cursor cursor = database.rawQuery("SELECT * FROM " + StudentDbHelper.TABLE_ATTENDANCE +
-                " WHERE " + StudentDbHelper.COLUMN_MATR + " = '" + student.getBib() + "'", null);
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_ATTENDANCE +
+                " WHERE " + DbHelper.COLUMN_MATR + " = '" + student.getBib() + "'", null);
         int n = cursor.getCount();
         if (n>5)
             n = 5;
@@ -391,6 +436,56 @@ public class StudentDataSource {
     }
 
     /**
+     * Synchronisiert neue Einträge in lokaler Datenbank mit Oracle-Datenbank
+     *
+     * Bedingung:
+     * Spalte NEW_ENTRY = 1 und Kombination Matr+Datum in Oracle-DB nicht vorhanden
+     *
+     */
+    public void syncAttdRecords(){
+        Log.d(LOG_TAG, "Aufruf syncAttdRecords");
+        openR();
+        // Abfrage lokal: Alle neuen Einträge in Anwesenheit
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_ATTENDANCE +
+                " WHERE " + DbHelper.COLUMN_NEW_ENTRY + " = 'yes'", null);
+
+        Log.d(LOG_TAG, "Neue Einträge: " + cursor.getCount());
+
+        int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
+        int idMatr = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
+        int idTS = cursor.getColumnIndex(DbHelper.COLUMN_TS);
+        int idEditor = cursor.getColumnIndex(DbHelper.COLUMN_EDITOR);
+        int idDate = cursor.getColumnIndex(DbHelper.COLUMN_DATE);
+        int idComment = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
+        int idLab = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
+
+        cursor.moveToFirst();
+        OracleDataSource oracleDS = new OracleDataSource(context);
+        oracleDS.openCon();
+
+        while(!cursor.isAfterLast()) {
+            oracleDS.insertAttd(cursor.getString(idMatr), cursor.getString(idTS),
+                    cursor.getString(idEditor), cursor.getString(idDate),
+                    cursor.getString(idComment), cursor.getString(idLab));
+
+            Log.d(LOG_TAG, "Matr: " + cursor.getString(idMatr) +
+                    ", TS: " + cursor.getString(idTS) +
+                    ", Editor: " + cursor.getString(idEditor) +
+                    ", Datum: "+ cursor.getString(idDate) +
+                    ", Kommentar: " +  cursor.getString(idComment) +
+                    ", Praktikum_ID: " +  cursor.getString(idLab) +
+                    "in Oracle DB eingefügt");
+
+            updateAttdEntryStatus(cursor.getString(idIndex), NO);
+
+            cursor.moveToNext();
+        }
+        oracleDS.closeCon();
+        cursor.close();
+        close();
+    }
+
+    /**
      * Löscht die Anwesenheitsdaten zu einer Matrikelnummer
      *
      * @param student
@@ -398,13 +493,13 @@ public class StudentDataSource {
     public void deleteAttdRecords(Student student) {
         openW();
 
-        database.delete(StudentDbHelper.TABLE_ATTENDANCE,
-                StudentDbHelper.COLUMN_MATR + "= '" + student.getBib() + "'",
+        database.delete(DbHelper.TABLE_ATTENDANCE,
+                DbHelper.COLUMN_MATR + "= '" + student.getBib() + "'",
                 null);
 
         /*
-        database.rawQuery("DELETE FROM " + StudentDbHelper.TABLE_ATTENDANCE +
-                " WHERE " + StudentDbHelper.COLUMN_MATR + " = '" +  student.getBib() + "';", null);
+        database.rawQuery("DELETE FROM " + DbHelper.TABLE_ATTENDANCE +
+                " WHERE " + DbHelper.COLUMN_MATR + " = '" +  student.getBib() + "';", null);
                 */
         close();
         Log.d(LOG_TAG, "Einträge gelöscht! Matrikel: " + student.getBib());
@@ -451,35 +546,35 @@ public class StudentDataSource {
 
         ArrayList<HashMap<String, String>> wordList;
         wordList = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + StudentDbHelper.TABLE_ATTENDANCE;
+        String selectQuery = "SELECT  * FROM " + DbHelper.TABLE_ATTENDANCE;
 
         openW();
         Cursor cursor = database.rawQuery(selectQuery, null);
-        int idIndex = cursor.getColumnIndex(StudentDbHelper.COLUMN_ID);
-        int idMatr = cursor.getColumnIndex(StudentDbHelper.COLUMN_MATR);
-        int idTimestamp = cursor.getColumnIndex(StudentDbHelper.COLUMN_TS);
-        int idEditor = cursor.getColumnIndex(StudentDbHelper.COLUMN_EDITOR);
-        int idDate = cursor.getColumnIndex(StudentDbHelper.COLUMN_DATE);
-        int idComment = cursor.getColumnIndex(StudentDbHelper.COLUMN_COMMENT);
-        int idNewEntry = cursor.getColumnIndex(StudentDbHelper.COLUMN_NEW_ENTRY);
+        int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
+        int idMatr = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
+        int idTimestamp = cursor.getColumnIndex(DbHelper.COLUMN_TS);
+        int idEditor = cursor.getColumnIndex(DbHelper.COLUMN_EDITOR);
+        int idDate = cursor.getColumnIndex(DbHelper.COLUMN_DATE);
+        int idComment = cursor.getColumnIndex(DbHelper.COLUMN_COMMENT);
+        int idNewEntry = cursor.getColumnIndex(DbHelper.COLUMN_NEW_ENTRY);
 
         if (cursor.moveToFirst()) {
             do {
                 HashMap<String, String> map = new HashMap<>();
                 //System.out.println("##############");
-                map.put(StudentDbHelper.COLUMN_ID, String.valueOf(cursor.getInt(idIndex)));
+                map.put(DbHelper.COLUMN_ID, String.valueOf(cursor.getInt(idIndex)));
                 //System.out.println(String.valueOf(cursor.getInt(idIndex)));
-                map.put(StudentDbHelper.COLUMN_MATR, cursor.getString(idMatr));
+                map.put(DbHelper.COLUMN_MATR, cursor.getString(idMatr));
                 //System.out.println(String.valueOf(cursor.getString(idMatr)));
-                map.put(StudentDbHelper.COLUMN_TS, cursor.getString(idTimestamp));
+                map.put(DbHelper.COLUMN_TS, cursor.getString(idTimestamp));
                 //System.out.println(String.valueOf(cursor.getString(idTimestamp)));
-                map.put(StudentDbHelper.COLUMN_EDITOR, cursor.getString(idEditor));
+                map.put(DbHelper.COLUMN_EDITOR, cursor.getString(idEditor));
                 //System.out.println(String.valueOf(cursor.getString(idEditor)));
-                map.put(StudentDbHelper.COLUMN_DATE, cursor.getString(idDate));
+                map.put(DbHelper.COLUMN_DATE, cursor.getString(idDate));
                 //System.out.println(String.valueOf(cursor.getString(idDate)));
-                map.put(StudentDbHelper.COLUMN_COMMENT, cursor.getString(idComment));
+                map.put(DbHelper.COLUMN_COMMENT, cursor.getString(idComment));
                 //System.out.println(String.valueOf(cursor.getString(idComment)));
-                map.put(StudentDbHelper.COLUMN_NEW_ENTRY, cursor.getString(idNewEntry));
+                map.put(DbHelper.COLUMN_NEW_ENTRY, cursor.getString(idNewEntry));
                 //System.out.println(String.valueOf(cursor.getString(idNewEntry)));
                 //System.out.println("##############");
                 wordList.add(map);
@@ -503,8 +598,8 @@ public class StudentDataSource {
      */
     public int dbSyncCount(){
         int count = 0;
-        String selectQuery = "SELECT  * FROM " + StudentDbHelper.TABLE_ATTENDANCE + " WHERE " +
-                StudentDbHelper.COLUMN_UPDATE_STATUS + " = 'no'";
+        String selectQuery = "SELECT  * FROM " + DbHelper.TABLE_ATTENDANCE + " WHERE " +
+                DbHelper.COLUMN_UPDATE_STATUS + " = 'no'";
         openW();
         Cursor cursor = database.rawQuery(selectQuery, null);
         count = cursor.getCount();
@@ -518,12 +613,24 @@ public class StudentDataSource {
      */
     public void updateSyncStatus(String id, String status){
         openW();
-        String updateQuery = "Update " + StudentDbHelper.TABLE_ATTENDANCE +
-                " set " + StudentDbHelper.COLUMN_UPDATE_STATUS + " = '" + status
-                + "' WHERE " + StudentDbHelper.COLUMN_ID + " = '" + id + "'";
+        String updateQuery = "Update " + DbHelper.TABLE_ATTENDANCE +
+                " set " + DbHelper.COLUMN_UPDATE_STATUS + " = '" + status
+                + "' WHERE " + DbHelper.COLUMN_ID + " = '" + id + "'";
         Log.d("query",updateQuery);
         database.execSQL(updateQuery);
         database.close();
+    }
+
+    /**
+     * Tabelle Attendence: NEW_ENTRY auf parameter 'status' setzen
+     * Achtung: Die Datenbank muss bereits geöffnet sein
+     */
+    private void updateAttdEntryStatus(String id, String status){
+        String updateQuery = "Update " + DbHelper.TABLE_ATTENDANCE +
+                " set " + DbHelper.COLUMN_NEW_ENTRY + " = '" + status
+                + "' WHERE " + DbHelper.COLUMN_ID + " = '" + id + "'";
+        Log.d("query",updateQuery);
+        database.execSQL(updateQuery);
     }
 
 }

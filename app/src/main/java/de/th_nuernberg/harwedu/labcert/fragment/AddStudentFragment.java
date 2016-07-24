@@ -11,14 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.itextpdf.text.DocumentException;
-
-import java.io.FileNotFoundException;
-
 import de.th_nuernberg.harwedu.labcert.R;
+import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.Student;
-import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
-import de.th_nuernberg.harwedu.labcert.pdf.PdfFile;
 
 /**
  *
@@ -56,7 +51,7 @@ public class AddStudentFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_add_student, container, false);
 
-        final StudentDataSource dataSource = new StudentDataSource(getActivity());
+        final DataSource dataSource = new DataSource(getActivity());
         dataSource.openW();
 
         final EditText editTextSurname = (EditText) rootView.findViewById(R.id.editText_surname);
