@@ -23,6 +23,10 @@
     <item android:title="Dateien">
         <menu>
             <item
+                android:id="@+id/nav_sync_web"
+                android:icon="@drawable/ic_m_sync_db"
+                android:title="@string/sync_web" />
+            <item
                 android:id="@+id/nav_sync_db"
                 android:icon="@drawable/ic_m_sync_db"
                 android:title="@string/sync_db" />

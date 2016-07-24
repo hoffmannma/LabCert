@@ -12,7 +12,7 @@
     <string name="new_group">Neue Gruppe</string>
 
     <string name="import_csv">CSV importieren</string>
-    <string name="sync_db">Datenbank synchronisieren</string>
+    <string name="sync_db">Synchronisation Oracle</string>
     <string name="show_cert">Leistungsnachweise anzeigen</string>
 
     <string name="logout">Logout</string>
@@ -32,4 +32,5 @@
 
     <string name="sync_attd_url">http://josuaa.de/labcert/sync/insert_presence.php</string>
     <string name="comma_split">,</string>
+    <string name="sync_web">Synchronisation Webservice</string>
 </resources>

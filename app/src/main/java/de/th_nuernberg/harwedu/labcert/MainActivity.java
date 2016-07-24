@@ -255,12 +255,22 @@ public class MainActivity extends AppCompatActivity
             transaction.addToBackStack(null);
             transaction.commit();
         }
-        else if (id == R.id.nav_sync_db) {
+        else if (id == R.id.nav_sync_web) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             SyncFragment fragment = new SyncFragment();
             transaction.replace(R.id.fragment_container,fragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        }
+        else if (id == R.id.nav_sync_db) {
+            /**
+             * Zu Testzwecken:
+             * Datensatz in Oracle-Datenbank schreiben
+             */
+            OracleDataSource ds = new OracleDataSource(this);
+            ds.openCon();
+            ds.insertAttd("12345", "05-05-2016", "EH", "05-04-2016", "Kein Kommentar", "lab1");
+            ds.closeCon();
         }
         else if (id == R.id.nav_import_db) {
 
@@ -271,23 +281,6 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_cert) {
             toastMsg("Aktuell keine Funktion");
-            OracleDataSource ds = new OracleDataSource();
-            /**
-             * Zu Testzwecken:
-             * Datensatz in Oracle-Datenbank schreiben
-             */
-            ds.openCon();
-            ds.insertAttd("12345", "05-05-2016", "EH", "05-04-2016", "Kein Kommentar", "lab1");
-            ds.closeCon();
-            //OracleConn oracleConn = new OracleConn();
-            /*
-            try {
-                oracleConn.connect();
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("CONNECTION FAILED");
-            }
-            */
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

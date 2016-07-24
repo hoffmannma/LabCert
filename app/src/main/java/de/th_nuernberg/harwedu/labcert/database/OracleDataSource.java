@@ -1,6 +1,8 @@
 package de.th_nuernberg.harwedu.labcert.database;
 
-import android.os.AsyncTask;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.Handler;
 import android.os.StrictMode;
 
 import java.sql.Connection;
@@ -38,14 +40,23 @@ public class OracleDataSource {
     private Statement stmt = null;
     private ResultSet rs = null;
 
+    ProgressDialog prgDialog;
+
+    Context context;
+
 
     /**
      * Konstruktor:
      * Erlaubt das Ausführen einer Netzwerk-Verbindung im Main-Thread
      */
-    public OracleDataSource() {
+    public OracleDataSource(Context app_context) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        context = app_context;
+        prgDialog = new ProgressDialog(context);
+        prgDialog.setMessage("Datenbank wird synchronisiert. Bitte warten...");
+        prgDialog.setCancelable(false);
+        prgDialog.show();
     }
 
     /**
@@ -64,6 +75,12 @@ public class OracleDataSource {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                prgDialog.dismiss();
+            }
+        }, 1000);
     }
 
     /**
