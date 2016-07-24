@@ -23,8 +23,7 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import de.th_nuernberg.harwedu.labcert.database.OracleConn;
-import de.th_nuernberg.harwedu.labcert.database.OracleJDBC;
+import de.th_nuernberg.harwedu.labcert.database.OracleDataSource;
 import de.th_nuernberg.harwedu.labcert.database.Student;
 import de.th_nuernberg.harwedu.labcert.database.StudentDataSource;
 import de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment;
@@ -272,8 +271,10 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_cert) {
             toastMsg("Aktuell keine Funktion");
-            OracleJDBC ojdbc = new OracleJDBC();
-            ojdbc.execute();
+            OracleDataSource ds = new OracleDataSource();
+            ds.openCon();
+            ds.insertAttd("12345", "05-05-2016", "EH", "05-04-2016", "Kein Kommentar", "lab1");
+            ds.closeCon();
             //OracleConn oracleConn = new OracleConn();
             /*
             try {
