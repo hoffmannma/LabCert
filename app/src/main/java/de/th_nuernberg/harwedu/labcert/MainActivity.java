@@ -272,6 +272,10 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.nav_cert) {
             toastMsg("Aktuell keine Funktion");
             OracleDataSource ds = new OracleDataSource();
+            /**
+             * Zu Testzwecken:
+             * Datensatz in Oracle-Datenbank schreiben
+             */
             ds.openCon();
             ds.insertAttd("12345", "05-05-2016", "EH", "05-04-2016", "Kein Kommentar", "lab1");
             ds.closeCon();
