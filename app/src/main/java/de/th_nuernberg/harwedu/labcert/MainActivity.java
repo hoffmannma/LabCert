@@ -3,11 +3,13 @@ package de.th_nuernberg.harwedu.labcert;
 import android.annotation.TargetApi;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,7 +26,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
-import de.th_nuernberg.harwedu.labcert.database.OracleDataSource;
 import de.th_nuernberg.harwedu.labcert.database.Student;
 import de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.CreateGroupFragment;
@@ -37,11 +38,9 @@ import de.th_nuernberg.harwedu.labcert.fragment.UnknownStudentFragment;
 /**
  *  TODO
  * - Datenbank:
- *      Zeitstempel und Sync
  *      email im Hintergrund versenden
  * - Anwesenheit:
  *      Im Objekt Student: Daten mit Terminen (1,2,3..) mappen
- *      Nach Scan automatisch anhand Datum eintragen
  *      Kein passendes Datum: manueller / automatischer Eintrag wählen
  *      -> manuell: Termin wählen
  *      -> automatisch: Erster Null-Eintrag wird inkrementiert
@@ -50,6 +49,8 @@ import de.th_nuernberg.harwedu.labcert.fragment.UnknownStudentFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String SYNCRONIZING = "Datenbank wird synchronisiert...";
 
     private static boolean readExtAccepted;
     private static boolean writeExtAccepted;
@@ -65,14 +66,18 @@ public class MainActivity extends AppCompatActivity
     private static TextView currentGroupTxt;
 
     private static NavigationView navigationView;
-    // Initialize
+
+    private String csv_name = "students.csv";
+    private ProgressDialog prgDialog;
+
+    // Initialisieren
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
-        //permissions
+        // Berechtigungen
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
             String[] perms = {"android.permission.READ_EXTERNAL_STORAGE",
                     "android.permission.WRITE_EXTERNAL_STORAGE"};
@@ -111,7 +116,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null){
             //navigationView.getMenu().getItem(0).setChecked(true);
-            backToHome();
+            jumpToHome();
             /*
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             StudentTableFragment fragment = new StudentTableFragment();
@@ -122,7 +127,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    // Verwenden, um auf vorhandene Berechtigungen zu prüfen
+
+    /**
+     * Auf vorhandene Berechtigungen prüfen
+      */
+
     @Override
     public void onRequestPermissionsResult(int permsRequestCode, String[] permissions,
                                            int[] grantResults){
@@ -134,12 +143,23 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Auswahl: Floating Action Button
+     *
+     * @param v
+     */
     public void fabClicked(View v){
         IntentIntegrator scanIntegrator = new IntentIntegrator(this);
         scanIntegrator.initiateScan();
     }
 
-    // show format and content
+    /**
+     * Verarbeiten der Scan-Ergebnisse
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param intent
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         IntentResult scanningResult =
                 IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
@@ -172,18 +192,20 @@ public class MainActivity extends AppCompatActivity
             }
             else
             {
-                backToHome();
+                jumpToHome();
                 toastMsg("Scan abgebrochen");
             }
         }
         else{
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "No scan data received!", Toast.LENGTH_SHORT);
+                    "Keine Daten vorhanden", Toast.LENGTH_SHORT);
             toast.show();
         }
     }
 
-    // Verhalten von Back-Button am Smartphone
+    /**
+     * Verhalten bei Betätigung des Back-Buttons
+     */
     @Override
     public void onBackPressed() {
         int count = getFragmentManager().getBackStackEntryCount();
@@ -199,7 +221,7 @@ public class MainActivity extends AppCompatActivity
         }
         // ...sonst zurück zu vorheriger Ansicht
         else {
-            backToHome();
+            jumpToHome();
             // Nur einen Schritt zurück
             //getFragmentManager().popBackStack();
         }
@@ -213,6 +235,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Auswahl: Einstellungen
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -228,6 +256,12 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Auswahl: Menüeinträge
+     *
+     * @param item
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -235,7 +269,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_group) {
-            backToHome();
+            jumpToHome();
         }
         else if (id == R.id.nav_add_member) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -267,25 +301,19 @@ public class MainActivity extends AppCompatActivity
             transaction.commit();
         }
         else if (id == R.id.nav_sync_db) {
-            /**
-             * Zu Testzwecken:
-             * Datensatz in Oracle-Datenbank schreiben
-             */
-            /*
-            OracleDataSource ds = new OracleDataSource(this);
-            ds.openCon();
-            ds.insertAttd("12345", "05-05-2016", "EH", "05-04-2016", "Kein Kommentar", "lab1");
-            ds.closeCon();
-            */
+            openPrgDialog(SYNCRONIZING);
             DataSource dataSource = new DataSource(this);
-            dataSource.syncAttdRecords();
+            if(dataSource.syncAttdRecords())
+                toastMsg("Datenbank synchronisiert");
+            else toastMsg("Datenbank nicht erreichbar");
+            prgDialog.dismiss();
         }
         else if (id == R.id.nav_import_db) {
 
             DataSource dataSource = new DataSource(this);
-            dataSource.importCSV(this, "students.csv");
+            dataSource.importCSV(this, csv_name);
             toastMsg("students.csv importiert");
-            backToHome();
+            jumpToHome();
         }
         else if (id == R.id.nav_cert) {
             toastMsg("Aktuell keine Funktion");
@@ -296,7 +324,10 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void backToHome(){
+    /**
+     * Zum Homescreen springen (Gruppentabelle)
+     */
+    private void jumpToHome(){
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         StudentTableFragment fragment = new StudentTableFragment();
@@ -306,6 +337,11 @@ public class MainActivity extends AppCompatActivity
         navigationView.getMenu().getItem(0).setChecked(true);
     }
 
+    /**
+     * Kurze Meldung (Toast) ausgeben
+     *
+     * @param msg
+     */
     private void toastMsg(String msg)
     {
         Context context = getApplicationContext();
@@ -314,13 +350,27 @@ public class MainActivity extends AppCompatActivity
         toast.show();
     }
 
+    private void openPrgDialog(String msg)
+    {
+        prgDialog = new ProgressDialog(this);
+        prgDialog.setMessage(msg);
+        prgDialog.setCancelable(false);
+        prgDialog.show();
+    }
+
+
+    /**
+     * Gruppe wählen
+     *
+     * @param grp
+     */
     public void setGroup(String grp)
     {
         currentGroup = grp;
         currentGroupTxt.setText(grp);
     }
 
-    // Hardcoding zu Testzwecken
+    // Zu Testzwecken
     private String getEditor()
     {
         return "11";

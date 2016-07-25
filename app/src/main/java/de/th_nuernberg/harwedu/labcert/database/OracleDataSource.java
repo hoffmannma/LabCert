@@ -2,7 +2,7 @@ package de.th_nuernberg.harwedu.labcert.database;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.Handler;
+import android.os.AsyncTask;
 import android.os.StrictMode;
 
 import java.sql.Connection;
@@ -16,6 +16,8 @@ import java.sql.Statement;
  * Created by Edu on 23.07.2016.
  *
  * TODO
+ *
+ * Weitere asynchrone Tasks einfügen
  */
 
 
@@ -35,12 +37,11 @@ public class OracleDataSource {
     private static final String TABLE_ATTD = "Attendance";
     private static final String TABLE_TASKS = "Tasks";
 
-    private Connection con;
+    //private Connection con;
     private Statement stmt = null;
     private ResultSet rs = null;
 
     ProgressDialog prgDialog;
-
     Context context;
 
 
@@ -53,34 +54,6 @@ public class OracleDataSource {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         context = app_context;
-        prgDialog = new ProgressDialog(context);
-        prgDialog.setMessage("Datenbank wird synchronisiert. Bitte warten...");
-        prgDialog.setCancelable(false);
-        prgDialog.show();
-    }
-
-    /**
-     * Öffnet Verbindung zur Oracle-Datenbank
-     */
-    public void openCon() {
-        getCon();
-    }
-
-    /**
-     * Schließt Verbindung zur Oracle-Datenbank
-     */
-    public void closeCon() {
-        if (con != null) try {
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                prgDialog.dismiss();
-            }
-        }, 500);
     }
 
     /**
@@ -106,76 +79,71 @@ public class OracleDataSource {
                 date_ + "','" + comment_ + "','" + lab_id +
                 "')";
         System.out.println("OracleDataSource Query: " + queryString);
-        runQuery(queryString);
+        InsertAttdTask insertAttdTask = new InsertAttdTask(queryString);
+        insertAttdTask.execute();
+        //insertAttdTask.runQuery(queryString);
+        //conTask.closeCon();
     }
 
-    public void insertTask() {
-    }
 
-    /**
-     * Führt SQL-Befehl in Oracle-Datenbank aus
-     * @param queryString SQL-Befehl
-     */
-    private void runQuery(String queryString) {
-        try {
-            if (con != null) {
-                stmt = con.createStatement();
-                stmt.executeQuery(queryString);
-            } else System.out.println("OracleDataSource: Connection = 0!");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
+
+    private class InsertAttdTask extends AsyncTask<String, Integer, String>{
+
+        String query;
+
+        public InsertAttdTask(String queryString) {
+            query = queryString;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Connection con = null;
+            System.out.println("JDBC: Datenbankverbindung wird getestet... ");
             try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-            } catch (SQLException e) {
+
+                Class.forName("oracle.jdbc.driver.OracleDriver");
+
+            } catch (ClassNotFoundException e) {
+
+                System.out.println("JDBC: Treiber nicht gefunden!");
                 e.printStackTrace();
+                return null;
+
             }
+
+            System.out.println("JDBC: Treiber registriert!");
+
+            try {
+
+                con = DriverManager.getConnection(
+                        "jdbc:oracle:thin:@192.168.178.42:1521/orcl", "system",
+                        "oracle");
+                stmt = con.createStatement();
+                stmt.executeQuery(query);
+                try {
+                    if (stmt != null) stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (SQLException e) {
+
+                System.out.println("JDBC: Verbindung fehlgeschlagen! Fehlermeldung siehe Konsole");
+                e.printStackTrace();
+                return null;
+
+            }
+
+            if (con!= null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("JDBC: Verbindung fehlgeschlagen!");
+            }
+            return null;
         }
     }
-
-    /**
-     * Stellt Netzwerkverbindung zur Oracle-Datenbank her
-     * Aufruf in openCon();
-     */
-    private void getCon() {
-        System.out.println("JDBC: Datenbankverbindung wird getestet... ");
-
-        try {
-
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-
-        } catch (ClassNotFoundException e) {
-
-            System.out.println("JDBC: Treiber nicht gefunden!");
-            e.printStackTrace();
-            return;
-
-        }
-
-        System.out.println("JDBC: Treiber registriert!");
-
-
-        try {
-
-            con = DriverManager.getConnection(
-                    "jdbc:oracle:thin:@192.168.178.42:1521/orcl", "system",
-                    "oracle");
-
-        } catch (SQLException e) {
-
-            System.out.println("JDBC: Verbindung fehlgeschlagen! Fehlermeldung siehe Konsole");
-            e.printStackTrace();
-            return;
-
-        }
-
-        if (con != null) {
-            System.out.println("JDBC: Verbindung erfolgreich hergestellt!");
-            return;
-        } else {
-            System.out.println("JDBC: Verbindung fehlgeschlagen!");
-        }
-    }
-
 }

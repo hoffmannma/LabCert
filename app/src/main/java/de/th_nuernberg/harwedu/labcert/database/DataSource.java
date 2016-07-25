@@ -442,47 +442,46 @@ public class DataSource {
      * Spalte NEW_ENTRY = 1 und Kombination Matr+Datum in Oracle-DB nicht vorhanden
      *
      */
-    public void syncAttdRecords(){
+    public boolean syncAttdRecords() {
         Log.d(LOG_TAG, "Aufruf syncAttdRecords");
-        openR();
-        // Abfrage lokal: Alle neuen Einträge in Anwesenheit
-        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_ATTENDANCE +
-                " WHERE " + DbHelper.COLUMN_NEW_ENTRY + " = 'yes'", null);
-
-        Log.d(LOG_TAG, "Neue Einträge: " + cursor.getCount());
-
-        int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
-        int idMatr = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
-        int idTS = cursor.getColumnIndex(DbHelper.COLUMN_TS);
-        int idEditor = cursor.getColumnIndex(DbHelper.COLUMN_EDITOR);
-        int idDate = cursor.getColumnIndex(DbHelper.COLUMN_DATE);
-        int idComment = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
-        int idLab = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
-
-        cursor.moveToFirst();
         OracleDataSource oracleDS = new OracleDataSource(context);
-        oracleDS.openCon();
+            openR();
+            // Abfrage lokal: Alle neuen Einträge in Anwesenheit
+            Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_ATTENDANCE +
+                    " WHERE " + DbHelper.COLUMN_NEW_ENTRY + " = 'yes'", null);
 
-        while(!cursor.isAfterLast()) {
-            oracleDS.insertAttd(cursor.getString(idMatr), cursor.getString(idTS),
-                    cursor.getString(idEditor), cursor.getString(idDate),
-                    cursor.getString(idComment), cursor.getString(idLab));
+            Log.d(LOG_TAG, "Neue Einträge: " + cursor.getCount());
 
-            Log.d(LOG_TAG, "Matr: " + cursor.getString(idMatr) +
-                    ", TS: " + cursor.getString(idTS) +
-                    ", Editor: " + cursor.getString(idEditor) +
-                    ", Datum: "+ cursor.getString(idDate) +
-                    ", Kommentar: " +  cursor.getString(idComment) +
-                    ", Praktikum_ID: " +  cursor.getString(idLab) +
-                    "in Oracle DB eingefügt");
+            int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
+            int idMatr = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
+            int idTS = cursor.getColumnIndex(DbHelper.COLUMN_TS);
+            int idEditor = cursor.getColumnIndex(DbHelper.COLUMN_EDITOR);
+            int idDate = cursor.getColumnIndex(DbHelper.COLUMN_DATE);
+            int idComment = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
+            int idLab = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
 
-            updateAttdEntryStatus(cursor.getString(idIndex), NO);
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                oracleDS.insertAttd(cursor.getString(idMatr), cursor.getString(idTS),
+                        cursor.getString(idEditor), cursor.getString(idDate),
+                        cursor.getString(idComment), cursor.getString(idLab));
 
-            cursor.moveToNext();
-        }
-        oracleDS.closeCon();
-        cursor.close();
-        close();
+                Log.d(LOG_TAG, "Matr: " + cursor.getString(idMatr) +
+                        ", TS: " + cursor.getString(idTS) +
+                        ", Editor: " + cursor.getString(idEditor) +
+                        ", Datum: " + cursor.getString(idDate) +
+                        ", Kommentar: " + cursor.getString(idComment) +
+                        ", Praktikum_ID: " + cursor.getString(idLab) +
+                        "in Oracle DB eingefügt");
+
+                updateAttdEntryStatus(cursor.getString(idIndex), NO);
+
+                cursor.moveToNext();
+            }
+            //oracleDS.closeCon();
+            cursor.close();
+            close();
+        return true;
     }
 
     /**

@@ -16,8 +16,12 @@ import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.Student;
 
 /**
+ * Dieses Fragment ermöglicht das Hinzufügen von Studenten.
  *
+ * Der Aufruf erfolgt über den entsprechenden Menüeintrag oder der Auswahl "Student hinzufügen"
+ * nach dem Scannen einer unbekannten Bib.-Nr..
  */
+
 public class AddStudentFragment extends Fragment {
 
     //private static final String ARG_PARAM = "param";
