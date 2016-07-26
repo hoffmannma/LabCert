@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             //navigationView.getMenu().getItem(0).setChecked(true);
-            jumpToHome();
+            jumpToStudentTable();
             /*
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             StudentTableFragment fragment = new StudentTableFragment();
@@ -177,12 +177,7 @@ public class MainActivity extends AppCompatActivity
                     toastMsg(getString(R.string.attd_updated));
                     Student student = dataSource.getStudent(scanContent);
                     student.setAttd(dataSource.getAttdCount(student));
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    StudentFragment fragment = new StudentFragment();
-                    StudentFragment.newInstance(student);
-                    transaction.replace(R.id.fragment_container, fragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
+                    jumpToStudent(student);
                 } else {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     UnknownStudentFragment fragment = new UnknownStudentFragment();
@@ -192,7 +187,7 @@ public class MainActivity extends AppCompatActivity
                     transaction.commit();
                 }
             } else {
-                jumpToHome();
+                jumpToStudentTable();
                 toastMsg(getString(R.string.scan_aborted));
             }
         } else {
@@ -220,7 +215,7 @@ public class MainActivity extends AppCompatActivity
         }
         // ...sonst zurück zu vorheriger Ansicht
         else {
-            jumpToHome();
+            jumpToStudentTable();
             // Nur einen Schritt zurück
             //getFragmentManager().popBackStack();
         }
@@ -249,7 +244,7 @@ public class MainActivity extends AppCompatActivity
 
         // Button: Aktualisieren
         if (id == R.id.action_refresh) {
-            jumpToHome();
+            jumpToStudentTable();
         }
         /*
         if (id == R.id.action_settings) {
@@ -273,7 +268,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_group) {
-            jumpToHome();
+            jumpToStudentTable();
         } else if (id == R.id.nav_add_member) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             AddStudentFragment fragment = new AddStudentFragment();
@@ -312,7 +307,7 @@ public class MainActivity extends AppCompatActivity
             DataSource dataSource = new DataSource(this);
             dataSource.importCSV(this, csv_name);
             toastMsg(getString(R.string.file_imported));
-            jumpToHome();
+            jumpToStudentTable();
         } else if (id == R.id.nav_cert) {
             toastMsg("Aktuell keine Funktion");
         }
@@ -325,7 +320,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Zum Homescreen springen (Gruppentabelle)
      */
-    private void jumpToHome() {
+    private void jumpToStudentTable() {
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         StudentTableFragment fragment = new StudentTableFragment();
@@ -333,6 +328,15 @@ public class MainActivity extends AppCompatActivity
         //transaction.addToBackStack(null);
         transaction.commit();
         navigationView.getMenu().getItem(0).setChecked(true);
+    }
+
+    private void jumpToStudent(Student student) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        StudentFragment fragment = new StudentFragment();
+        StudentFragment.newInstance(student);
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     /**

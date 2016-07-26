@@ -44,11 +44,19 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp" />
         <Button
+            android:id="@+id/button_add_to_existing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bib.-Nr. zuweisen"
+            android:layout_marginTop="210dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+        <Button
             android:id="@+id/button_drop_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Verwerfen"
-            android:layout_marginTop="210dp"
+            android:layout_marginTop="260dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp" />
 

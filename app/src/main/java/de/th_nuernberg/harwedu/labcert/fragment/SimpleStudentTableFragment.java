@@ -10,25 +10,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import de.th_nuernberg.harwedu.labcert.MainActivity;
 import de.th_nuernberg.harwedu.labcert.R;
+import de.th_nuernberg.harwedu.labcert.adapter.SimpleStudentTableAdapter;
 import de.th_nuernberg.harwedu.labcert.adapter.StudentTableAdapter;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.Student;
 
 
-public class StudentTableFragment extends Fragment {
+public class SimpleStudentTableFragment extends Fragment {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private DataSource dataSource;
+    private static String mParam;
 
 
-    public StudentTableFragment() {
+    public SimpleStudentTableFragment() {
         // Required empty public constructor
+    }
+
+    /**
+     * Übergibt Bib-Nr. an Fragment
+     */
+    public static SimpleStudentTableFragment newInstance(String param) {
+        SimpleStudentTableFragment fragment = new SimpleStudentTableFragment();
+        //Bundle args = new Bundle();
+        //args.putString(ARG_PARAM, param);
+        //fragment.setArguments(args);
+        mParam = param;
+        return fragment;
     }
 
     @Override
@@ -39,16 +54,25 @@ public class StudentTableFragment extends Fragment {
 
         Log.d(LOG_TAG, "Das Datenquellen-Objekt wird angelegt.");
         dataSource = new DataSource(getActivity());
+        dataSource.openR();
+        Log.d(LOG_TAG, "Datenbank-Einträge:");
+        showAllListEntries(rootView);
+        dataSource.close();
         return rootView;
     }
 
-    private void showAllListEntries(View rootView) {
-
+    /**
+     * Zeigt Studentenliste nur mit Vor- und Nachnamen
+     *
+     * @param rootView
+     */
+    private void showAllListEntries(final View rootView) {
         // Liefert alle Datensätze
         ArrayList<Student> studentList = dataSource.getAllStudents();
 
         ListView studentListView = (ListView) rootView.findViewById(R.id.listview_student_table);
-        StudentTableAdapter adapter = new StudentTableAdapter(getActivity(), studentList);
+        SimpleStudentTableAdapter adapter =
+                new SimpleStudentTableAdapter(getActivity(), studentList);
 
         studentListView.setAdapter(adapter);
 
@@ -58,9 +82,14 @@ public class StudentTableFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapter, View v, int position,
                                     long arg3) {
                 Student student = (Student) adapter.getItemAtPosition(position);
+                student.setBib(mParam);
+                dataSource.insertBib(student);
+                // Normale Tabelle wieder anzeigen und Toast für "Bib-Nr. aktualisiert" anzeigen
+                String toastStr = "Bib.-Nr. eingetragen für " +
+                        student.getSurname() + " " + student.getFirstname();
+                Toast.makeText(getActivity(), toastStr, Toast.LENGTH_SHORT).show();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                StudentFragment fragment = new StudentFragment();
-                fragment.newInstance(student);
+                StudentTableFragment fragment = new StudentTableFragment();
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
@@ -68,22 +97,4 @@ public class StudentTableFragment extends Fragment {
         });
     }
 
-    // Fragment tritt in den Vordergrund: Datenbank neu aufrufen
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Log.d(LOG_TAG, "+++ Resume +++");
-        dataSource.openR();
-        Log.d(LOG_TAG, "Datenbank-Einträge:");
-        showAllListEntries(getView());
-    }
-
-    // Fragment pausiert: Datenbankzugriff schließen
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(LOG_TAG, "+++ Pause +++");
-        dataSource.close();
-    }
 }

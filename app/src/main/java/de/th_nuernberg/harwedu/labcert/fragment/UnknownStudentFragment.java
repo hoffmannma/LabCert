@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
+import de.th_nuernberg.harwedu.labcert.adapter.SimpleStudentTableAdapter;
 
 public class UnknownStudentFragment extends Fragment {
 
@@ -56,6 +57,7 @@ public class UnknownStudentFragment extends Fragment {
         TextView formatTxt = (TextView) rootView.findViewById(R.id.textview_unknown_format);
         TextView contentTxt = (TextView) rootView.findViewById(R.id.textview_unknown_content);
         Button addMemberButton = (Button) rootView.findViewById(R.id.button_add_unknown);
+        Button addToExistingButton = (Button) rootView.findViewById(R.id.button_add_to_existing);
         Button dropDataButton = (Button) rootView.findViewById(R.id.button_drop_data);
 
         String formatString = "Format: " + mFormat;
@@ -69,6 +71,18 @@ public class UnknownStudentFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 AddStudentFragment fragment = new AddStudentFragment();
+                fragment.newInstance(mContent);
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+        addToExistingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                SimpleStudentTableFragment fragment = new SimpleStudentTableFragment();
                 fragment.newInstance(mContent);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);

@@ -318,6 +318,16 @@ public class DataSource implements TaskCompleted {
                 null);
     }
 
+    public void insertBib(Student student) {
+        openW();
+        String updateQuery = "Update " + DbHelper.TABLE_STUDENT +
+                " set " + DbHelper.COLUMN_BIB + " = '" + student.getBib()
+                + "' WHERE " + DbHelper.COLUMN_MATR + " = '" + student.getMatr() + "'";
+        Log.d("query", updateQuery);
+        database.execSQL(updateQuery);
+        close();
+    }
+
     /**
      * Anwesenheit einfügen
      *
@@ -679,5 +689,4 @@ public class DataSource implements TaskCompleted {
     public void onTaskComplete(ArrayList<HashMap<String, String>> result) {
         insertAttd(result, NO);
     }
-
 }
