@@ -50,8 +50,7 @@ public class SwitchGroupFragment extends Fragment {
         Button switchButton = (Button) rootView.findViewById(R.id.button_switch);
         final TextView switchTextView = (TextView) rootView.findViewById(R.id.textview_switch);
 
-        for(int i =0; i<grp_count;i++)
-        {
+        for (int i = 0; i < grp_count; i++) {
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setText(grpStrArray[i]);
             radioButton.setTextSize(32);
@@ -61,9 +60,9 @@ public class SwitchGroupFragment extends Fragment {
         switchRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                for(int i=0; i<radioGroup.getChildCount(); i++) {
+                for (int i = 0; i < radioGroup.getChildCount(); i++) {
                     RadioButton btn = (RadioButton) radioGroup.getChildAt(i);
-                    if(btn.getId() == checkedId) {
+                    if (btn.getId() == checkedId) {
                         checkedStr = (String) btn.getText();
                         if (!Objects.equals(checkedStr, mGroup))
                             switchTextView.setText("Achtung: Änderung der aktuellen Gruppe");
@@ -75,11 +74,9 @@ public class SwitchGroupFragment extends Fragment {
             }
         });
 
-        switchButton.setOnClickListener(new View.OnClickListener()
-        {
+        switchButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 getFragmentManager().popBackStack();
             }
         });

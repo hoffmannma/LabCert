@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,6 +24,9 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.Student;
 import de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment;
@@ -32,25 +34,26 @@ import de.th_nuernberg.harwedu.labcert.fragment.CreateGroupFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.StudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.StudentTableFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.SwitchGroupFragment;
-import de.th_nuernberg.harwedu.labcert.fragment.SyncFragment;
+import de.th_nuernberg.harwedu.labcert.fragment.WebSyncFragment;
 import de.th_nuernberg.harwedu.labcert.fragment.UnknownStudentFragment;
 
 /**
- *  TODO
+ * TODO
  * - Datenbank:
- *      email im Hintergrund versenden
+ * email im Hintergrund versenden
  * - Anwesenheit:
- *      Im Objekt Student: Daten mit Terminen (1,2,3..) mappen
- *      Kein passendes Datum: manueller / automatischer Eintrag wählen
- *      -> manuell: Termin wählen
- *      -> automatisch: Erster Null-Eintrag wird inkrementiert
- *
+ * Im Objekt Student: Daten mit Terminen (1,2,3..) mappen
+ * Kein passendes Datum: manueller / automatischer Eintrag wählen
+ * -> manuell: Termin wählen
+ * -> automatisch: Erster Null-Eintrag wird inkrementiert
+ * <p/>
+ * - Meldung, falls Verbindung zu externer Datenbank fehlgeschlagen
  */
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String SYNCRONIZING = "Datenbank wird synchronisiert...";
+    private String csv_name = "students.csv";
 
     private static boolean readExtAccepted;
     private static boolean writeExtAccepted;
@@ -67,7 +70,6 @@ public class MainActivity extends AppCompatActivity
 
     private static NavigationView navigationView;
 
-    private String csv_name = "students.csv";
     private ProgressDialog prgDialog;
 
     // Initialisieren
@@ -78,9 +80,9 @@ public class MainActivity extends AppCompatActivity
 
 
         // Berechtigungen
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
-            String[] perms = {"android.permission.READ_EXTERNAL_STORAGE",
-                    "android.permission.WRITE_EXTERNAL_STORAGE"};
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            String[] perms = {getString(R.string.perm_read_ext_sto),
+                    getString(R.string.perm_wr_ext_sto)};
             int permsRequestCode = 200;
             requestPermissions(perms, permsRequestCode);
         }
@@ -100,11 +102,11 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        View header=navigationView.getHeaderView(0);
-        userNameTxt = (TextView)header.findViewById(R.id.textview_user_name);
-        userMailTxt = (TextView)header.findViewById(R.id.textview_user_mail);
-        currentLabTxt = (TextView)header.findViewById(R.id.textview_current_lab);
-        currentGroupTxt = (TextView)header.findViewById(R.id.textview_current_group);
+        View header = navigationView.getHeaderView(0);
+        userNameTxt = (TextView) header.findViewById(R.id.textview_user_name);
+        userMailTxt = (TextView) header.findViewById(R.id.textview_user_mail);
+        currentLabTxt = (TextView) header.findViewById(R.id.textview_current_lab);
+        currentGroupTxt = (TextView) header.findViewById(R.id.textview_current_group);
         userName = "Eduard Harwart";
         userMail = "harwartedu58020@th-nuernberg.de";
         currentLab = "INF2/1";
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity
         currentLabTxt.setText(currentLab);
         currentGroupTxt.setText(currentGroup);
 
-        if (savedInstanceState == null){
+        if (savedInstanceState == null) {
             //navigationView.getMenu().getItem(0).setChecked(true);
             jumpToHome();
             /*
@@ -130,15 +132,15 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Auf vorhandene Berechtigungen prüfen
-      */
+     */
 
     @Override
     public void onRequestPermissionsResult(int permsRequestCode, String[] permissions,
-                                           int[] grantResults){
-        switch(permsRequestCode){
+                                           int[] grantResults) {
+        switch (permsRequestCode) {
             case 200:
-                readExtAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
-                writeExtAccepted = grantResults[1]== PackageManager.PERMISSION_GRANTED;
+                readExtAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                writeExtAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                 break;
         }
     }
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity
      *
      * @param v
      */
-    public void fabClicked(View v){
+    public void fabClicked(View v) {
         IntentIntegrator scanIntegrator = new IntentIntegrator(this);
         scanIntegrator.initiateScan();
     }
@@ -160,19 +162,19 @@ public class MainActivity extends AppCompatActivity
      * @param resultCode
      * @param intent
      */
-    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanningResult =
                 IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanningResult != null) {
             String scanFormat = scanningResult.getFormatName();
             String scanContent = scanningResult.getContents();
 
-            if((scanContent != null) && (scanFormat != null)) {
+            if ((scanContent != null) && (scanFormat != null)) {
                 DataSource dataSource = new DataSource(this);
 
                 if (dataSource.studentExists(scanContent)) {
                     dataSource.insertAttd(scanContent, getEditor());
-                    toastMsg("Anwesenheit aktualisiert");
+                    toastMsg(getString(R.string.attd_updated));
                     Student student = dataSource.getStudent(scanContent);
                     student.setAttd(dataSource.getAttdCount(student));
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -189,16 +191,13 @@ public class MainActivity extends AppCompatActivity
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
-            }
-            else
-            {
+            } else {
                 jumpToHome();
-                toastMsg("Scan abgebrochen");
+                toastMsg(getString(R.string.scan_aborted));
             }
-        }
-        else{
+        } else {
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "Keine Daten vorhanden", Toast.LENGTH_SHORT);
+                    R.string.no_data, Toast.LENGTH_SHORT);
             toast.show();
         }
     }
@@ -248,10 +247,15 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        // Button: Aktualisieren
+        if (id == R.id.action_refresh) {
+            jumpToHome();
+        }
+        /*
         if (id == R.id.action_settings) {
             return true;
         }
+        */
 
         return super.onOptionsItemSelected(item);
     }
@@ -270,52 +274,46 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_group) {
             jumpToHome();
-        }
-        else if (id == R.id.nav_add_member) {
+        } else if (id == R.id.nav_add_member) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             AddStudentFragment fragment = new AddStudentFragment();
-            transaction.replace(R.id.fragment_container,fragment);
+            transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        }
-        else if (id == R.id.nav_switch_group) {
+        } else if (id == R.id.nav_switch_group) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             SwitchGroupFragment fragment = new SwitchGroupFragment();
             SwitchGroupFragment.newInstance(currentGroup);
-            transaction.replace(R.id.fragment_container,fragment);
+            transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        }
-        else if (id == R.id.nav_new_group) {
+        } else if (id == R.id.nav_new_group) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             CreateGroupFragment fragment = new CreateGroupFragment();
-            transaction.replace(R.id.fragment_container,fragment);
+            transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        }
-        else if (id == R.id.nav_sync_web) {
+        } else if (id == R.id.nav_sync_web) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            SyncFragment fragment = new SyncFragment();
-            transaction.replace(R.id.fragment_container,fragment);
+            WebSyncFragment fragment = new WebSyncFragment();
+            transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        }
-        else if (id == R.id.nav_sync_db) {
-            openPrgDialog(SYNCRONIZING);
+        } else if (id == R.id.nav_sync_db) {
             DataSource dataSource = new DataSource(this);
-            if(dataSource.syncAttdRecords())
-                toastMsg("Datenbank synchronisiert");
-            else toastMsg("Datenbank nicht erreichbar");
-            prgDialog.dismiss();
-        }
-        else if (id == R.id.nav_import_db) {
+            dataSource.uploadNewAttdRecords();
+            try {
+                dataSource.syncAttdToRemote();
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                e.printStackTrace();
+            }
+        } else if (id == R.id.nav_import_db) {
 
             DataSource dataSource = new DataSource(this);
             dataSource.importCSV(this, csv_name);
-            toastMsg("students.csv importiert");
+            toastMsg(getString(R.string.file_imported));
             jumpToHome();
-        }
-        else if (id == R.id.nav_cert) {
+        } else if (id == R.id.nav_cert) {
             toastMsg("Aktuell keine Funktion");
         }
 
@@ -327,11 +325,11 @@ public class MainActivity extends AppCompatActivity
     /**
      * Zum Homescreen springen (Gruppentabelle)
      */
-    private void jumpToHome(){
+    private void jumpToHome() {
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         StudentTableFragment fragment = new StudentTableFragment();
-        transaction.replace(R.id.fragment_container,fragment);
+        transaction.replace(R.id.fragment_container, fragment);
         //transaction.addToBackStack(null);
         transaction.commit();
         navigationView.getMenu().getItem(0).setChecked(true);
@@ -342,16 +340,14 @@ public class MainActivity extends AppCompatActivity
      *
      * @param msg
      */
-    private void toastMsg(String msg)
-    {
+    private void toastMsg(String msg) {
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, msg, duration);
         toast.show();
     }
 
-    private void openPrgDialog(String msg)
-    {
+    private void openPrgDialog(String msg) {
         prgDialog = new ProgressDialog(this);
         prgDialog.setMessage(msg);
         prgDialog.setCancelable(false);
@@ -364,15 +360,14 @@ public class MainActivity extends AppCompatActivity
      *
      * @param grp
      */
-    public void setGroup(String grp)
-    {
+    public void setGroup(String grp) {
         currentGroup = grp;
         currentGroupTxt.setText(grp);
     }
 
+
     // Zu Testzwecken
-    private String getEditor()
-    {
+    private String getEditor() {
         return "11";
     }
 

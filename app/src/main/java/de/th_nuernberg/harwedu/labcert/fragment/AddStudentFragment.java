@@ -17,7 +17,7 @@ import de.th_nuernberg.harwedu.labcert.database.Student;
 
 /**
  * Dieses Fragment ermöglicht das Hinzufügen von Studenten.
- *
+ * <p/>
  * Der Aufruf erfolgt über den entsprechenden Menüeintrag oder der Auswahl "Student hinzufügen"
  * nach dem Scannen einer unbekannten Bib.-Nr..
  */
@@ -68,7 +68,7 @@ public class AddStudentFragment extends Fragment {
         Button addStudentButton = (Button) rootView.findViewById(R.id.button_add_student);
 
         //if(mParam != null)
-            editTextBib.setText(mParam);
+        editTextBib.setText(mParam);
 
         addStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,19 +81,16 @@ public class AddStudentFragment extends Fragment {
                 String labteamString = editTextLabteam.getText().toString();
                 String commentString = editTextComment.getText().toString();
 
-                if(TextUtils.isEmpty(surnameString)) {
+                if (TextUtils.isEmpty(surnameString)) {
                     editTextSurname.setError(getString(R.string.editText_errorMessage));
                     return;
-                }
-                else if(TextUtils.isEmpty(firstnameString)) {
+                } else if (TextUtils.isEmpty(firstnameString)) {
                     editTextFirstname.setError(getString(R.string.editText_errorMessage));
                     return;
-                }
-                else if(TextUtils.isEmpty(matrString)) {
+                } else if (TextUtils.isEmpty(matrString)) {
                     editTextMatr.setError(getString(R.string.editText_errorMessage));
                     return;
-                }
-                else if(TextUtils.isEmpty(bibString)) {
+                } else if (TextUtils.isEmpty(bibString)) {
                     editTextBib.setError(getString(R.string.editText_errorMessage));
                     return;
                 }

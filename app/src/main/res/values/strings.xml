@@ -33,4 +33,13 @@
     <string name="sync_attd_url">http://josuaa.de/labcert/sync/insert_presence.php</string>
     <string name="comma_split">,</string>
     <string name="sync_web">Synchronisation Webservice</string>
+    <string name="scan_aborted">Scan abgebrochen</string>
+    <string name="no_data">Keine Daten vorhanden</string>
+    <string name="attd_updated">Anwesenheit aktualisiert</string>
+    <string name="perm_read_ext_sto">android.permission.READ_EXTERNAL_STORAGE</string>
+    <string name="perm_wr_ext_sto">android.permission.WRITE_EXTERNAL_STORAGE</string>
+    <string name="synchronizing">Datenbank wird synchronisiert...</string>
+    <string name="db_synchronized">Datenbank synchronisiert</string>
+    <string name="file_imported">Datei importiert</string>
+    <string name="action_refresh">Aktualisieren</string>
 </resources>

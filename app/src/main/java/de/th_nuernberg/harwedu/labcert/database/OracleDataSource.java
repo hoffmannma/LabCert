@@ -1,27 +1,31 @@
 package de.th_nuernberg.harwedu.labcert.database;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.StrictMode;
+import android.util.Log;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
+import de.th_nuernberg.harwedu.labcert.interfaces.TaskCompleted;
 
 
 /**
  * Created by Edu on 23.07.2016.
- *
+ * <p/>
  * TODO
- *
+ * <p/>
  * Weitere asynchrone Tasks einfügen
  */
 
 
-public class OracleDataSource {
+public class OracleDataSource implements TaskCompleted {
 
     /**
      * Spaltennamen Oracle-Datenbank
@@ -36,12 +40,12 @@ public class OracleDataSource {
     private static final String LOG_TAG = OracleDataSource.class.getSimpleName();
     private static final String TABLE_ATTD = "Attendance";
     private static final String TABLE_TASKS = "Tasks";
+    private static final String CON_FAILED = "Datenbank nicht erreichbar";
+    private static final String SYNC_SUCCESS = "Datenbank synchronisiert";
 
-    //private Connection con;
     private Statement stmt = null;
-    private ResultSet rs = null;
+    private ArrayList<HashMap<String, String>> data;
 
-    ProgressDialog prgDialog;
     Context context;
 
 
@@ -51,20 +55,22 @@ public class OracleDataSource {
      * Zeigt Progress-Dialog
      */
     public OracleDataSource(Context app_context) {
+        /*
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        */
         context = app_context;
     }
 
     /**
      * Datensatz in Tabelle Anwesenheit einfügen
      *
-     * @param matr      Matrikelnummer
-     * @param ts        Zeistempel
-     * @param editor    Editor
-     * @param date_     Datum (Termin)
-     * @param comment_  Kommentar
-     * @param lab_id    Praktikums-ID
+     * @param matr     Matrikelnummer
+     * @param ts       Zeistempel
+     * @param editor   Editor
+     * @param date_    Datum (Termin)
+     * @param comment_ Kommentar
+     * @param lab_id   Praktikums-ID
      */
     public void insertAttd(String matr, String ts, String editor, String date_,
                            String comment_, String lab_id) {
@@ -79,19 +85,58 @@ public class OracleDataSource {
                 date_ + "','" + comment_ + "','" + lab_id +
                 "')";
         System.out.println("OracleDataSource Query: " + queryString);
-        InsertAttdTask insertAttdTask = new InsertAttdTask(queryString);
+        InsertAttdTask insertAttdTask = new InsertAttdTask(queryString, context);
         insertAttdTask.execute();
         //insertAttdTask.runQuery(queryString);
         //conTask.closeCon();
     }
 
+    @Override
+    public void onTaskComplete(ArrayList<HashMap<String, String>> list) {
+        if (list != null)
+            Log.d(LOG_TAG, "Interface übergibt GEFÜLLTE ArrayList!");
+        else
+            Log.d(LOG_TAG, "Interface übergibt LEERE ArrayList!");
+        this.data = list;
+        assert list != null;
+        System.out.println("HIER DER ULTIMATIVE TEST: " + list.get(0).get("MATR"));
+        System.out.println("HIER DER NÄCHSTE ULTIMATIVE TEST: " + data.get(0).get("MATR"));
+    }
+
+    /**
+     * Holt die Anwesenheits-Tabelle vom Server und speichert diese in der lokalen Arraylist 'data'
+     *
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws TimeoutException
+     */
+    public void getAttd() throws
+            InterruptedException, ExecutionException, TimeoutException {
+        GetRemoteAttdTask getRemoteAttdTask = new GetRemoteAttdTask(context);
+        getRemoteAttdTask.delegate = this;
+        getRemoteAttdTask.execute().get();
+        //getRemoteAttdTask.get(10000, TimeUnit.MILLISECONDS);
+        System.out.println("HIER DER VORLETZTE ULTIMATIVE TEST: " + data.get(0).get("MATR"));
+    }
+
+    /**
+     * Getter: data
+     *
+     * @return
+     */
+    public ArrayList<HashMap<String, String>> getData() {
+        return data;
+    }
 
 
-    private class InsertAttdTask extends AsyncTask<String, Integer, String>{
+    /**
+     * Fügt Anwesenheit in Server-Datenbank ein
+     */
+    private class InsertAttdTask extends AsyncTask<String, Integer, String> {
 
         String query;
 
-        public InsertAttdTask(String queryString) {
+        public InsertAttdTask(String queryString, Context app_context) {
             query = queryString;
         }
 
@@ -134,16 +179,13 @@ public class OracleDataSource {
 
             }
 
-            if (con!= null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                System.out.println("JDBC: Verbindung fehlgeschlagen!");
+            try {
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
             return null;
         }
     }
+
 }

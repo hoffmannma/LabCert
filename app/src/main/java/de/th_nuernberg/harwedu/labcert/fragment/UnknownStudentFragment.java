@@ -70,7 +70,7 @@ public class UnknownStudentFragment extends Fragment {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 AddStudentFragment fragment = new AddStudentFragment();
                 fragment.newInstance(mContent);
-                transaction.replace(R.id.fragment_container,fragment);
+                transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -87,8 +87,7 @@ public class UnknownStudentFragment extends Fragment {
         return rootView;
     }
 
-    private void toastMsg(String msg)
-    {
+    private void toastMsg(String msg) {
         Context context = getActivity().getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, msg, duration);

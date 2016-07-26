@@ -25,9 +25,10 @@ public class CsvSampleFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new Mytask().execute();
+        new CsvTask().execute();
     }
-    class Mytask extends AsyncTask<Void, Void, Void> {
+
+    class CsvTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -45,9 +46,9 @@ public class CsvSampleFragment extends ListFragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             // Keys der Hashmap
-            String[] from = { "list_row[0]", "list_row[1]", "list_row[2]", "list_row[3]" };
+            String[] from = {"list_row[0]", "list_row[1]", "list_row[2]", "list_row[3]"};
             // Elemente, in die die Daten eingefügt werden
-            int[] to = { R.id.surname, R.id.first_name, R.id.mat_no, R.id.cert };
+            int[] to = {R.id.surname, R.id.first_name, R.id.mat_no, R.id.cert};
             // Adapter erstellen
             ListAdapter adapter = new SimpleAdapter(getActivity(), csvData,
                     R.layout.list_items, from, to);

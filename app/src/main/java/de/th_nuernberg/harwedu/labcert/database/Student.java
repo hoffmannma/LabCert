@@ -1,9 +1,10 @@
 package de.th_nuernberg.harwedu.labcert.database;
 
 
-/** TODO:
-- Constructors ergänzen
-- attd / tasks -> array
+/**
+ * TODO:
+ * - Constructors ergänzen
+ * - attd / tasks -> array
  */
 
 
@@ -27,11 +28,11 @@ public class Student {
     private int task_count;
 
 
-    public Student(){
+    public Student() {
 
     }
 
-    public Student(String surname, String firstname, int[] attd, int[] tasks){
+    public Student(String surname, String firstname, int[] attd, int[] tasks) {
         this.surname = surname;
         this.firstname = firstname;
         this.attd = attd;
@@ -141,22 +142,22 @@ public class Student {
         this.comment_attd = comment_attd;
     }
 
-    public String getStudentData(){
+    public String getStudentData() {
         attd_count = 5;
         String output = surname + ", " + firstname + "\n" +
                 "\nGruppe: " + group +
                 "\nTeam: " + team +
                 "\nAnwesenheit: " + intToString(attd, attd_count)/* +
                 "\nAufgabenstatus: " + intToString(tasks)*/;
-                return output;
+        return output;
     }
 
-    public String getAttdString(){
+    public String getAttdString() {
         attd_count = 5;
-         return intToString(attd, attd_count);
+        return intToString(attd, attd_count);
     }
 
-    public String getTaskString(){
+    public String getTaskString() {
         task_count = 5;
         return intToString(tasks, task_count);
     }
@@ -187,7 +188,7 @@ public class Student {
     private String intToString(int[] intArray, int count) {
         String delimiter = " | ";
         StringBuilder sb = new StringBuilder();
-        for (int i=0; i<count; i++) {
+        for (int i = 0; i < count; i++) {
             if (sb.length() > 0) {
                 sb.append(delimiter);
             }

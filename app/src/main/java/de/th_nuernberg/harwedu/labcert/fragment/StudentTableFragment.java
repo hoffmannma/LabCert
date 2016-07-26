@@ -43,7 +43,7 @@ public class StudentTableFragment extends Fragment {
         return rootView;
     }
 
-    private void showAllListEntries (View rootView) {
+    private void showAllListEntries(View rootView) {
 
         // Liefert alle Datensätze
         ArrayList<Student> studentList = dataSource.getAllStudents();
@@ -54,13 +54,11 @@ public class StudentTableFragment extends Fragment {
         studentListView.setAdapter(adapter);
 
         // Auf Klicks auf Items reagieren
-        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View v, int position,
-                                    long arg3)
-            {
-                Student student = (Student)adapter.getItemAtPosition(position);
+                                    long arg3) {
+                Student student = (Student) adapter.getItemAtPosition(position);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 StudentFragment fragment = new StudentFragment();
                 fragment.newInstance(student);

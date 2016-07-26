@@ -1,166 +1,109 @@
 package de.th_nuernberg.harwedu.labcert.fragment;
 
-
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import cz.msebera.android.httpclient.Header;
 import de.th_nuernberg.harwedu.labcert.R;
-import de.th_nuernberg.harwedu.labcert.database.DataSource;
 
 /**
- * TODO
- * Synchronisation der Aufgaben
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link SyncFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link SyncFragment#newInstance} factory method to
+ * create an instance of this fragment.
  */
-
 public class SyncFragment extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
 
-    private static final String LOG_TAG = "SyncFragment";
-    private static final String SYNC_ATTD_URL =
-            "http://josuaa.de/labcert/sync/insert_attendance.php";
-    private final int DEFAULT_TIMEOUT = 30 * 1000;
-
-    DataSource controller;
-    ProgressDialog prgDialog;
-    HashMap<String, String> queryValues;
+    private OnFragmentInteractionListener mListener;
 
     public SyncFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment SyncFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static SyncFragment newInstance(String param1, String param2) {
+        SyncFragment fragment = new SyncFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_sync, container, false);
-
-        controller = new DataSource(getActivity());
-        prgDialog = new ProgressDialog(getActivity());
-
-        prgDialog.setMessage("Datenbank wird synchronisiert. Bitte warten...");
-        prgDialog.setCancelable(false);
-
-        syncSQLiteMySQLDB();
-
-        //getFragmentManager().popBackStack();
-
-        return rootView;
+        return inflater.inflate(R.layout.fragment_sync, container, false);
     }
 
-    private void syncSQLiteMySQLDB(){
-        //Create AsycHttpClient object
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        ArrayList<HashMap<String, String>> userList =  controller.getAttendance();
-        int a = 1;
-        client.setTimeout(DEFAULT_TIMEOUT);
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
 
-        if(a == 1/*userList.size()!=0*/){
-            if(controller.dbSyncCount() != 0){
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
 
-                prgDialog.show();
-                String json = controller.composeJSONfromSQLite();
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
 
-                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                System.out.println(json);
-                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
-                params.put("attendanceJSON", controller.composeJSONfromSQLite());
-
-                client.post(SYNC_ATTD_URL, params, new AsyncHttpResponseHandler() {
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
-                        System.out.println(Arrays.toString(responseBody));
-                        String str = new String(responseBody, StandardCharsets.UTF_8);
-                        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-                        System.out.println(str);
-                        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-                        prgDialog.hide();
-
-                        try {
-                            JSONArray jsonArray = new JSONArray(str);
-                            System.out.println(jsonArray.length());
-
-                            for(int i=0; i<jsonArray.length();i++){
-                                JSONObject obj = jsonArray.getJSONObject(i);
-                                /*
-                                System.out.println(obj.get("id"));
-                                System.out.println(obj.get("matr"));
-                                System.out.println(obj.get("ts"));
-                                System.out.println(obj.get("editor"));
-                                System.out.println(obj.get("a_date"));
-                                System.out.println(obj.get("comment"));
-                                System.out.println(obj.get("status"));
-                                System.out.println(obj.get("new_entry"));
-                                */
-                                queryValues = new HashMap<>();
-                                queryValues.put("id", obj.get("id").toString());
-                                queryValues.put("matr", obj.get("matr").toString());
-                                queryValues.put("ts", obj.get("ts").toString());
-                                queryValues.put("editor", obj.get("editor").toString());
-                                queryValues.put("a_date", obj.get("a_date").toString());
-                                queryValues.put("comment", obj.get("comment").toString());
-                                queryValues.put("status", obj.get("status").toString());
-                                queryValues.put("new_entry", obj.get("new_entry").toString());
-
-                                controller.insertAttd(queryValues);
-                                //controller.updateSyncStatus(obj.get("id")
-                                //       .toString(),obj.get("status").toString());
-                            }
-                            Log.d(LOG_TAG, "DB Sync completed!");
-                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                            StudentTableFragment fragment = new StudentTableFragment();
-                            transaction.replace(R.id.fragment_container,fragment);
-                            transaction.addToBackStack(null);
-                            transaction.commit();
-                        } catch (JSONException e) {
-                            Log.d(LOG_TAG, "Error Occured - Server's JSON response might be invalid");
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody,
-                                          Throwable error) {
-                        // TODO Auto-generated method stub
-                        prgDialog.hide();
-                        if(statusCode == 404){
-                            Log.d(LOG_TAG, "Requested resource not found");
-                        }
-                        else if(statusCode == 500){
-                            Log.d(LOG_TAG, "Something went wrong at server end");
-                        }
-                        else
-                            Log.d(LOG_TAG, "Unexpected Error occcured! Status Code: " + statusCode);
-                    }
-                });
-            } else
-                 Log.d(LOG_TAG, "SQLite and Remote MySQL DBs are in Sync!");
-        } else
-             Log.d(LOG_TAG,  "No data in SQLite DB");
-
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 }

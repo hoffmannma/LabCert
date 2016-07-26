@@ -8,7 +8,6 @@ import android.util.Log;
 
 /**
  * TODO
- *
  */
 
 
@@ -23,7 +22,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     /**
      * Konstanten: Tabellen
-     *
+     * <p/>
      * - Studentendaten
      * - Anwesenheit
      * - Aufgaben
@@ -42,12 +41,12 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_COMMENT = "comment";
     public static final String COLUMN_EDITOR = "editor";
     public static final String COLUMN_TS = "timestamp";
-    public static final String COLUMN_UPDATE_STATUS = "update_status";
+    public static final String COLUMN_LAB_ID = "lab_id";
     public static final String COLUMN_NEW_ENTRY = "new_entry";
 
     /**
      * Konstanten: Spalten Tabelle Student
-     *
+     * <p/>
      * 1. ID
      * 2. Nachname
      * 3. Vorname
@@ -65,7 +64,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     /**
      * Konstanten: Spalten Tabelle Anwesenheit
-     *
+     * <p/>
      * 1. ID
      * 2. Matrikelnummer
      * 3. Zeitstempel
@@ -78,7 +77,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     /**
      * Konstanten: Spalten Tabelle Aufgaben
-     *
+     * <p/>
      * 1. ID
      * 2. Matrikelnummer
      * 3. Zeitstempel
@@ -93,7 +92,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     /**
      * Konstanten: Spaltennamen Tabelle Fächer
-     *
+     * <p/>
      * 1. ID
      * 2. Praktikum / Fach
      * 3. Betreuer
@@ -142,7 +141,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_EDITOR + " TEXT NOT NULL, " +
                     COLUMN_DATE + " TEXT NOT NULL, " +
                     COLUMN_COMMENT + " TEXT NOT NULL, " +
-                    COLUMN_UPDATE_STATUS + " TEXT NOT NULL, " +
+                    COLUMN_LAB_ID + " TEXT NOT NULL, " +
                     COLUMN_NEW_ENTRY + " TEXT NOT NULL);";
 
     /**
@@ -157,7 +156,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_TASK + " TEXT NOT NULL, " +
                     COLUMN_STATUS + " TEXT NOT NULL, " +
                     COLUMN_COMMENT + " TEXT NOT NULL, " +
-                    COLUMN_UPDATE_STATUS + " TEXT NOT NULL, " +
+                    COLUMN_LAB_ID + " TEXT NOT NULL, " +
                     COLUMN_NEW_ENTRY + " TEXT NOT NULL);";
 
     /**
@@ -177,7 +176,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_TS + " TEXT NOT NULL, " +
                     COLUMN_EDITOR + " TEXT NOT NULL, " +
                     COLUMN_COMMENT + " TEXT NOT NULL, " +
-                    COLUMN_UPDATE_STATUS + " TEXT NOT NULL);";
+                    COLUMN_LAB_ID + " TEXT NOT NULL);";
 
     public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -185,7 +184,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db){
+    public void onCreate(SQLiteDatabase db) {
         try {
             Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " + CREATE_STUDENT_TABLE + " angelegt.");
             db.execSQL(CREATE_STUDENT_TABLE);
@@ -195,8 +194,7 @@ public class DbHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_TASK_TABLE);
             Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " + CREATE_LAB_TABLE + " angelegt.");
             db.execSQL(CREATE_TASK_TABLE);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle: " + ex.getMessage());
         }
     }
