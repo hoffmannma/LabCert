@@ -43,6 +43,14 @@ public class PdfFile {
 
     }
 
+    /**
+     * PDF File erstellen
+     *
+     * @param context
+     * @param student
+     * @throws FileNotFoundException
+     * @throws DocumentException
+     */
     public void createPdf(Context context, Student student) throws
             FileNotFoundException, DocumentException {
 
@@ -65,6 +73,18 @@ public class PdfFile {
                 student.getSurname() + " erstellt");
     }
 
+    /**
+     * PDF beschreiben
+     *
+     * @param pdfFile
+     * @param student
+     * @throws FileNotFoundException
+     * @throws DocumentException
+     *
+     * TODO
+     * Struktur / Inhalt ...
+     *
+     */
     private void writeToPdf(File pdfFile, Student student) throws
             FileNotFoundException, DocumentException{
 
@@ -76,14 +96,25 @@ public class PdfFile {
         document.add(new Paragraph(student.getSurname()));
         document.add(new Paragraph(student.getFirstname()));
         document.add(new Paragraph(student.getCommentStudent()));
+        document.add(new Paragraph("BEISPIEL"));
         document.close();
     }
 
+    /**
+     * Zugriff auf externen Speicher möglich?
+     * @return true / false
+     */
     private boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }
 
+    /**
+     * Externen Speicher reservieren, ggf. Ordner erstellen
+     *
+     * @param context
+     * @return
+     */
     private File getExtStorageDir(Context context) {
         // Privates Directory der App wählen
         File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "pdf");
@@ -94,6 +125,11 @@ public class PdfFile {
         return file;
     }
 
+    /**
+     * Toast: PDF mit Namen ... erstellt
+     * @param context
+     * @param msg
+     */
     private void toastMsg(Context context, String msg)
     {
         int duration = Toast.LENGTH_SHORT;
