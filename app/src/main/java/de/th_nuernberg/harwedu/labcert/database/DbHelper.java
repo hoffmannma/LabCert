@@ -21,32 +21,33 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final int DB_VERSION = 1;
 
     /**
-     * Konstanten: Tabellen
-     * <p/>
+     * Konstantendefinitionen: Tabellen
      * - Studentendaten
      * - Anwesenheit
      * - Aufgaben
-     * - Praktika (Fächer)ww
+     * - Praktika (Fächer)
      */
     public static final String TABLE_STUDENT = "student_list";
     public static final String TABLE_ATTENDANCE = "attendance_list";
     public static final String TABLE_TASKS = "task_list";
+    public static final String TABLE_REQ = "requirement_list";
     public static final String TABLE_LABS = "lab_list";
 
     /**
-     * Konstanten: Gemeinsame verwendete Spaltennamen
+     * Konstantendefinitionen: Gemeinsame verwendete Spaltennamen
      */
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_MATR = "matr";
     public static final String COLUMN_COMMENT = "comment";
     public static final String COLUMN_EDITOR = "editor";
     public static final String COLUMN_TS = "timestamp";
+    public static final String COLUMN_LAB = "lab";
     public static final String COLUMN_LAB_ID = "lab_id";
     public static final String COLUMN_NEW_ENTRY = "new_entry";
+    public static final String COLUMN_GROUP = "group";
 
     /**
-     * Konstanten: Spalten Tabelle Student
-     * <p/>
+     * Konstantendefinitionen: Tabelle Student
      * 1. ID
      * 2. Nachname
      * 3. Vorname
@@ -63,8 +64,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BIB = "bib";
 
     /**
-     * Konstanten: Spalten Tabelle Anwesenheit
-     * <p/>
+     * Konstantendefinitionen: Tabelle Anwesenheit
      * 1. ID
      * 2. Matrikelnummer
      * 3. Zeitstempel
@@ -76,8 +76,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DATE = "a_date";
 
     /**
-     * Konstanten: Spalten Tabelle Aufgaben
-     * <p/>
+     * Konstantendefinitionen: Tabelle Aufgaben
      * 1. ID
      * 2. Matrikelnummer
      * 3. Zeitstempel
@@ -91,8 +90,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_STATUS = "status";
 
     /**
-     * Konstanten: Spaltennamen Tabelle Fächer
-     * <p/>
+     * Konstantendefinitionen: Tabelle Fächer
      * 1. ID
      * 2. Praktikum / Fach
      * 3. Betreuer
@@ -107,7 +105,6 @@ public class DbHelper extends SQLiteOpenHelper {
      * 12. Kommentar
      * 13. Aktualisiert (ja/nein)
      */
-    public static final String COLUMN_LAB = "lab";
     public static final String COLUMN_SUPERVISOR = "supervisor";
     public static final String COLUMN_MIN_ATTD = "min_attd";
     public static final String COLUMN_MIN_TASKS = "min_tasks";
@@ -115,6 +112,20 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_COMP_DATES = "comp_dates";
     public static final String COLUMN_COMP_TASKS = "comp_tasks";
     public static final String COLUMN_MIN_SCORE = "min_score";
+
+    /**
+     * Konstantendefinitionen: Tabelle Anforderungen
+     * 1. ID
+     * 2. Typ
+     * 3. Anzahl
+     * 4. Bezeichnung
+     * 5. Gruppe
+     * 6. Fach
+     */
+    public static final String COLUMN_TYPE = "type";
+    public static final String COLUMN_COUNT = "count";
+    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_TERM = "term";
 
     /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Studenten'
@@ -178,6 +189,19 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_COMMENT + " TEXT NOT NULL, " +
                     COLUMN_LAB_ID + " TEXT NOT NULL);";
 
+    /**
+     * SQL-Befehl (String) zum Erzeugen der Tabelle 'Anforderungen'
+     */
+    public static final String CREATE_REQ_TABLE =
+            "CREATE TABLE " + TABLE_REQ +
+                    "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_TYPE + " TEXT NOT NULL, " +
+                    COLUMN_COUNT + " TEXT NOT NULL, " +
+                    COLUMN_NAME + " TEXT NOT NULL, " +
+                    COLUMN_GROUP + " TEXT NOT NULL, " +
+                    COLUMN_LAB_ID + " TEXT NOT NULL, " +
+                    COLUMN_TERM + " TEXT NOT NULL);";
+
     public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
@@ -186,14 +210,20 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
-            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " + CREATE_STUDENT_TABLE + " angelegt.");
+            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
+                    CREATE_STUDENT_TABLE + " angelegt.");
             db.execSQL(CREATE_STUDENT_TABLE);
-            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " + CREATE_ATTENDANCE_TABLE + " angelegt.");
+            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
+                    CREATE_ATTENDANCE_TABLE + " angelegt.");
             db.execSQL(CREATE_ATTENDANCE_TABLE);
-            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " + CREATE_TASK_TABLE + " angelegt.");
+            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
+                    CREATE_TASK_TABLE + " angelegt.");
             db.execSQL(CREATE_TASK_TABLE);
-            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " + CREATE_LAB_TABLE + " angelegt.");
-            db.execSQL(CREATE_TASK_TABLE);
+            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
+                    CREATE_REQ_TABLE + " angelegt.");
+            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
+                    CREATE_LAB_TABLE + " angelegt.");
+            db.execSQL(CREATE_LAB_TABLE);
         } catch (Exception ex) {
             Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle: " + ex.getMessage());
         }

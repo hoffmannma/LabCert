@@ -1,7 +1,8 @@
-package de.th_nuernberg.harwedu.labcert.fragment;
+package de.th_nuernberg.harwedu.labcert.fragments;
 
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.TextUtils;
@@ -10,10 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
-import de.th_nuernberg.harwedu.labcert.database.Student;
+import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 /**
  * Dieses Fragment ermöglicht das Hinzufügen von Studenten.
@@ -22,18 +24,18 @@ import de.th_nuernberg.harwedu.labcert.database.Student;
  * nach dem Scannen einer unbekannten Bib.-Nr..
  */
 
-public class AddStudentFragment extends Fragment {
+public class CreateStudentFragment extends Fragment {
 
     //private static final String ARG_PARAM = "param";
 
     private static String mParam;
 
-    public AddStudentFragment() {
+    public CreateStudentFragment() {
         // Required empty public constructor
     }
 
-    public static AddStudentFragment newInstance(String param) {
-        AddStudentFragment fragment = new AddStudentFragment();
+    public static CreateStudentFragment newInstance(String param) {
+        CreateStudentFragment fragment = new CreateStudentFragment();
         //Bundle args = new Bundle();
         //args.putString(ARG_PARAM, param);
         //fragment.setArguments(args);
@@ -53,7 +55,7 @@ public class AddStudentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_add_student, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_create_student, container, false);
 
         final DataSource dataSource = new DataSource(getActivity());
         dataSource.openW();
@@ -65,7 +67,7 @@ public class AddStudentFragment extends Fragment {
         final EditText editTextLabteam = (EditText) rootView.findViewById(R.id.editText_labteam);
         final EditText editTextComment = (EditText) rootView.findViewById(R.id.editText_comment);
 
-        Button addStudentButton = (Button) rootView.findViewById(R.id.button_add_student);
+        Button addStudentButton = (Button) rootView.findViewById(R.id.button_create_student);
 
         //if(mParam != null)
         editTextBib.setText(mParam);
@@ -105,7 +107,7 @@ public class AddStudentFragment extends Fragment {
                 dataSource.createStudent(surnameString, firstnameString,
                         commentString, "", labteamString, matrString, bibString);
                 Student student = dataSource.getStudent(bibString);
-
+                toastMsg("Student hinzugefügt");
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 StudentFragment fragment = new StudentFragment();
@@ -118,6 +120,13 @@ public class AddStudentFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+        private void toastMsg(String msg) {
+        Context context = getActivity().getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, msg, duration);
+        toast.show();
     }
 
 }

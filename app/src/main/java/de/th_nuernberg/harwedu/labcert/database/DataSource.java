@@ -22,6 +22,9 @@ import java.util.concurrent.TimeoutException;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.interfaces.TaskCompleted;
+import de.th_nuernberg.harwedu.labcert.objects.Student;
+import de.th_nuernberg.harwedu.labcert.sync.GetRemoteAttdTask;
+import de.th_nuernberg.harwedu.labcert.sync.OracleDataSource;
 
 
 /**
@@ -139,7 +142,7 @@ public class DataSource implements TaskCompleted {
         valuesAttendance.put(DbHelper.COLUMN_EDITOR, editor );
         valuesAttendance.put(DbHelper.COLUMN_DATE, date);
         valuesAttendance.put(DbHelper.COLUMN_COMMENT, comment);
-        valuesAttendance.put(DbHelper.COLUMN_LAB_ID, upd_status);
+        valuesAttendance.put(DbHelper.COLUMN_LAB, upd_status);
         valuesAttendance.put(DbHelper.COLUMN_NEW_ENTRY, new_entry);
 
         valuesTasks.put(DbHelper.COLUMN_MATR, matr);
@@ -300,12 +303,26 @@ public class DataSource implements TaskCompleted {
         close();
     }
 
+    public void createRequirement(String type, String name, String group,
+                                  String lab, String term) {
+
+        ContentValues valuesReq = new ContentValues();
+
+        valuesReq.put(DbHelper.COLUMN_SURNAME, type);
+        valuesReq.put(DbHelper.COLUMN_FIRSTNAME, name);
+        valuesReq.put(DbHelper.COLUMN_LABGROUP, group);
+        valuesReq.put(DbHelper.COLUMN_LABTEAM, lab);
+        valuesReq.put(DbHelper.COLUMN_MATR, term);
+
+        database.insert(DbHelper.TABLE_REQ, null, valuesReq);
+    }
+
     /**
      * @param id
      */
     private void setSyncMissing(long id) {
         ContentValues updateValue = new ContentValues();
-        updateValue.put(DbHelper.COLUMN_LAB_ID, "no");
+        updateValue.put(DbHelper.COLUMN_LAB, "no");
 
         database.update(DbHelper.TABLE_ATTENDANCE,
                 updateValue,
@@ -341,7 +358,7 @@ public class DataSource implements TaskCompleted {
         values.put(DbHelper.COLUMN_EDITOR, queryValues.get("editor"));
         values.put(DbHelper.COLUMN_DATE, queryValues.get("a_date"));
         values.put(DbHelper.COLUMN_COMMENT, queryValues.get("comment"));
-        values.put(DbHelper.COLUMN_LAB_ID, queryValues.get("status"));
+        values.put(DbHelper.COLUMN_LAB, queryValues.get("status"));
         values.put(DbHelper.COLUMN_NEW_ENTRY, queryValues.get("new_entry"));
         database.rawQuery("DELETE FROM " + DbHelper.TABLE_ATTENDANCE + ";", null);
         database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
@@ -387,7 +404,7 @@ public class DataSource implements TaskCompleted {
                     String.valueOf(queryValues.get(i).get("DATE_")));
             values.put(DbHelper.COLUMN_COMMENT,
                     String.valueOf(queryValues.get(i).get("COMMENT_")));
-            values.put(DbHelper.COLUMN_LAB_ID,
+            values.put(DbHelper.COLUMN_LAB,
                     String.valueOf(queryValues.get(i).get("LAB_ID")));
             values.put(DbHelper.COLUMN_NEW_ENTRY, newEntry);
             database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
@@ -411,7 +428,7 @@ public class DataSource implements TaskCompleted {
         values.put(DbHelper.COLUMN_DATE,
                 new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         values.put(DbHelper.COLUMN_COMMENT, "");
-        values.put(DbHelper.COLUMN_LAB_ID, "no");
+        values.put(DbHelper.COLUMN_LAB, "no");
         values.put(DbHelper.COLUMN_NEW_ENTRY, "yes");
         database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
         close();
@@ -433,7 +450,7 @@ public class DataSource implements TaskCompleted {
         values.put(DbHelper.COLUMN_DATE,
                 new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         values.put(DbHelper.COLUMN_COMMENT, "");
-        values.put(DbHelper.COLUMN_LAB_ID, "no");
+        values.put(DbHelper.COLUMN_LAB, "no");
         values.put(DbHelper.COLUMN_NEW_ENTRY, "yes");
         database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
         close();
@@ -651,7 +668,7 @@ public class DataSource implements TaskCompleted {
     public int dbSyncCount() {
         int count = 0;
         String selectQuery = "SELECT  * FROM " + DbHelper.TABLE_ATTENDANCE + " WHERE " +
-                DbHelper.COLUMN_LAB_ID + " = 'no'";
+                DbHelper.COLUMN_LAB + " = 'no'";
         openW();
         Cursor cursor = database.rawQuery(selectQuery, null);
         count = cursor.getCount();
@@ -666,7 +683,7 @@ public class DataSource implements TaskCompleted {
     public void updateSyncStatus(String id, String status) {
         openW();
         String updateQuery = "Update " + DbHelper.TABLE_ATTENDANCE +
-                " set " + DbHelper.COLUMN_LAB_ID + " = '" + status
+                " set " + DbHelper.COLUMN_LAB + " = '" + status
                 + "' WHERE " + DbHelper.COLUMN_ID + " = '" + id + "'";
         Log.d("query", updateQuery);
         database.execSQL(updateQuery);
@@ -689,4 +706,5 @@ public class DataSource implements TaskCompleted {
     public void onTaskComplete(ArrayList<HashMap<String, String>> result) {
         insertAttd(result, NO);
     }
+
 }

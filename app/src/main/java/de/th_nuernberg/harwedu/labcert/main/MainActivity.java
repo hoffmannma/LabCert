@@ -1,4 +1,4 @@
-package de.th_nuernberg.harwedu.labcert;
+package de.th_nuernberg.harwedu.labcert.main;
 
 import android.annotation.TargetApi;
 import android.app.FragmentManager;
@@ -27,15 +27,17 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
-import de.th_nuernberg.harwedu.labcert.database.Student;
-import de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment;
-import de.th_nuernberg.harwedu.labcert.fragment.CreateGroupFragment;
-import de.th_nuernberg.harwedu.labcert.fragment.StudentFragment;
-import de.th_nuernberg.harwedu.labcert.fragment.StudentTableFragment;
-import de.th_nuernberg.harwedu.labcert.fragment.SwitchGroupFragment;
-import de.th_nuernberg.harwedu.labcert.fragment.WebSyncFragment;
-import de.th_nuernberg.harwedu.labcert.fragment.UnknownStudentFragment;
+import de.th_nuernberg.harwedu.labcert.objects.Student;
+import de.th_nuernberg.harwedu.labcert.fragments.CreateStudentFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.CreateGroupFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.CreateRequirementFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.RequirementFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.StudentFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.StudentTableFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.SwitchGroupFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.UnknownStudentFragment;
 
 /**
  * TODO
@@ -107,6 +109,8 @@ public class MainActivity extends AppCompatActivity
         userMailTxt = (TextView) header.findViewById(R.id.textview_user_mail);
         currentLabTxt = (TextView) header.findViewById(R.id.textview_current_lab);
         currentGroupTxt = (TextView) header.findViewById(R.id.textview_current_group);
+
+        // TODO: Datenbank / Shared Memory Abfrage von Userdaten
         userName = "Eduard Harwart";
         userMail = "harwartedu58020@th-nuernberg.de";
         currentLab = "INF2/1";
@@ -271,13 +275,27 @@ public class MainActivity extends AppCompatActivity
             jumpToStudentTable();
         } else if (id == R.id.nav_add_member) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            AddStudentFragment fragment = new AddStudentFragment();
+            CreateStudentFragment fragment = new CreateStudentFragment();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        } else if (id == R.id.nav_switch_group) {
+        } else if (id == R.id.nav_requirements) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            SwitchGroupFragment fragment = new SwitchGroupFragment();
+            RequirementFragment fragment = new RequirementFragment();
+            RequirementFragment.newInstance(currentGroup);
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else if (id == R.id.nav_import_requirement) {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            RequirementFragment fragment = new RequirementFragment();
+            RequirementFragment.newInstance(currentGroup);
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else if (id == R.id.nav_create_requirement) {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            CreateRequirementFragment fragment = new CreateRequirementFragment();
             SwitchGroupFragment.newInstance(currentGroup);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
@@ -288,13 +306,13 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        } else if (id == R.id.nav_sync_web) {
+        } /*else if (id == R.id.nav_sync_web) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             WebSyncFragment fragment = new WebSyncFragment();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        } else if (id == R.id.nav_sync_db) {
+        } */else if (id == R.id.nav_sync_db) {
             DataSource dataSource = new DataSource(this);
             dataSource.uploadNewAttdRecords();
             try {
@@ -302,7 +320,7 @@ public class MainActivity extends AppCompatActivity
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 e.printStackTrace();
             }
-        } else if (id == R.id.nav_import_db) {
+        } else if (id == R.id.nav_import_csv) {
 
             DataSource dataSource = new DataSource(this);
             dataSource.importCSV(this, csv_name);

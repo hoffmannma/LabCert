@@ -2,12 +2,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.th_nuernberg.harwedu.labcert.fragments.SyncFragment">
+    tools:context="de.th_nuernberg.harwedu.labcert.fragments.RequirementFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/hello_blank_fragment" />
+
+    <Button
+        android:id="@+id/button_new_requirement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Neue Anforderung"
+        android:layout_marginTop="260dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
 </FrameLayout>

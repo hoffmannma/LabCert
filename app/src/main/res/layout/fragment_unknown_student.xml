@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment">
+    tools:context=".fragments.CreateStudentFragment">
 
         <TextView
             android:layout_width="match_parent"
@@ -39,7 +39,7 @@
             android:id="@+id/button_add_unknown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/button_add_member"
+            android:text="@string/button_create_student"
             android:layout_marginTop="160dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp" />

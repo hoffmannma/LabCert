@@ -1,4 +1,4 @@
-package de.th_nuernberg.harwedu.labcert.fragment;
+package de.th_nuernberg.harwedu.labcert.fragments;
 
 
 import android.app.FragmentTransaction;
@@ -13,11 +13,11 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import de.th_nuernberg.harwedu.labcert.MainActivity;
+import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.adapter.StudentTableAdapter;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
-import de.th_nuernberg.harwedu.labcert.database.Student;
+import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 
 public class StudentTableFragment extends Fragment {

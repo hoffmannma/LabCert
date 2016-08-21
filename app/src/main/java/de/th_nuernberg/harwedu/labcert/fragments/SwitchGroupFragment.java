@@ -1,4 +1,4 @@
-package de.th_nuernberg.harwedu.labcert.fragment;
+package de.th_nuernberg.harwedu.labcert.fragments;
 
 import android.os.Bundle;
 import android.app.Fragment;

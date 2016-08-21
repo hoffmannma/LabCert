@@ -1,4 +1,4 @@
-package de.th_nuernberg.harwedu.labcert.database;
+package de.th_nuernberg.harwedu.labcert.sync;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.interfaces.TaskCompleted;
 
 /**

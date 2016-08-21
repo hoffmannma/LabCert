@@ -7,12 +7,14 @@
     <string name="action_settings">Einstellungen</string>
 
     <string name="group">Gruppe</string>
-    <string name="add_member">Teilnehmer hinzufügen"</string>
+    <string name="create_student">Neuer Teilnehmer"</string>
+    <string name="requirements">Anforderungen</string>
+    <string name="new_requirement">Neue Anforderung</string>
     <string name="switch_group">Gruppe wechseln</string>
     <string name="new_group">Neue Gruppe</string>
 
     <string name="import_csv">CSV importieren</string>
-    <string name="sync_db">Synchronisation Oracle</string>
+    <string name="sync_db">Datenbank synchronisieren</string>
     <string name="show_cert">Leistungsnachweise anzeigen</string>
 
     <string name="logout">Logout</string>
@@ -20,7 +22,7 @@
     <string name="hello_blank_fragment">--- BLANK FRAGMENT ---</string>
     <string name="unknown_student">Teilnehmer nicht vorhanden.</string>
     <string name="editText_hint_surname">Name</string>
-    <string name="button_add_member">Student hinzufügen</string>
+    <string name="button_create_student">Student hinzufügen</string>
     <string name="editText_hint_firstname">Vorname</string>
     <string name="editText_hint_matr">Matrikelnummer</string>
     <string name="editText_hint_labteam">Team</string>
@@ -42,4 +44,11 @@
     <string name="db_synchronized">Datenbank synchronisiert</string>
     <string name="file_imported">Datei importiert</string>
     <string name="action_refresh">Aktualisieren</string>
+    <string name="create_requirement">Neue Anforderung</string>
+    <string name="str_reqType">Typ</string>
+    <string name="str_reqName">Name</string>
+    <string name="str_Group">Gruppe</string>
+    <string name="str_Lab">Praktikum</string>
+    <string name="str_Term">Semester</string>
+    <string name="str_createReq">Anforderung erstellen</string>
 </resources>

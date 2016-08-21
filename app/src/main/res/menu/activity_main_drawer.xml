@@ -8,30 +8,38 @@
             android:title="@string/group" />
         <item
             android:id="@+id/nav_add_member"
-            android:icon="@drawable/ic_m_add_member"
-            android:title="@string/add_member" />
+            android:icon="@drawable/ic_m_create_student"
+            android:title="@string/create_student" />
+        <item
+            android:id="@+id/nav_requirements"
+            android:icon="@drawable/ic_m_req"
+            android:title="@string/requirements" />
+        <item
+            android:id="@+id/nav_import_requirement"
+            android:icon="@drawable/ic_m_req"
+            android:title="@string/requirements" />
+        <item
+            android:id="@+id/nav_create_requirement"
+            android:icon="@drawable/ic_m_create_req"
+            android:title="@string/create_requirement" />
         <item
             android:id="@+id/nav_switch_group"
             android:icon="@drawable/ic_m_switch_group"
             android:title="@string/switch_group" />
         <item
             android:id="@+id/nav_new_group"
-            android:icon="@drawable/ic_m_add_group"
+            android:icon="@drawable/ic_m_create_group"
             android:title="@string/new_group" />
     </group>
 
     <item android:title="Dateien">
         <menu>
             <item
-                android:id="@+id/nav_sync_web"
-                android:icon="@drawable/ic_m_sync_db"
-                android:title="@string/sync_web" />
-            <item
                 android:id="@+id/nav_sync_db"
                 android:icon="@drawable/ic_m_sync_db"
                 android:title="@string/sync_db" />
             <item
-            android:id="@+id/nav_import_db"
+            android:id="@+id/nav_import_csv"
             android:icon="@drawable/ic_m_import_csv"
             android:title="@string/import_csv" />
             <item

@@ -1,4 +1,4 @@
-package de.th_nuernberg.harwedu.labcert.fragment;
+package de.th_nuernberg.harwedu.labcert.fragments;
 
 
 import android.app.FragmentTransaction;
@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
-import de.th_nuernberg.harwedu.labcert.adapter.SimpleStudentTableAdapter;
 
 public class UnknownStudentFragment extends Fragment {
 
@@ -70,7 +69,7 @@ public class UnknownStudentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                AddStudentFragment fragment = new AddStudentFragment();
+                CreateStudentFragment fragment = new CreateStudentFragment();
                 fragment.newInstance(mContent);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);

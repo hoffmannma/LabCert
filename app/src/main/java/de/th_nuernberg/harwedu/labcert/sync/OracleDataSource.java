@@ -1,4 +1,4 @@
-package de.th_nuernberg.harwedu.labcert.database;
+package de.th_nuernberg.harwedu.labcert.sync;
 
 import android.content.Context;
 import android.os.AsyncTask;

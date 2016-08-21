@@ -1,4 +1,4 @@
-package de.th_nuernberg.harwedu.labcert.fragment;
+package de.th_nuernberg.harwedu.labcert.fragments;
 
 
 import android.content.Context;
@@ -18,7 +18,7 @@ import java.io.FileNotFoundException;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
-import de.th_nuernberg.harwedu.labcert.database.Student;
+import de.th_nuernberg.harwedu.labcert.objects.Student;
 import de.th_nuernberg.harwedu.labcert.pdf.PdfFile;
 
 /**

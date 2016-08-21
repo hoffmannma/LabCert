@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="de.th_nuernberg.harwedu.labcert.fragment.AddStudentFragment">
+    tools:context=".fragments.CreateStudentFragment">
 
     <EditText
         android:layout_width="match_parent"
@@ -64,8 +64,8 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_add_member"
-        android:id="@+id/button_add_student"
+        android:text="@string/button_create_student"
+        android:id="@+id/button_create_student"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
 
