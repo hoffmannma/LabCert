@@ -51,4 +51,12 @@
     <string name="str_Lab">Praktikum</string>
     <string name="str_Term">Semester</string>
     <string name="str_createReq">Anforderung erstellen</string>
+    <string name="import_requirement">Anforderung importieren</string>
+    <string name="button_create_group">Gruppe erstellen</string>
+    <string name="editText_hint_lab">Fach</string>
+    <string name="editText_hint_lab_id">Fachkennung</string>
+    <string name="editText_hint_group_no">Gruppennummer</string>
+    <string name="editText_hint_supervisor">Betreuer</string>
+    <string name="all_groups">Alle Gruppen</string>
+
 </resources>

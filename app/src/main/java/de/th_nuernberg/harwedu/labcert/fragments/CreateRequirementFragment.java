@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
-import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 
 public class CreateRequirementFragment extends Fragment {
@@ -106,7 +105,7 @@ public class CreateRequirementFragment extends Fragment {
                 toastMsg("Anforderung erstellt");
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                RequirementFragment fragment = new RequirementFragment();
+                RequirementTableFragment fragment = new RequirementTableFragment();
                 fragment.newInstance(groupString);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);

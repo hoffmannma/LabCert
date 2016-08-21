@@ -1,15 +1,54 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.th_nuernberg.harwedu.labcert.fragments.CreateGroupFragment">
+    android:orientation="vertical"
+    tools:context=".fragments.CreateStudentFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:text="Das Erstellen von Gruppen wird zukünftig hier möglich sein."
-        android:layout_margin="20dp" />
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_lab"
+        android:inputType="text"
+        android:id="@+id/editText_lab"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
-</FrameLayout>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_lab_id"
+        android:inputType="text"
+        android:id="@+id/editText_lab_id"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_group_no"
+        android:inputType="number"
+        android:id="@+id/editText_group_no"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_supervisor"
+        android:inputType="number"
+        android:id="@+id/editText_supervisor"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_create_group"
+        android:id="@+id/button_create_group"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+</LinearLayout>

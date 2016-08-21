@@ -29,11 +29,12 @@ import java.util.concurrent.TimeoutException;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
+import de.th_nuernberg.harwedu.labcert.fragments.GroupTableFragment;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 import de.th_nuernberg.harwedu.labcert.fragments.CreateStudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.CreateGroupFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.CreateRequirementFragment;
-import de.th_nuernberg.harwedu.labcert.fragments.RequirementFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.RequirementTableFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.StudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.StudentTableFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.SwitchGroupFragment;
@@ -273,23 +274,35 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_group) {
             jumpToStudentTable();
+        } else if (id == R.id.nav_all_groups) {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            GroupTableFragment fragment = new GroupTableFragment();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         } else if (id == R.id.nav_add_member) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             CreateStudentFragment fragment = new CreateStudentFragment();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        } else if (id == R.id.nav_new_group) {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            CreateGroupFragment fragment = new CreateGroupFragment();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         } else if (id == R.id.nav_requirements) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            RequirementFragment fragment = new RequirementFragment();
-            RequirementFragment.newInstance(currentGroup);
+            RequirementTableFragment fragment = new RequirementTableFragment();
+            RequirementTableFragment.newInstance(currentGroup);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_import_requirement) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            RequirementFragment fragment = new RequirementFragment();
-            RequirementFragment.newInstance(currentGroup);
+            RequirementTableFragment fragment = new RequirementTableFragment();
+            RequirementTableFragment.newInstance(currentGroup);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -300,19 +313,7 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        } else if (id == R.id.nav_new_group) {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            CreateGroupFragment fragment = new CreateGroupFragment();
-            transaction.replace(R.id.fragment_container, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        } /*else if (id == R.id.nav_sync_web) {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            WebSyncFragment fragment = new WebSyncFragment();
-            transaction.replace(R.id.fragment_container, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        } */else if (id == R.id.nav_sync_db) {
+        } else if (id == R.id.nav_sync_db) {
             DataSource dataSource = new DataSource(this);
             dataSource.uploadNewAttdRecords();
             try {

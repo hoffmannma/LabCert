@@ -54,7 +54,7 @@ public class SimpleStudentTableAdapter extends BaseAdapter{
         LayoutInflater inflater = activity.getLayoutInflater();
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_row, null);
+            convertView = inflater.inflate(R.layout.list_row_student, null);
             holder = new ViewHolder();
             holder.hSurnameTxt = (TextView)
                     convertView.findViewById(R.id.textview_row_surname);

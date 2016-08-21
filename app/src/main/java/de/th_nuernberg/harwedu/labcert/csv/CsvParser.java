@@ -40,7 +40,7 @@ public class CsvParser {
             HashMap<String, String> hm = new HashMap<>();
 
             for (int i = 0; i < row.length; i++) {
-                hm.put("list_row[" + i + "]", row[i]);
+                hm.put("list_row_student[" + i + "]", row[i]);
             }
             CSVData.add(hm);
         }

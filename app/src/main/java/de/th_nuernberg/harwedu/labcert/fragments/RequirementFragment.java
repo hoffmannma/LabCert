@@ -1,62 +1,42 @@
 package de.th_nuernberg.harwedu.labcert.fragments;
 
-import android.app.FragmentTransaction;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.itextpdf.text.DocumentException;
+
+import java.io.FileNotFoundException;
 
 import de.th_nuernberg.harwedu.labcert.R;
+import de.th_nuernberg.harwedu.labcert.database.DataSource;
+import de.th_nuernberg.harwedu.labcert.objects.Requirement;
+import de.th_nuernberg.harwedu.labcert.objects.Student;
+import de.th_nuernberg.harwedu.labcert.pdf.PdfFile;
 
-/*
+/**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RequirementFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RequirementFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class RequirementFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-
+    private static Requirement req;
 
     public RequirementFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment RequirementFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RequirementFragment newInstance(String param1) {
+    public static RequirementFragment newInstance(Requirement param) {
         RequirementFragment fragment = new RequirementFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        //args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        req = param;
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            //mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -64,22 +44,84 @@ public class RequirementFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_requirement, container, false);
+/*
+        final TextView studentTxt = (TextView) rootView.findViewById(R.id.textview_student);
+        final EditText commEditTxt = (EditText) rootView.findViewById(R.id.edittext_comm);
+        Button saveDataButton = (Button) rootView.findViewById(R.id.button_save_comment);
+        Button createPdfButton = (Button) rootView.findViewById(R.id.button_create_pdf);
+        Button delStudentButton = (Button) rootView.findViewById(R.id.button_del_student);
+        Button delAttdButton = (Button) rootView.findViewById(R.id.button_del_attd);
 
-        //TextView formatTxt = (TextView) rootView.findViewById(R.id.textview_unknown_format);
-        Button newReqButton = (Button) rootView.findViewById(R.id.button_new_requirement);
+        studentTxt.setText(req.getStudentData());
+        commEditTxt.setText(req.getCommentStudent());
 
-
-        newReqButton.setOnClickListener(new View.OnClickListener() {
+        saveDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                CreateRequirementFragment fragment = new CreateRequirementFragment();
-                transaction.replace(R.id.fragment_container, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+
+                String commentString = commEditTxt.getText().toString();
+
+                DataSource dataSource = new DataSource(getActivity());
+                dataSource.updateComment(student.getId(), commentString);
+
+                getActivity().getFragmentManager().popBackStack();
+
+                toastMsg("Kommentar gespeichert");
             }
         });
+
+        createPdfButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                PdfFile pdfCreator = new PdfFile();
+                try {
+                    pdfCreator.createPdf(getActivity(), student);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (DocumentException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        delStudentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DataSource dataSource = new DataSource(getActivity());
+                dataSource.deleteAttdRecords(student);
+                dataSource.deleteStudent(student);
+
+                getActivity().getFragmentManager().popBackStack();
+
+                toastMsg("Student gelöscht");
+            }
+        });
+
+        delAttdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DataSource dataSource = new DataSource(getActivity());
+                dataSource.deleteAttdRecords(student);
+                Student student_new = dataSource.getStudent(student.getBib());
+                studentTxt.setText(student_new.getStudentData());
+
+                toastMsg("Anwesenheitsdaten gelöscht");
+            }
+        });
+        */
         return rootView;
+
     }
+
+    private void toastMsg(String msg) {
+        Context context = getActivity().getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, msg, duration);
+        toast.show();
+    }
+
 
 }

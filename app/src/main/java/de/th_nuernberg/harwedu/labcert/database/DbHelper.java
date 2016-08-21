@@ -30,6 +30,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String TABLE_STUDENT = "student_list";
     public static final String TABLE_ATTENDANCE = "attendance_list";
     public static final String TABLE_TASKS = "task_list";
+    public static final String TABLE_GROUP = "group_list";
     public static final String TABLE_REQ = "requirement_list";
     public static final String TABLE_LABS = "lab_list";
 
@@ -44,7 +45,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LAB = "lab";
     public static final String COLUMN_LAB_ID = "lab_id";
     public static final String COLUMN_NEW_ENTRY = "new_entry";
-    public static final String COLUMN_GROUP = "group";
+    public static final String COLUMN_GROUP = "group_id";
 
     /**
      * Konstantendefinitionen: Tabelle Student
@@ -190,6 +191,17 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_LAB_ID + " TEXT NOT NULL);";
 
     /**
+     * SQL-Befehl (String) zum Erzeugen der Tabelle 'Gruppen'
+     */
+    public static final String CREATE_GROUP_TABLE =
+            "CREATE TABLE " + TABLE_GROUP +
+                    "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_SUPERVISOR + " TEXT NOT NULL, " +
+                    COLUMN_GROUP + " TEXT NOT NULL, " +
+                    COLUMN_LAB_ID + " TEXT NOT NULL, " +
+                    COLUMN_LAB + " TEXT NOT NULL);";
+
+    /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Anforderungen'
      */
     public static final String CREATE_REQ_TABLE =
@@ -220,7 +232,11 @@ public class DbHelper extends SQLiteOpenHelper {
                     CREATE_TASK_TABLE + " angelegt.");
             db.execSQL(CREATE_TASK_TABLE);
             Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
+                    CREATE_GROUP_TABLE + " angelegt.");
+            db.execSQL(CREATE_GROUP_TABLE);
+            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
                     CREATE_REQ_TABLE + " angelegt.");
+            db.execSQL(CREATE_REQ_TABLE);
             Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
                     CREATE_LAB_TABLE + " angelegt.");
             db.execSQL(CREATE_LAB_TABLE);

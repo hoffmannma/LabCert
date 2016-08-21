@@ -22,18 +22,17 @@ import java.util.concurrent.TimeoutException;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.interfaces.TaskCompleted;
+import de.th_nuernberg.harwedu.labcert.objects.Group;
+import de.th_nuernberg.harwedu.labcert.objects.Requirement;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 import de.th_nuernberg.harwedu.labcert.sync.GetRemoteAttdTask;
 import de.th_nuernberg.harwedu.labcert.sync.OracleDataSource;
 
 
 /**
- * DataSource
- * <p/>
  * Diese Klasse enhält die Datenbank-Schnittstelle und wird als Datenquelle verwendet.
  * Sie ermöglicht CRUD Operationen.
- * <p/>
- * <p/>
+ *
  * TODO
  * - CreateStudent Fach-ID übergeben -> Switch-Case-Anweisung mit entsprechenden Einträgen
  * - cursorToStudent + getStudent anpassen
@@ -98,6 +97,13 @@ public class DataSource implements TaskCompleted {
         dbHelper.close();
         Log.d(LOG_TAG, "Datenbank geschlossen.");
     }
+
+
+    /**
+     * ***************************************************************
+     *                             Teilnehmer
+     * ***************************************************************
+     */
 
     /**
      * Erzeugen eines Studenten in der Datenbank
@@ -303,19 +309,177 @@ public class DataSource implements TaskCompleted {
         close();
     }
 
+    /**
+     * ***************************************************************
+     *                             Anforderungen
+     * ***************************************************************
+     */
+
+    /**
+     * @param type
+     * @param name
+     * @param group
+     * @param lab
+     * @param term
+     */
     public void createRequirement(String type, String name, String group,
                                   String lab, String term) {
 
         ContentValues valuesReq = new ContentValues();
 
-        valuesReq.put(DbHelper.COLUMN_SURNAME, type);
-        valuesReq.put(DbHelper.COLUMN_FIRSTNAME, name);
-        valuesReq.put(DbHelper.COLUMN_LABGROUP, group);
-        valuesReq.put(DbHelper.COLUMN_LABTEAM, lab);
-        valuesReq.put(DbHelper.COLUMN_MATR, term);
+        valuesReq.put(DbHelper.COLUMN_TYPE, type);
+        valuesReq.put(DbHelper.COLUMN_NAME, name);
+        valuesReq.put(DbHelper.COLUMN_COUNT, "5");
+        valuesReq.put(DbHelper.COLUMN_GROUP, group);
+        valuesReq.put(DbHelper.COLUMN_LAB_ID, lab);
+        valuesReq.put(DbHelper.COLUMN_TERM, term);
 
         database.insert(DbHelper.TABLE_REQ, null, valuesReq);
     }
+
+    /**
+     * @param grp
+     * @return
+     */
+    public ArrayList<Requirement> getGroupRequirements(String grp) {
+        ArrayList<Requirement> reqList = new ArrayList<>();
+        Requirement req;
+        // TODO: SQL-Query exklusiv nur für Gruppe
+        String query = "SELECT * FROM " + DbHelper.TABLE_REQ;
+        Cursor cursor = database.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast()) {
+            req = cursorToRequirement(cursor);
+            reqList.add(req);
+            Log.d(LOG_TAG, "Typ: " + req.getReqType() + ", Name: " + req.getReqName()
+                    + ", Anzahl: " + req.getCount() + ", Gruppe: " + req.getGroup());
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return reqList;
+    }
+
+    /**
+     * @param cursor
+     * @return
+     */
+    private Requirement cursorToRequirement(Cursor cursor) {
+        int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
+        int idType = cursor.getColumnIndex(DbHelper.COLUMN_TYPE);
+        int idName = cursor.getColumnIndex(DbHelper.COLUMN_NAME);
+        int idCount = cursor.getColumnIndex(DbHelper.COLUMN_COUNT);
+        int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_GROUP);
+        int idLabId = cursor.getColumnIndex(DbHelper.COLUMN_LAB_ID);
+        int idTerm = cursor.getColumnIndex(DbHelper.COLUMN_TERM);
+
+        String type = cursor.getString(idType);
+        String name = cursor.getString(idName);
+        String count = cursor.getString(idCount);
+        String group = cursor.getString(idGroup);
+        String lab_id = cursor.getString(idLabId);
+        String term = cursor.getString(idTerm);
+        long id = cursor.getLong(idIndex);
+
+        return new Requirement(type, name, count, group, lab_id,
+                term);
+    }
+
+
+    /**
+     * ***************************************************************
+     *                             Gruppen
+     * ***************************************************************
+     */
+
+    /**
+     *
+     * @param lab
+     * @param lab_id
+     * @param group_no
+     * @param supervisor
+     */
+    public void createGroup(String lab, String lab_id, String group_no,
+                            String supervisor) {
+        ContentValues valuesGroup = new ContentValues();
+
+        valuesGroup.put(DbHelper.COLUMN_LAB, lab);
+        valuesGroup.put(DbHelper.COLUMN_LAB_ID, lab_id);
+        valuesGroup.put(DbHelper.COLUMN_GROUP, group_no);
+        valuesGroup.put(DbHelper.COLUMN_SUPERVISOR, supervisor);
+        database.insert(DbHelper.TABLE_GROUP, null, valuesGroup);
+
+    }
+
+    /**
+     *
+     * @param groupNo
+     * @param lab_id
+     * @return
+     */
+    public boolean groupExists(String groupNo, String lab_id){
+        openR();
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_GROUP +
+                " WHERE (" + DbHelper.COLUMN_GROUP+ " = '" + groupNo + " AND "
+                + DbHelper.COLUMN_LAB_ID + " = '" + lab_id +")'", null);
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        close();
+        return exists;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Group> getAllGroups() {
+        ArrayList<Group> groupList = new ArrayList<>();
+        Group group;
+        String query = "SELECT * FROM " + DbHelper.TABLE_GROUP;
+        Cursor cursor = database.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast()) {
+            group = cursorToGroup(cursor);
+            groupList.add(group);
+            Log.d(LOG_TAG, "Lab: " + group.getLab()
+                    + ", Lab-ID: " + group.getLab_id()
+                    + ", Gruppe: " + group.getGroup_id()
+                    + ", Supervisor: " + group.getSupervisor());
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return groupList;
+    }
+
+    /**
+     * @param cursor
+     * @return
+     */
+    private Group cursorToGroup(Cursor cursor) {
+        int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
+        int idLab = cursor.getColumnIndex(DbHelper.COLUMN_LAB);
+        int idLabId = cursor.getColumnIndex(DbHelper.COLUMN_LAB_ID);
+        int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_GROUP);
+        int idSupervisor = cursor.getColumnIndex(DbHelper.COLUMN_SUPERVISOR);
+
+        String lab = cursor.getString(idLab);
+        String lab_id = cursor.getString(idLabId);
+        String group = cursor.getString(idGroup);
+        String supervisor = cursor.getString(idSupervisor);
+        long id = cursor.getLong(idIndex);
+
+        return new Group(lab, lab_id, group, supervisor);
+    }
+
+
+    /**
+     * ***************************************************************
+     *                         Synchronisation
+     * ***************************************************************
+     */
 
     /**
      * @param id
@@ -706,5 +870,6 @@ public class DataSource implements TaskCompleted {
     public void onTaskComplete(ArrayList<HashMap<String, String>> result) {
         insertAttd(result, NO);
     }
+
 
 }
