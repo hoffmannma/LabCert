@@ -25,6 +25,8 @@ public class RequirementTableFragment extends Fragment {
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String ARG_PARAM = "param";
 
+    ListView reqListView;
+
     private DataSource dataSource;
 
     // TODO: Rename and change types of parameters
@@ -60,6 +62,7 @@ public class RequirementTableFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_requirement_table, container, false);
         dataSource = new DataSource(getActivity());
 
+        reqListView = (ListView) rootView.findViewById(R.id.listview_req_table);
         Button newReqButton = (Button) rootView.findViewById(R.id.button_new_requirement);
         Button importReqButton = (Button) rootView.findViewById(R.id.button_import_requirement);
 
@@ -93,7 +96,7 @@ public class RequirementTableFragment extends Fragment {
         // Liefert alle Datensätze
         ArrayList<Requirement> reqList = dataSource.getGroupRequirements(mParam);
 
-        ListView reqListView = (ListView) rootView.findViewById(R.id.listview_req_table);
+        //ListView reqListView = (ListView) rootView.findViewById(R.id.listview_req_table);
         RequirementTableAdapter adapter = new RequirementTableAdapter(getActivity(), reqList);
 
         Log.d(LOG_TAG, "RequirementTable: Versuche Adapter zu setzen...");

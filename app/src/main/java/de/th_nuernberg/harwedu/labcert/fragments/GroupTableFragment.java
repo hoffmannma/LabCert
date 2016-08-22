@@ -87,10 +87,10 @@ public class GroupTableFragment extends Fragment {
                                     long arg3) {
                 Group group = (Group) adapter.getItemAtPosition(position);
                 Toast.makeText(getActivity(), group.getGroup_id(), Toast.LENGTH_SHORT).show();
-                try{
+                try {
                     ((OnGroupSelectedListener) context).onGroupSelected(
                             group.getLab(), group.getGroup_id());
-                }catch (ClassCastException cce){
+                } catch (ClassCastException cce) {
 
                 }
                 /*
@@ -104,7 +104,7 @@ public class GroupTableFragment extends Fragment {
         });
     }
 
-    public interface OnGroupSelectedListener{
+    public interface OnGroupSelectedListener {
         public void onGroupSelected(String lab, String grp);
     }
 

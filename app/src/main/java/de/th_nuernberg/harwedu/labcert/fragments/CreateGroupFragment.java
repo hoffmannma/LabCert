@@ -88,7 +88,7 @@ public class CreateGroupFragment extends Fragment {
 
                 try{
                     ((OnGroupCreatedListener) context).onGroupCreated(true);
-                }catch (ClassCastException cce){
+                } catch (ClassCastException cce){
 
                 }
 

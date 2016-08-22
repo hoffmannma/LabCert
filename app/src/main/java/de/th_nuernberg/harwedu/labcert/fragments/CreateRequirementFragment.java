@@ -116,7 +116,7 @@ public class CreateRequirementFragment extends Fragment {
         return rootView;
     }
 
-        private void toastMsg(String msg) {
+    private void toastMsg(String msg) {
         Context context = getActivity().getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, msg, duration);

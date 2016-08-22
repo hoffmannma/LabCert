@@ -59,6 +59,7 @@ public class RequirementTableAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_item_req, parent, false);
             holder = new ViewHolder();
+            convertView.setTag(holder);
             /*holder.hTypeTxt = (TextView)
                     convertView.findViewById(R.id.textview_item_type);*/
             holder.hNameTxt = (TextView)
