@@ -57,7 +57,7 @@ public class RequirementTableAdapter extends BaseAdapter {
         LayoutInflater inflater = activity.getLayoutInflater();
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_item_req, null);
+            convertView = inflater.inflate(R.layout.list_item_req, parent, false);
             holder = new ViewHolder();
             /*holder.hTypeTxt = (TextView)
                     convertView.findViewById(R.id.textview_item_type);*/
@@ -79,7 +79,7 @@ public class RequirementTableAdapter extends BaseAdapter {
 
         Requirement requirement = requirementList.get(position);
         //holder.hTypeTxt.setText(requirement.getReqType());
-        holder.hNameTxt.setText(String.valueOf(requirement.getReqName()));
+        holder.hNameTxt.setText(requirement.getReqName());
         holder.hCountTxt.setText(String.valueOf(requirement.getCount()));
         /*
         holder.hGroupTxt.setText(String.valueOf(requirement.getGroup()));

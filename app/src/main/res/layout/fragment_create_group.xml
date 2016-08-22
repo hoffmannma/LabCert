@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.CreateStudentFragment">
+    tools:context=".fragments.CreateGroupFragment">
 
     <EditText
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/editText_hint_group_no"
-        android:inputType="number"
+        android:inputType="text"
         android:id="@+id/editText_group_no"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/editText_hint_supervisor"
-        android:inputType="number"
+        android:inputType="text"
         android:id="@+id/editText_supervisor"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />

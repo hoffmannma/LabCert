@@ -2,13 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.StudentTableFragment">
+    tools:context=".fragments.GroupTableFragment">
 
     <ListView
-        android:id="@+id/listview_group_table"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1" />
+        android:layout_height="wrap_content"
+        android:id="@+id/listview_group_table"
+        android:layout_gravity="center_horizontal" />
 
 </FrameLayout>

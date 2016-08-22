@@ -1,6 +1,7 @@
 package de.th_nuernberg.harwedu.labcert.fragments;
 
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
+import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 /**
@@ -23,8 +25,16 @@ import de.th_nuernberg.harwedu.labcert.objects.Student;
 public class CreateGroupFragment extends Fragment {
 
 
+    Context context;
+
     public CreateGroupFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
     }
 
 
@@ -76,6 +86,12 @@ public class CreateGroupFragment extends Fragment {
                 dataSource.createGroup(labString, labIdString, groupNoString, supervisorString);
                 toastMsg("Gruppe erstellt");
 
+                try{
+                    ((OnGroupCreatedListener) context).onGroupCreated(true);
+                }catch (ClassCastException cce){
+
+                }
+
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 GroupTableFragment fragment = new GroupTableFragment();
                 transaction.replace(R.id.fragment_container, fragment);
@@ -93,6 +109,10 @@ public class CreateGroupFragment extends Fragment {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, msg, duration);
         toast.show();
+    }
+
+    public interface OnGroupCreatedListener{
+        public void onGroupCreated(boolean newGrp);
     }
 
 }

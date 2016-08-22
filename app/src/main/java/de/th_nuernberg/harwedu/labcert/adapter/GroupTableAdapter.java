@@ -56,8 +56,9 @@ public class GroupTableAdapter extends BaseAdapter{
         LayoutInflater inflater = activity.getLayoutInflater();
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_item_group, null);
+            convertView = inflater.inflate(R.layout.list_item_group, parent, false);
             holder = new ViewHolder();
+            convertView.setTag(holder);
             holder.hLabTxt = (TextView)
                     convertView.findViewById(R.id.textview_group_lab);
             holder.hLabIdTxt = (TextView)
@@ -74,9 +75,9 @@ public class GroupTableAdapter extends BaseAdapter{
        Group group = groupList.get(position);
         //holder.hTypeTxt.setText(requirement.getReqType());
         holder.hLabTxt.setText(group.getLab());
-        holder.hLabIdTxt.setText(String.valueOf(group.getLab_id()));
-        holder.hGroupNoTxt.setText(String.valueOf(group.getGroup_id()));
-        holder.hSupervisorTxt.setText(String.valueOf(group.getSupervisor()));
+        holder.hLabIdTxt.setText(group.getLab_id());
+        holder.hGroupNoTxt.setText(group.getGroup_id());
+        holder.hSupervisorTxt.setText(group.getSupervisor());
         /*
         holder.hGroupTxt.setText(String.valueOf(requirement.getGroup()));
         holder.hLabIdTxt.setText(String.valueOf(requirement.getLab_id()));

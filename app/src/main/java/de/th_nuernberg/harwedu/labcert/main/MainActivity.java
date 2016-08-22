@@ -15,15 +15,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -54,9 +59,14 @@ import de.th_nuernberg.harwedu.labcert.fragments.UnknownStudentFragment;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        CreateGroupFragment.OnGroupCreatedListener, GroupTableFragment.OnGroupSelectedListener{
 
-    private String csv_name = "students.csv";
+    public static final String ALL_STUDENTS = "Alle Studenten";
+
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String STUDENT_TABLE_TAG = "STUDENT_TABLE";
+    private static final String csv_name = "students.csv";
 
     private static boolean readExtAccepted;
     private static boolean writeExtAccepted;
@@ -70,6 +80,9 @@ public class MainActivity extends AppCompatActivity
     private static TextView userMailTxt;
     private static TextView currentLabTxt;
     private static TextView currentGroupTxt;
+
+    private static Spinner spinner;
+    private ArrayAdapter<String> adapter;
 
     private static NavigationView navigationView;
 
@@ -114,16 +127,55 @@ public class MainActivity extends AppCompatActivity
         // TODO: Datenbank / Shared Memory Abfrage von Userdaten
         userName = "Eduard Harwart";
         userMail = "harwartedu58020@th-nuernberg.de";
-        currentLab = "INF2/1";
-        currentGroup = "Gruppe 2";
         userNameTxt.setText(userName);
         userMailTxt.setText(userMail);
-        currentLabTxt.setText(currentLab);
-        currentGroupTxt.setText(currentGroup);
 
+        /**
+         *      Spinner mit Gruppenauswahl
+         */
+        spinner = (Spinner) findViewById(R.id.spinner_group);
+        // Gruppenliste aus Datenbank holen
+        // Auf Auswahl reagieren
+        updateSpinner();
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int arg2, long arg3) {
+                String spinnerString = spinner.getSelectedItem().toString();
+                if (spinnerString != ALL_STUDENTS) {
+                    String splitSpinnerString[] = spinnerString.split("\\s+");
+                    currentLab = splitSpinnerString[0];
+                    currentGroup = splitSpinnerString[1];
+                }
+                else {
+                    currentLab = "";
+                    currentGroup = spinnerString;
+                }
+                currentLabTxt.setText(currentLab);
+                currentGroupTxt.setText(currentGroup);
+                StudentTableFragment fragment = (StudentTableFragment) getFragmentManager()
+                        .findFragmentByTag(STUDENT_TABLE_TAG);
+                if (fragment != null && fragment.isVisible()) {
+                    jumpToStudentTable();
+                }
+
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        /**
+         *      Default-Fragment (Studententabelle) öffnen
+         */
         if (savedInstanceState == null) {
-            //navigationView.getMenu().getItem(0).setChecked(true);
             jumpToStudentTable();
+            //navigationView.getMenu().getItem(0).setChecked(true);
+            //jumpToStudentTable();
             /*
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             StudentTableFragment fragment = new StudentTableFragment();
@@ -176,17 +228,16 @@ public class MainActivity extends AppCompatActivity
 
             if ((scanContent != null) && (scanFormat != null)) {
                 DataSource dataSource = new DataSource(this);
-
                 if (dataSource.studentExists(scanContent)) {
-                    dataSource.insertAttd(scanContent, getEditor());
-                    toastMsg(getString(R.string.attd_updated));
+                    //dataSource.insertAttd(scanContent, getEditor());
+                    //toastMsg(getString(R.string.attd_updated));
                     Student student = dataSource.getStudent(scanContent);
                     student.setAttd(dataSource.getAttdCount(student));
                     jumpToStudent(student);
                 } else {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     UnknownStudentFragment fragment = new UnknownStudentFragment();
-                    UnknownStudentFragment.newInstance(scanFormat, scanContent);
+                    UnknownStudentFragment.newInstance(scanFormat, scanContent, currentGroup);
                     transaction.replace(R.id.fragment_container, fragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
@@ -283,6 +334,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_add_member) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             CreateStudentFragment fragment = new CreateStudentFragment();
+            CreateStudentFragment.newInstance(currentGroup);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -343,7 +395,8 @@ public class MainActivity extends AppCompatActivity
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         StudentTableFragment fragment = new StudentTableFragment();
-        transaction.replace(R.id.fragment_container, fragment);
+        StudentTableFragment.newInstance(currentLab, currentGroup);
+        transaction.replace(R.id.fragment_container, fragment, STUDENT_TABLE_TAG);
         //transaction.addToBackStack(null);
         transaction.commit();
         navigationView.getMenu().getItem(0).setChecked(true);
@@ -388,10 +441,38 @@ public class MainActivity extends AppCompatActivity
         currentGroupTxt.setText(grp);
     }
 
-
-    // Zu Testzwecken
-    private String getEditor() {
-        return "11";
+    public void reload(){
+        finish();
+        startActivity(getIntent());
     }
+
+    private void updateSpinner(){
+        ArrayList<String> groupList = new ArrayList<String>();
+        DataSource datasource = new DataSource(this);
+        groupList = datasource.getAllGroupNames();
+        groupList.add(ALL_STUDENTS);
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, groupList);
+        // Adapter einfügen
+        spinner.setAdapter(adapter);
+    }
+
+    @Override
+    public void onGroupCreated(boolean newGrp) {
+        if (newGrp)
+            updateSpinner();
+    }
+
+    @Override
+    public void onGroupSelected(String lab, String grp){
+        if (!grp.equals(null)) {
+            String compareString = grp + " " + lab;
+            int spinnerPos = adapter.getPosition(compareString);
+            Log.d(LOG_TAG, "Abgleich des Spinners mit: " + compareString);
+            spinner.setSelection(spinnerPos);
+        }
+        jumpToStudentTable();
+    }
+
 
 }

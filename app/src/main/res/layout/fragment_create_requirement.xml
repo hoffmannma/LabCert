@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/str_Group"
-        android:inputType="number"
+        android:inputType="text"
         android:id="@+id/editText_reqGroup"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/str_Lab"
-        android:inputType="number"
+        android:inputType="text"
         android:id="@+id/editText_reqLab"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />

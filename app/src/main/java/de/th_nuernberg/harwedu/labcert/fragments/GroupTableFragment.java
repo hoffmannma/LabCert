@@ -2,6 +2,7 @@ package de.th_nuernberg.harwedu.labcert.fragments;
 
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -32,10 +33,17 @@ public class GroupTableFragment extends Fragment {
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
     private DataSource dataSource;
     private static String mParam;
+    Context context;
 
 
     public GroupTableFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
     }
 
 
@@ -79,6 +87,12 @@ public class GroupTableFragment extends Fragment {
                                     long arg3) {
                 Group group = (Group) adapter.getItemAtPosition(position);
                 Toast.makeText(getActivity(), group.getGroup_id(), Toast.LENGTH_SHORT).show();
+                try{
+                    ((OnGroupSelectedListener) context).onGroupSelected(
+                            group.getLab(), group.getGroup_id());
+                }catch (ClassCastException cce){
+
+                }
                 /*
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 GroupFragment fragment = new GroupFragment();
@@ -88,6 +102,10 @@ public class GroupTableFragment extends Fragment {
                 */
             }
         });
+    }
+
+    public interface OnGroupSelectedListener{
+        public void onGroupSelected(String lab, String grp);
     }
 
 }

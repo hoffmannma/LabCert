@@ -28,18 +28,29 @@ public class CreateStudentFragment extends Fragment {
 
     //private static final String ARG_PARAM = "param";
 
-    private static String mParam;
+    private static String mBib;
+    private static String mGroup;
 
     public CreateStudentFragment() {
         // Required empty public constructor
     }
 
-    public static CreateStudentFragment newInstance(String param) {
+    public static CreateStudentFragment newInstance(String pBib, String pGroup) {
         CreateStudentFragment fragment = new CreateStudentFragment();
         //Bundle args = new Bundle();
         //args.putString(ARG_PARAM, param);
         //fragment.setArguments(args);
-        mParam = param;
+        mBib = pBib;
+        mGroup = pGroup;
+        return fragment;
+    }
+
+    public static CreateStudentFragment newInstance(String pGroup) {
+        CreateStudentFragment fragment = new CreateStudentFragment();
+        //Bundle args = new Bundle();
+        //args.putString(ARG_PARAM, param);
+        //fragment.setArguments(args);
+        mGroup = pGroup;
         return fragment;
     }
 
@@ -47,7 +58,7 @@ public class CreateStudentFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         /*if (getArguments() != null) {
-            mParam = getArguments().getString(ARG_PARAM);
+            mBib = getArguments().getString(ARG_PARAM);
         }*/
     }
 
@@ -69,8 +80,8 @@ public class CreateStudentFragment extends Fragment {
 
         Button addStudentButton = (Button) rootView.findViewById(R.id.button_create_student);
 
-        //if(mParam != null)
-        editTextBib.setText(mParam);
+        //if(mBib != null)
+        editTextBib.setText(mBib);
 
         addStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +116,7 @@ public class CreateStudentFragment extends Fragment {
                 editTextLabteam.setText("");
 
                 dataSource.createStudent(surnameString, firstnameString,
-                        commentString, "", labteamString, matrString, bibString);
+                        commentString, mGroup, labteamString, matrString, bibString);
                 Student student = dataSource.getStudent(bibString);
                 toastMsg("Student hinzugefügt");
 

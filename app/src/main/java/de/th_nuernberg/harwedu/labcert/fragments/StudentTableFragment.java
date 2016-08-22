@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -26,10 +25,21 @@ public class StudentTableFragment extends Fragment {
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private DataSource dataSource;
+    ArrayList<Student> studentList;
+
+    private static String lab;
+    private static String group;
 
 
     public StudentTableFragment() {
         // Required empty public constructor
+    }
+
+    public static StudentTableFragment newInstance(String param1, String param2) {
+        StudentTableFragment fragment = new StudentTableFragment();
+        lab = param1;
+        group = param2;
+        return fragment;
     }
 
     @Override
@@ -46,7 +56,11 @@ public class StudentTableFragment extends Fragment {
     private void showAllListEntries(View rootView) {
 
         // Liefert alle Datensätze
-        ArrayList<Student> studentList = dataSource.getAllStudents();
+        if (group != MainActivity.ALL_STUDENTS) {
+            studentList = dataSource.getStudentsFromGrp(lab, group);
+        } else {
+            studentList = dataSource.getAllStudents();
+        }
 
         ListView studentListView = (ListView) rootView.findViewById(R.id.listview_student_table);
         StudentTableAdapter adapter = new StudentTableAdapter(getActivity(), studentList);

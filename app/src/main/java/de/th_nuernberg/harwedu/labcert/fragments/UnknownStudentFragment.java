@@ -21,12 +21,13 @@ public class UnknownStudentFragment extends Fragment {
 
     private static String mFormat;
     private static String mContent;
+    private static String mGroup;
 
     public UnknownStudentFragment() {
         // Required empty public constructor
     }
 
-    public static UnknownStudentFragment newInstance(String format, String content) {
+    public static UnknownStudentFragment newInstance(String format, String content, String group) {
         UnknownStudentFragment fragment = new UnknownStudentFragment();
         //Bundle args = new Bundle();
         //args.putString(ARG_FORMAT, format);
@@ -34,6 +35,7 @@ public class UnknownStudentFragment extends Fragment {
         //fragment.setArguments(args);
         mFormat = format;
         mContent = content;
+        mGroup = group;
         return fragment;
     }
 
@@ -70,7 +72,7 @@ public class UnknownStudentFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 CreateStudentFragment fragment = new CreateStudentFragment();
-                fragment.newInstance(mContent);
+                fragment.newInstance(mContent, mGroup);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();

@@ -273,6 +273,27 @@ public class DataSource implements TaskCompleted {
         return studentList;
     }
 
+    public ArrayList<Student> getStudentsFromGrp(String lab, String group) {
+        ArrayList<Student> studentList = new ArrayList<>();
+        Student student;
+        String query = "SELECT * FROM " + DbHelper.TABLE_STUDENT + " WHERE "
+                + DbHelper.COLUMN_LABGROUP + " =  " + group;
+        Cursor cursor = database.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast()) {
+            student = cursorToStudent(cursor);
+            student.setAttd(getAttdCount(student));
+            studentList.add(student);
+            Log.d(LOG_TAG, "ID: " + student.getId() + ", Inhalt: " + student.getSurname()
+                    + " " + student.getFirstname() + " " + student.getGroup());
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return studentList;
+    }
+
     /**
      * Routine, die prüft, ob der Student bereits in der Datenbank existiert.
      *
@@ -286,6 +307,24 @@ public class DataSource implements TaskCompleted {
         boolean exists = (cursor.getCount() > 0);
         cursor.close();
         close();
+        return exists;
+    }
+
+    /**
+     * Routine, die prüft, ob der Student bereits in der Datenbank existiert.
+     *
+     * @param bibNo Die Prüfung erfolgt anhand der übergebenen Bib.-Nr.
+     * @return Boolean: true = vorhanden, false = nicht vorhanden
+     */
+    public boolean studentExists(String bibNo, boolean db_open) {
+        if(!db_open)
+            openR();
+        Cursor cursor = database.rawQuery("SELECT * FROM " + "student_list" +
+                " WHERE bib = '" + bibNo + "'", null);
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        if (!db_open)
+            close();
         return exists;
     }
 
@@ -454,6 +493,26 @@ public class DataSource implements TaskCompleted {
         return groupList;
     }
 
+    public ArrayList<String> getAllGroupNames() {
+        openR();
+        ArrayList<String> groupList = new ArrayList<>();
+        String groupName;
+        String query = "SELECT * FROM " + DbHelper.TABLE_GROUP;
+        Cursor cursor = database.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast()) {
+            groupName = cursorToGroupName(cursor);
+            groupList.add(groupName);
+            Log.d(LOG_TAG, "Gruppe: " + groupName);
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        close();
+        return groupList;
+    }
+
     /**
      * @param cursor
      * @return
@@ -474,6 +533,25 @@ public class DataSource implements TaskCompleted {
         return new Group(lab, lab_id, group, supervisor);
     }
 
+    /**
+     * @param cursor
+     * @return
+     */
+    private String cursorToGroupName(Cursor cursor) {
+        int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
+        int idLab = cursor.getColumnIndex(DbHelper.COLUMN_LAB);
+        int idLabId = cursor.getColumnIndex(DbHelper.COLUMN_LAB_ID);
+        int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_GROUP);
+        int idSupervisor = cursor.getColumnIndex(DbHelper.COLUMN_SUPERVISOR);
+
+        String lab = cursor.getString(idLab);
+        String lab_id = cursor.getString(idLabId);
+        String group = cursor.getString(idGroup);
+        String supervisor = cursor.getString(idSupervisor);
+        long id = cursor.getLong(idIndex);
+
+        return (lab + " " + group);
+    }
 
     /**
      * ***************************************************************
@@ -486,7 +564,7 @@ public class DataSource implements TaskCompleted {
      */
     private void setSyncMissing(long id) {
         ContentValues updateValue = new ContentValues();
-        updateValue.put(DbHelper.COLUMN_LAB, "no");
+        updateValue.put(DbHelper.COLUMN_LAB_ID, "no");
 
         database.update(DbHelper.TABLE_ATTENDANCE,
                 updateValue,
@@ -762,8 +840,8 @@ public class DataSource implements TaskCompleted {
         try {
             while ((line = buffer.readLine()) != null) {
                 String[] str = line.split(context.getString(R.string.comma_split));
-
-                createStudent(str[0], str[1], str[2], str[3], str[4], str[5], str[6]);
+                if (!studentExists(str[6], true))
+                    createStudent(str[0], str[1], str[2], str[3], str[4], str[5], str[6]);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -870,6 +948,5 @@ public class DataSource implements TaskCompleted {
     public void onTaskComplete(ArrayList<HashMap<String, String>> result) {
         insertAttd(result, NO);
     }
-
 
 }
