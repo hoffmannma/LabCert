@@ -8,8 +8,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
@@ -52,57 +54,43 @@ public class CreateRequirementFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_create_requirement, container, false);
 
-        final DataSource dataSource = new DataSource(getActivity());
-        dataSource.openW();
-
-        final EditText editTextType = (EditText) rootView.findViewById(R.id.editText_reqType);
-        final EditText editTextName = (EditText) rootView.findViewById(R.id.editText_reqName);
-        final EditText editTextGroup = (EditText) rootView.findViewById(R.id.editText_reqGroup);
+        Spinner spinner = (Spinner) rootView.findViewById(R.id.req_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.req_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        //TODO Auf Spinnerauswahl reagieren
         final EditText editTextLab = (EditText) rootView.findViewById(R.id.editText_reqLab);
-        final EditText editTextTerm = (EditText) rootView.findViewById(R.id.editText_reqTerm);
-
-        Button createReqButton = (Button) rootView.findViewById(R.id.button_create_req);
-
-        //if(mParam != null)
+        final EditText editTextGroup = (EditText) rootView.findViewById(R.id.editText_reqGroup);
+        //TODO Öffnen von EditTextGroup öffnet Spinner oben; was drinsteht abhängig von Spinner oben
         editTextGroup.setText(mParam);
 
+        Button createReqButton = (Button) rootView.findViewById(R.id.button_create_req);
         createReqButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String typeString = editTextType.getText().toString();
-                String nameString = editTextName.getText().toString();
                 String groupString = editTextGroup.getText().toString();
                 String labString = editTextLab.getText().toString();
-                String termString = editTextTerm.getText().toString();
 
-                if (TextUtils.isEmpty(typeString)) {
-                    editTextType.setError(getString(R.string.editText_errorMessage));
-                    return;
-                } else if (TextUtils.isEmpty(nameString)) {
-                    editTextName.setError(getString(R.string.editText_errorMessage));
-                    return;
-                } else if (TextUtils.isEmpty(groupString)) {
+                if (TextUtils.isEmpty(groupString)) {
                     editTextGroup.setError(getString(R.string.editText_errorMessage));
                     return;
                 } else if (TextUtils.isEmpty(labString)) {
                     editTextLab.setError(getString(R.string.editText_errorMessage));
                     return;
-                } else if (TextUtils.isEmpty(termString)) {
-                    editTextTerm.setError(getString(R.string.editText_errorMessage));
-                    return;
                 }
 
-
-                editTextType.setText("");
-                editTextName.setText("");
                 editTextGroup.setText("");
                 editTextLab.setText("");
-                editTextTerm.setText("");
 
-                dataSource.createRequirement(typeString, nameString,
-                        groupString, labString, termString);
+                final DataSource dataSource = new DataSource(getActivity());
+                dataSource.openW();
+                // TODO Gruppen-ID holen (über Objekt Gruppe)
+                // TODO Übergabeparameter anpassen
+                dataSource.createRequirement();
                 toastMsg("Anforderung erstellt");
+                dataSource.close();
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 RequirementTableFragment fragment = new RequirementTableFragment();

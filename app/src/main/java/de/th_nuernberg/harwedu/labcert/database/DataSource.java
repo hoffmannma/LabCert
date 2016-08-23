@@ -355,12 +355,8 @@ public class DataSource implements TaskCompleted {
      */
 
     /**
-     * @param type
-     * @param name
-     * @param group
-     * @param lab
-     * @param term
      */
+    // TODO Funktionsparameter anpassen
     public void createRequirement(String type, String name, String group,
                                   String lab, String term) {
 
@@ -559,9 +555,7 @@ public class DataSource implements TaskCompleted {
      * ***************************************************************
      */
 
-    /**
-     * @param id
-     */
+    /*
     private void setSyncMissing(long id) {
         ContentValues updateValue = new ContentValues();
         updateValue.put(DbHelper.COLUMN_LAB_ID, "no");
@@ -576,6 +570,7 @@ public class DataSource implements TaskCompleted {
                 DbHelper.COLUMN_ID + "=" + id,
                 null);
     }
+    */
 
     public void insertBib(Student student) {
         openW();
@@ -589,9 +584,9 @@ public class DataSource implements TaskCompleted {
 
     /**
      * Anwesenheit einfügen
-     *
-     * @param queryValues
+
      */
+    /*
     public void insertAttd(HashMap<String, String> queryValues) {
         openW();
         ContentValues values = new ContentValues();
@@ -606,12 +601,13 @@ public class DataSource implements TaskCompleted {
         database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
         close();
     }
-
+*/
     /**
      * Anwesenheit einfügen
      *
      * @param queryValues
      */
+    /*
     public void insertAttd(HashMap<String, String> queryValues, String newEntry) {
         openW();
         ContentValues values = new ContentValues();
@@ -625,12 +621,14 @@ public class DataSource implements TaskCompleted {
         database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
         close();
     }
+    */
 
     /**
      * Anwesenheit einfügen
      *
      * @param queryValues
      */
+    /*
     public void insertAttd(ArrayList<HashMap<String, String>> queryValues, String newEntry) {
         openW();
         ContentValues values = new ContentValues();
@@ -653,6 +651,7 @@ public class DataSource implements TaskCompleted {
         }
         close();
     }
+    */
 
     /**
      * Anwesenheit einfügen
@@ -660,6 +659,7 @@ public class DataSource implements TaskCompleted {
      * @param matr
      * @param editor
      */
+    /*
     public void insertAttd(String matr, String editor) {
         openW();
         ContentValues values = new ContentValues();
@@ -675,6 +675,7 @@ public class DataSource implements TaskCompleted {
         database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
         close();
     }
+*/
 
     /**
      * Anwesenheit einfügen
@@ -682,6 +683,7 @@ public class DataSource implements TaskCompleted {
      * @param matr
      * @param editor
      */
+    /*
     public void insertAttd(String matr, String editor, String date, String comment) {
         openW();
         ContentValues values = new ContentValues();
@@ -697,6 +699,7 @@ public class DataSource implements TaskCompleted {
         database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
         close();
     }
+*/
 
     /**
      * Ermittelt die Anzahl wahrgenommener Termine
@@ -704,6 +707,7 @@ public class DataSource implements TaskCompleted {
      * @param student
      * @return
      */
+    /*
     public int[] getAttdCount(Student student) {
         int[] attdRecords = new int[5];
         for (int i = 0; i < 5; i++)
@@ -720,6 +724,7 @@ public class DataSource implements TaskCompleted {
         close();
         return attdRecords;
     }
+*/
 
     /**
      * Synchronisiert neue Einträge in lokaler Datenbank mit Oracle-Datenbank
@@ -727,6 +732,7 @@ public class DataSource implements TaskCompleted {
      * Bedingung:
      * Spalte NEW_ENTRY = 1 und Kombination Matr+Datum in Oracle-DB nicht vorhanden
      */
+    /*
     public boolean uploadNewAttdRecords() {
         Log.d(LOG_TAG, "Aufruf uploadNewAttdRecords");
         OracleDataSource oracleDS = new OracleDataSource(context);
@@ -768,7 +774,7 @@ public class DataSource implements TaskCompleted {
         close();
         return true;
     }
-
+*/
     /**
      * Überschreibt lokale Attendance-Einträge mit den Einträgen der Oracle-Datenbank
      *
@@ -788,6 +794,7 @@ public class DataSource implements TaskCompleted {
      *
      * @param student
      */
+    /*
     public void deleteAttdRecords(Student student) {
         openW();
 
@@ -798,25 +805,27 @@ public class DataSource implements TaskCompleted {
         /*
         database.rawQuery("DELETE FROM " + DbHelper.TABLE_ATTENDANCE +
                 " WHERE " + DbHelper.COLUMN_MATR + " = '" +  student.getBib() + "';", null);
-                */
+                *//*
         close();
         Log.d(LOG_TAG, "Einträge gelöscht! Matrikel: " + student.getBib());
     }
-
+*/
 
     /**
      * Löscht ALLE Anwesenheitsdaten
      */
+    /*
     public void deleteAttdRecords() {
         openW();
         database.delete(DbHelper.TABLE_ATTENDANCE, null, null);
         /*
         database.rawQuery("DELETE FROM " + DbHelper.TABLE_ATTENDANCE +
                 " WHERE " + DbHelper.COLUMN_MATR + " = '" +  student.getBib() + "';", null);
-                */
+                *//*
         close();
         Log.d(LOG_TAG, "Alle Einträge gelöscht!");
     }
+    */
 
     /**
      * Routine, um CSV-Datei in Datenbank zu importieren.
@@ -854,6 +863,7 @@ public class DataSource implements TaskCompleted {
      *
      * @return Daten als String-Hashmap
      */
+    /*
     public ArrayList<HashMap<String, String>> getAttendance() {
 
         ArrayList<HashMap<String, String>> wordList;
@@ -895,18 +905,22 @@ public class DataSource implements TaskCompleted {
         close();
         return wordList;
     }
+    */
+
 
     /**
      * JSON erstellen
      */
+    /*
     public String composeJSONfromSQLite() {
         Gson gson = new GsonBuilder().create();
         return gson.toJson(getAttendance());
-    }
+    }*/
 
     /**
      * @return Anzahl der SQLite-Datensätze , die noch nicht synchronisiert wurden
      */
+    /*
     public int dbSyncCount() {
         int count = 0;
         String selectQuery = "SELECT  * FROM " + DbHelper.TABLE_ATTENDANCE + " WHERE " +
@@ -917,11 +931,12 @@ public class DataSource implements TaskCompleted {
         close();
         //return count;
         return 1;
-    }
+    }*/
 
     /**
      * Sync Status Update (auf 'yes')
      */
+    /*
     public void updateSyncStatus(String id, String status) {
         openW();
         String updateQuery = "Update " + DbHelper.TABLE_ATTENDANCE +
@@ -931,11 +946,12 @@ public class DataSource implements TaskCompleted {
         database.execSQL(updateQuery);
         database.close();
     }
-
+*/
     /**
      * Tabelle Attendence: NEW_ENTRY auf parameter 'status' setzen
      * Achtung: Die Datenbank muss bereits geöffnet sein
      */
+    /*
     private void updateAttdEntryStatus(String id, String status) {
         String updateQuery = "Update " + DbHelper.TABLE_ATTENDANCE +
                 " set " + DbHelper.COLUMN_NEW_ENTRY + " = '" + status
@@ -943,10 +959,11 @@ public class DataSource implements TaskCompleted {
         Log.d("query", updateQuery);
         database.execSQL(updateQuery);
     }
-
+*/
+    /*
     @Override
     public void onTaskComplete(ArrayList<HashMap<String, String>> result) {
         insertAttd(result, NO);
-    }
+    }*/
 
 }

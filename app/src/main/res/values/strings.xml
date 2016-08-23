@@ -59,4 +59,13 @@
     <string name="editText_hint_supervisor">Betreuer</string>
     <string name="all_groups">Alle Gruppen</string>
 
+    <string-array name="req_array">
+        <item>Anwesenheit</item>
+        <item>Aufgabe</item>
+        <item>Punktzahl</item>
+        <item>Eingangstest</item>
+        <item>Kurztest</item>
+        <item>Abfrage</item>
+    </string-array>
+
 </resources>

@@ -7,7 +7,7 @@ import android.util.Log;
 
 
 /**
- * TODO
+ * TODO Tabellen überarbeiten
  */
 
 
@@ -27,12 +27,13 @@ public class DbHelper extends SQLiteOpenHelper {
      * - Aufgaben
      * - Praktika (Fächer)
      */
-    public static final String TABLE_STUDENT = "student_list";
-    public static final String TABLE_ATTENDANCE = "attendance_list";
-    public static final String TABLE_TASKS = "task_list";
-    public static final String TABLE_GROUP = "group_list";
-    public static final String TABLE_REQ = "requirement_list";
-    public static final String TABLE_LABS = "lab_list";
+    public static final String TABLE_STUDENT = "student_table";
+    //public static final String TABLE_ATTENDANCE = "attendance_table";
+    //public static final String TABLE_TASKS = "task_table";
+    public static final String TABLE_GROUP = "group_table";
+    public static final String TABLE_REQ = "requirement_table";
+    //public static final String TABLE_LABS = "lab_table";
+    public static final String TABLE_PROGRESS = "progress_table";
 
     /**
      * Gemeinsame verwendete Spaltennamen
@@ -42,177 +43,86 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_COMMENT = "comment";
     public static final String COLUMN_EDITOR = "editor";
     public static final String COLUMN_TS = "timestamp";
-    public static final String COLUMN_LAB = "lab";
+    public static final String COLUMN_LAB_NAME = "lab_name";
     public static final String COLUMN_LAB_ID = "lab_id";
     public static final String COLUMN_NEW_ENTRY = "new_entry";
     public static final String COLUMN_GROUP = "group_id";
-
-    /**
-     * Tabelle Student
-     * 1. ID
-     * 2. Nachname
-     * 3. Vorname
-     * 4. Kommentar
-     * 5. Praktikumsgruppe
-     * 6. Laborteam
-     * 7. Matrikelnummer
-     * 8. Bibliotheksnummer
-     */
+    public static final String COLUMN_SUPERVISOR = "supervisor";
     public static final String COLUMN_SURNAME = "surname";
     public static final String COLUMN_FIRSTNAME = "firstname";
     public static final String COLUMN_LABGROUP = "labgroup";
-    public static final String COLUMN_LABTEAM = "labteam";
     public static final String COLUMN_BIB = "bib";
-
-    /**
-     * Tabelle Anwesenheit
-     * 1. ID
-     * 2. Matrikelnummer
-     * 3. Zeitstempel
-     * 4. Verfasser
-     * 5. Datum (Anwesenheit an Termin)
-     * 6. Kommentar
-     * 7. Aktualisiert (ja/nein)*
-     */
+    public static final String COLUMN_TITLE = "title";
+    public static final String COLUMN_EMAIL = "email";
     public static final String COLUMN_DATE = "a_date";
-
-    /**
-     * Tabelle Aufgaben
-     * 1. ID
-     * 2. Matrikelnummer
-     * 3. Zeitstempel
-     * 4. Verfasser
-     * 5. Aufgabe
-     * 6. Status (erledigt / nicht erledigt / in Korrektur / Nachbesserung erforderderlich)
-     * 7. Kommentar
-     * 8. Aktualisiert (ja/nein)
-     */
-    public static final String COLUMN_TASK = "task";
-    public static final String COLUMN_STATUS = "status";
-
-    /**
-     * Konstantendefinitionen: Tabelle Fächer
-     * 1. ID
-     * 2. Praktikum / Fach
-     * 3. Betreuer
-     * 4. Minimale Anwesenheit
-     * 5. Mindestaufgabenzahl
-     * 6. Termine
-     * 7. Pflichttermine
-     * 8. Pflichtaufgaben
-     * 9. Mindestpunktzahl (Informatik)
-     * 10. Zeitstempel
-     * 11. Verfasser
-     * 12. Kommentar
-     * 13. Aktualisiert (ja/nein)
-     */
-    public static final String COLUMN_SUPERVISOR = "supervisor";
-    public static final String COLUMN_MIN_ATTD = "min_attd";
-    public static final String COLUMN_MIN_TASKS = "min_tasks";
-    public static final String COLUMN_DATES = "dates";
-    public static final String COLUMN_COMP_DATES = "comp_dates";
-    public static final String COLUMN_COMP_TASKS = "comp_tasks";
-    public static final String COLUMN_MIN_SCORE = "min_score";
-
-    /**
-     * Konstantendefinitionen: Tabelle Anforderungen
-     * 1. ID
-     * 2. Typ
-     * 3. Anzahl
-     * 4. Bezeichnung
-     * 5. Gruppe
-     * 6. Fach
-     */
     public static final String COLUMN_TYPE = "type";
     public static final String COLUMN_COUNT = "count";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_TERM = "term";
+    public static final String COLUMN_SCORE = "score";
+    public static final String COLUMN_GROUP_ID = "group_id";
+
+    /**
+     * Tabelle Fortschritt
+     */
+    public static final String COLUMN_REQ_ID = "req_id";
 
     /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Studenten'
+     * ID | Gruppen-ID | Anrede | Nachname | Vorname | Matr | Email | Bib-Nr. | Kommentar
      */
     public static final String CREATE_STUDENT_TABLE =
             "CREATE TABLE " + TABLE_STUDENT +
                     "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_GROUP_ID + " TEXT NOT NULL, " +
+                    COLUMN_TITLE + " TEXT NOT NULL, " +
                     COLUMN_SURNAME + " TEXT NOT NULL, " +
                     COLUMN_FIRSTNAME + " TEXT NOT NULL, " +
-                    COLUMN_COMMENT + " TEXT NOT NULL, " +
-                    COLUMN_LABGROUP + " TEXT NOT NULL, " +
-                    COLUMN_LABTEAM + " TEXT NOT NULL, " +
                     COLUMN_MATR + " TEXT NOT NULL, " +
-                    COLUMN_BIB + " TEXT NOT NULL);";
-
-    /**
-     * SQL-Befehl (String) zum Erzeugen der Tabelle 'Anwesenheit'
-     */
-    public static final String CREATE_ATTENDANCE_TABLE =
-            "CREATE TABLE " + TABLE_ATTENDANCE +
-                    "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_MATR + " TEXT NOT NULL, " +
-                    COLUMN_TS + " TEXT NOT NULL, " +
-                    COLUMN_EDITOR + " TEXT NOT NULL, " +
-                    COLUMN_DATE + " TEXT NOT NULL, " +
+                    COLUMN_EMAIL + " TEXT NOT NULL, " +
+                    COLUMN_BIB + " TEXT NOT NULL, " +
                     COLUMN_COMMENT + " TEXT NOT NULL, " +
-                    COLUMN_LAB_ID + " TEXT NOT NULL, " +
-                    COLUMN_NEW_ENTRY + " TEXT NOT NULL);";
-
-    /**
-     * SQL-Befehl (String) zum Erzeugen der Tabelle 'Aufgaben'
-     */
-    public static final String CREATE_TASK_TABLE =
-            "CREATE TABLE " + TABLE_TASKS +
-                    "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_MATR + " TEXT NOT NULL, " +
-                    COLUMN_TS + " TEXT NOT NULL, " +
-                    COLUMN_EDITOR + " TEXT NOT NULL, " +
-                    COLUMN_TASK + " TEXT NOT NULL, " +
-                    COLUMN_STATUS + " TEXT NOT NULL, " +
-                    COLUMN_COMMENT + " TEXT NOT NULL, " +
-                    COLUMN_LAB_ID + " TEXT NOT NULL, " +
-                    COLUMN_NEW_ENTRY + " TEXT NOT NULL);";
-
-    /**
-     * SQL-Befehl (String) zum Erzeugen der Tabelle 'Praktika'
-     */
-    public static final String CREATE_LAB_TABLE =
-            "CREATE TABLE " + TABLE_LABS +
-                    "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_LAB + " TEXT NOT NULL, " +
-                    COLUMN_SUPERVISOR + " TEXT NOT NULL, " +
-                    COLUMN_MIN_ATTD + " TEXT NOT NULL, " +
-                    COLUMN_MIN_TASKS + " TEXT NOT NULL, " +
-                    COLUMN_DATES + " TEXT NOT NULL, " +
-                    COLUMN_COMP_DATES + " TEXT NOT NULL, " +
-                    COLUMN_COMP_TASKS + " TEXT NOT NULL, " +
-                    COLUMN_MIN_SCORE + " TEXT NOT NULL, " +
-                    COLUMN_TS + " TEXT NOT NULL, " +
-                    COLUMN_EDITOR + " TEXT NOT NULL, " +
-                    COLUMN_COMMENT + " TEXT NOT NULL, " +
-                    COLUMN_LAB_ID + " TEXT NOT NULL);";
+                    COLUMN_TS + " TEXT NOT NULL);";
 
     /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Gruppen'
+     * ID | Labor-ID | Laborname | Gruppe | Semester | Betreuer-Kennung
      */
     public static final String CREATE_GROUP_TABLE =
             "CREATE TABLE " + TABLE_GROUP +
                     "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_SUPERVISOR + " TEXT NOT NULL, " +
-                    COLUMN_GROUP + " TEXT NOT NULL, " +
                     COLUMN_LAB_ID + " TEXT NOT NULL, " +
-                    COLUMN_LAB + " TEXT NOT NULL);";
+                    COLUMN_LAB_NAME + " TEXT NOT NULL, " +
+                    COLUMN_GROUP + " TEXT, " +
+                    COLUMN_TERM + " TEXT NOT NULL, " +
+                    COLUMN_SUPERVISOR + " TEXT NOT NULL, " +
+                    COLUMN_TS + " TEXT);";
 
     /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Anforderungen'
+     * ID | Gruppen-ID | Typ | Anzahl | Zeitstempel
      */
     public static final String CREATE_REQ_TABLE =
             "CREATE TABLE " + TABLE_REQ +
                     "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_GROUP_ID + " TEXT NOT NULL, " +
                     COLUMN_TYPE + " TEXT NOT NULL, " +
                     COLUMN_COUNT + " TEXT NOT NULL, " +
-                    COLUMN_NAME + " TEXT NOT NULL, " +
-                    COLUMN_GROUP + " TEXT NOT NULL, " +
-                    COLUMN_LAB_ID + " TEXT NOT NULL, " +
-                    COLUMN_TERM + " TEXT NOT NULL);";
+                    COLUMN_TS + " TEXT NOT NULL);";
+
+    /**
+     * SQL-Befehl (String) zum Erzeugen der Tabelle 'Fortschritt'
+     * ID | Anforderungs-ID | Matr | Punktzahl | Zeitstempel
+     */
+    public static final String CREATE_PROGRESS_TABLE =
+            "CREATE TABLE " + TABLE_PROGRESS +
+                    "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_REQ_ID + " TEXT NOT NULL, " +
+                    COLUMN_MATR + " TEXT NOT NULL, " +
+                    COLUMN_SCORE + " TEXT, " +
+                    COLUMN_COMMENT + " TEXT, " +
+                    COLUMN_TS + " TEXT NOT NULL);";
+
 
     public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -226,20 +136,14 @@ public class DbHelper extends SQLiteOpenHelper {
                     CREATE_STUDENT_TABLE + " angelegt.");
             db.execSQL(CREATE_STUDENT_TABLE);
             Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
-                    CREATE_ATTENDANCE_TABLE + " angelegt.");
-            db.execSQL(CREATE_ATTENDANCE_TABLE);
-            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
-                    CREATE_TASK_TABLE + " angelegt.");
-            db.execSQL(CREATE_TASK_TABLE);
-            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
                     CREATE_GROUP_TABLE + " angelegt.");
             db.execSQL(CREATE_GROUP_TABLE);
             Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
                     CREATE_REQ_TABLE + " angelegt.");
             db.execSQL(CREATE_REQ_TABLE);
             Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
-                    CREATE_LAB_TABLE + " angelegt.");
-            db.execSQL(CREATE_LAB_TABLE);
+                    CREATE_PROGRESS_TABLE + " angelegt.");
+            db.execSQL(CREATE_PROGRESS_TABLE);
         } catch (Exception ex) {
             Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle: " + ex.getMessage());
         }
