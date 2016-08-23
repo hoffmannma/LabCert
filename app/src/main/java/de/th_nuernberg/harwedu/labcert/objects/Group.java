@@ -1,67 +1,66 @@
 package de.th_nuernberg.harwedu.labcert.objects;
 
+import java.util.ArrayList;
+
 /**
  * Created by Edu on 21.08.2016.
  */
 public class Group {
-    private Student[] Student;
-    private String group_id;
+    private ArrayList<Student> student;
+    private long id;
     private String lab_id;
-    private String lab;
-
-
+    private String lab_name;
+    private String group;
+    private String term;
     private String supervisor;
 
-    public Group(de.th_nuernberg.harwedu.labcert.objects.Student[] student, String group_id, String lab_id) {
-        Student = student;
-        this.group_id = group_id;
+    public Group(long id, String lab_id, String lab_name, String group, String term, String supervisor,
+                 ArrayList<Student> student) {
+        this.id = id;
         this.lab_id = lab_id;
+        this.lab_name = lab_name;
+        this.group = group;
+        this.term = term;
+        this.supervisor = supervisor;
+        this.student = student;
     }
 
-    public Group(String group_id, String lab_id, String lab, String supervisor) {
-        this.group_id = group_id;
+    public Group(long id, String lab_id, String lab_name, String group, String term, String supervisor) {
+        this.id = id;
         this.lab_id = lab_id;
-        this.lab = lab;
+        this.lab_name = lab_name;
+        this.group = group;
+        this.term = term;
         this.supervisor = supervisor;
     }
 
-    public de.th_nuernberg.harwedu.labcert.objects.Student[] getStudent() {
-        return Student;
+    public long getId() { return id; }
+
+    public ArrayList<Student> getStudent() {
+        return student;
     }
 
-    public void setStudent(de.th_nuernberg.harwedu.labcert.objects.Student[] student) {
-        Student = student;
+    public void setStudent(ArrayList<Student> student) {
+        this.student = student;
     }
 
-    public String getGroup_id() {
-        return group_id;
-    }
+    public String getLab_id() { return lab_id; }
 
-    public void setGroup_id(String group_id) {
-        this.group_id = group_id;
-    }
+    public void setLab_id(String lab_id) { this.lab_id = lab_id; }
 
-    public String getLab_id() {
-        return lab_id;
-    }
+    public String getLab_name() { return lab_name; }
 
-    public void setLab_id(String lab_id) {
-        this.lab_id = lab_id;
-    }
+    public void setLab_name(String lab_name) { this.lab_name = lab_name; }
 
-    public String getLab() {
-        return lab;
-    }
+    public String getGroup() { return group; }
 
-    public void setLab(String lab) {
-        this.lab = lab;
-    }
+    public void setGroup(String group) { this.group = group; }
 
-    public String getSupervisor() {
-        return supervisor;
-    }
+    public String getTerm() { return term; }
 
-    public void setSupervisor(String supervisor) {
-        this.supervisor = supervisor;
-    }
+    public void setTerm(String term) { this.term = term; }
+
+    public String getSupervisor() { return supervisor; }
+
+    public void setSupervisor(String supervisor) { this.supervisor = supervisor; }
 }

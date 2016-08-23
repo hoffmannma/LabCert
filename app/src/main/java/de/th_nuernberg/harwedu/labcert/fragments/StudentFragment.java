@@ -54,7 +54,7 @@ public class StudentFragment extends Fragment {
         Button delAttdButton = (Button) rootView.findViewById(R.id.button_del_attd);
 
         studentTxt.setText(student.getStudentData());
-        commEditTxt.setText(student.getCommentStudent());
+        commEditTxt.setText(student.getComment());
 
         saveDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +63,7 @@ public class StudentFragment extends Fragment {
                 String commentString = commEditTxt.getText().toString();
 
                 DataSource dataSource = new DataSource(getActivity());
-                dataSource.updateComment(student.getId(), commentString);
+                dataSource.updateCommentStudent(student.getId(), commentString);
 
                 getActivity().getFragmentManager().popBackStack();
 
@@ -106,7 +106,7 @@ public class StudentFragment extends Fragment {
 
                 DataSource dataSource = new DataSource(getActivity());
                 dataSource.deleteAttdRecords(student);
-                Student student_new = dataSource.getStudent(student.getBib());
+                Student student_new = dataSource.getStudentByBib(student.getBib());
                 studentTxt.setText(student_new.getStudentData());
 
                 toastMsg("Anwesenheitsdaten gelöscht");

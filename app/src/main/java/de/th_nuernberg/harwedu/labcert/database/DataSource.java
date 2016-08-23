@@ -6,16 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -26,7 +21,6 @@ import de.th_nuernberg.harwedu.labcert.objects.Group;
 import de.th_nuernberg.harwedu.labcert.objects.Requirement;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 import de.th_nuernberg.harwedu.labcert.sync.GetRemoteAttdTask;
-import de.th_nuernberg.harwedu.labcert.sync.OracleDataSource;
 
 
 /**
@@ -35,7 +29,7 @@ import de.th_nuernberg.harwedu.labcert.sync.OracleDataSource;
  *
  * TODO
  * - CreateStudent Fach-ID übergeben -> Switch-Case-Anweisung mit entsprechenden Einträgen
- * - cursorToStudent + getStudent anpassen
+ * - cursorToStudent + getStudentByBib anpassen
  * - Query (joins)
  */
 
@@ -46,17 +40,6 @@ public class DataSource implements TaskCompleted {
 
     private SQLiteDatabase database;
     private DbHelper dbHelper;
-
-    private String columns[] = {
-            DbHelper.COLUMN_ID,
-            DbHelper.COLUMN_SURNAME,
-            DbHelper.COLUMN_FIRSTNAME,
-            DbHelper.COLUMN_COMMENT,
-            DbHelper.COLUMN_LABGROUP,
-            DbHelper.COLUMN_LABTEAM,
-            DbHelper.COLUMN_MATR,
-            DbHelper.COLUMN_BIB,
-    };
 
     Context context;
     ArrayList<HashMap<String, String>> rs_list;
@@ -108,65 +91,73 @@ public class DataSource implements TaskCompleted {
     /**
      * Erzeugen eines Studenten in der Datenbank
      *
+     * @param lab_name
+     * @param group
+     * @param term
+     * @param title
      * @param surname
      * @param firstname
-     * @param comment
-     * @param group
-     * @param team
      * @param matr
+     * @param email
+     * @param comment
      * @param bib
      * @return
      */
-    public void createStudent(String surname, String firstname, String comment,
-                              String group, String team, String matr,
-                              String bib) {
-
+    public void createStudent(String lab_name, String group, String term,
+                              String title, String surname, String firstname,
+                              String matr, String email, String comment, String bib) {
         ContentValues valuesStudent = new ContentValues();
-        ContentValues valuesAttendance = new ContentValues();
-        ContentValues valuesTasks = new ContentValues();
-
-        // Strings zu Testzwecken
-        String editor = "17";
-        String date = "2016-06-01";
-        String upd_status = "no";
-        String new_entry = "yes";
 
         // Tabelle Student füllen
+        valuesStudent.put(DbHelper.COLUMN_LAB_NAME, lab_name);
+        valuesStudent.put(DbHelper.COLUMN_GROUP, group);
+        valuesStudent.put(DbHelper.COLUMN_TERM, term);
+        valuesStudent.put(DbHelper.COLUMN_TITLE, title);
         valuesStudent.put(DbHelper.COLUMN_SURNAME, surname);
         valuesStudent.put(DbHelper.COLUMN_FIRSTNAME, firstname);
-        valuesStudent.put(DbHelper.COLUMN_COMMENT, comment);
-        valuesStudent.put(DbHelper.COLUMN_LABGROUP, group);
-        valuesStudent.put(DbHelper.COLUMN_LABTEAM, team);
         valuesStudent.put(DbHelper.COLUMN_MATR, matr);
+        valuesStudent.put(DbHelper.COLUMN_EMAIL, email);
+        valuesStudent.put(DbHelper.COLUMN_COMMENT, comment);
         valuesStudent.put(DbHelper.COLUMN_BIB, bib);
 
-        /*
-        // Tabelle Anwesenheit füllen
-        valuesAttendance.put(DbHelper.COLUMN_MATR, matr);
-        valuesAttendance.put(DbHelper.COLUMN_TS,
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        valuesAttendance.put(DbHelper.COLUMN_EDITOR, editor );
-        valuesAttendance.put(DbHelper.COLUMN_DATE, date);
-        valuesAttendance.put(DbHelper.COLUMN_COMMENT, comment);
-        valuesAttendance.put(DbHelper.COLUMN_LAB, upd_status);
-        valuesAttendance.put(DbHelper.COLUMN_NEW_ENTRY, new_entry);
+        database.insert(DbHelper.TABLE_STUDENT, null, valuesStudent);
 
-        valuesTasks.put(DbHelper.COLUMN_MATR, matr);
-        */
+        Log.d(LOG_TAG, "Neuer Student " + firstname + " " + surname + " wurde angelegt.");
+    }
+
+    /**
+     * Erzeugen eines Studenten in der Datenbank ohne die BIB-Nummer
+     *
+     * @param lab_name
+     * @param group
+     * @param term
+     * @param title
+     * @param surname
+     * @param firstname
+     * @param matr
+     * @param email
+     * @param comment
+     * @return
+     */
+    public void createStudent(String lab_name, String group, String term,
+                              String title, String surname, String firstname,
+                              String matr, String email, String comment) {
+        ContentValues valuesStudent = new ContentValues();
+
+        // Tabelle Student füllen
+        valuesStudent.put(DbHelper.COLUMN_LAB_NAME, lab_name);
+        valuesStudent.put(DbHelper.COLUMN_GROUP, group);
+        valuesStudent.put(DbHelper.COLUMN_TERM, term);
+        valuesStudent.put(DbHelper.COLUMN_TITLE, title);
+        valuesStudent.put(DbHelper.COLUMN_SURNAME, surname);
+        valuesStudent.put(DbHelper.COLUMN_FIRSTNAME, firstname);
+        valuesStudent.put(DbHelper.COLUMN_MATR, matr);
+        valuesStudent.put(DbHelper.COLUMN_EMAIL, email);
+        valuesStudent.put(DbHelper.COLUMN_COMMENT, comment);
 
         database.insert(DbHelper.TABLE_STUDENT, null, valuesStudent);
-//        database.insert(DbHelper.TABLE_ATTENDANCE, null, valuesAttendance);
 
-        /*
-        Cursor cursor = database.query(DbHelper.TABLE_STUDENT,
-                columns, DbHelper.COLUMN_ID + "=" + insertIdStudent,
-                null, null, null, null);
-
-        cursor.moveToFirst();
-        Student student = cursorToStudent(cursor);
-        cursor.close();
-*/
-        //return getStudent(bib);
+        Log.d(LOG_TAG, "Neuer Student " + firstname + " " + surname + " wurde angelegt.");
     }
 
     /**
@@ -176,12 +167,10 @@ public class DataSource implements TaskCompleted {
      */
     public void deleteStudent(Student student) {
         long id = student.getId();
-        openW();
         database.delete(DbHelper.TABLE_STUDENT,
                 DbHelper.COLUMN_ID + "=" + id,
                 null);
-        close();
-        Log.d(LOG_TAG, "Eintrag gelöscht! ID: " + id + " Inhalt: " + student.toString());
+        Log.d(LOG_TAG, "Student " + student.getFirstname() + " " + student.getSurname() + " wurde gelöscht!");
     }
 
     /**
@@ -192,41 +181,50 @@ public class DataSource implements TaskCompleted {
      */
     private Student cursorToStudent(Cursor cursor) {
         int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
+        int idLabName = cursor.getColumnIndex(DbHelper.COLUMN_LAB_NAME);
+        int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_GROUP);
+        int idTerm = cursor.getColumnIndex(DbHelper.COLUMN_TERM);
+        int idTitle = cursor.getColumnIndex(DbHelper.COLUMN_TITLE);
         int idSurname = cursor.getColumnIndex(DbHelper.COLUMN_SURNAME);
         int idFirstname = cursor.getColumnIndex(DbHelper.COLUMN_FIRSTNAME);
-        int idComment = cursor.getColumnIndex(DbHelper.COLUMN_COMMENT);
-        int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_LABGROUP);
-        int idTeam = cursor.getColumnIndex(DbHelper.COLUMN_LABTEAM);
         int idMatr = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
+        int idEmail = cursor.getColumnIndex(DbHelper.COLUMN_EMAIL);
         int idBib = cursor.getColumnIndex(DbHelper.COLUMN_BIB);
+        int idComment = cursor.getColumnIndex(DbHelper.COLUMN_COMMENT);
 
+        long id = cursor.getLong(idIndex);
+        String labName = cursor.getString(idLabName);
+        String group = cursor.getString(idGroup);
+        String term = cursor.getString(idTerm);
+
+        String title = cursor.getString(idTitle);
         String surname = cursor.getString(idSurname);
         String firstname = cursor.getString(idFirstname);
-        String comment = cursor.getString(idComment);
-        String group = cursor.getString(idGroup);
-        String team = cursor.getString(idTeam);
         String matr = cursor.getString(idMatr);
+        String email = cursor.getString(idEmail);
         String bib = cursor.getString(idBib);
-        long id = cursor.getLong(idIndex);
+        String comment = cursor.getString(idComment);
 
-        int[] attendance = new int[20];
-        int[] tasks = new int[20];
+        //neuen Studenten erzeugen
+        Student student = new Student (id, labName, group, term, title, surname, firstname, matr, email, bib, comment);
 
-        /** Routine für
-         for (int i=0; i<5; i++)
-         attendance[i] = cursor.getInt(attd1+i++);
-         for (int i=0; i<5; i++)
-         attendance[i] = cursor.getInt(attd1+i++);
-         */
+        //aktuellen Fortschritt ermitteln
+        student.setProgress(determine_progress(student));
 
-        // Anwesenheit und Tasks auf 0 initialisieren
-        for (int i = 0; i < 5; i++) {
-            attendance[i] = 0;
-            tasks[i] = 0;
-        }
+        return student;
+    }
 
-        return new Student(surname, firstname, comment,
-                group, team, matr, bib, tasks, attendance, id);
+    /**
+     * Routine, um den Fortschritt eines einzelnen Studenten zu ermitteln
+     *
+     * @param student
+     * @return Floatwert, wie weit der Student mit dem Praktikum fortgeschritten ist.
+     */
+    public float determine_progress(Student student) {
+        float progress = 0;
+        //TODO Fortschritt ermitteln
+
+        return progress;
     }
 
     /**
@@ -235,16 +233,16 @@ public class DataSource implements TaskCompleted {
      * @param bibNo Übergabe der Bib.-Nr. (String)
      * @return Objekt Student, dass alle Daten enthält.
      */
-    public Student getStudent(String bibNo) {
-        openR();
+    public Student getStudentByBib(String labName, String term, String bibNo) {
         Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_STUDENT +
-                " WHERE " + DbHelper.COLUMN_BIB + " = '" + bibNo + "'", null);
+                " WHERE " + DbHelper.COLUMN_LAB_NAME + " = '" + labName + "' AND " +
+                DbHelper.COLUMN_TERM + " = '" + term + "' AND " +
+                DbHelper.COLUMN_MATR + " = '" + bibNo + "'", null);
         if (cursor != null)
             cursor.moveToFirst();
         Student student = cursorToStudent(cursor);
         assert cursor != null;
         cursor.close();
-        close();
         return student;
     }
 
@@ -260,15 +258,20 @@ public class DataSource implements TaskCompleted {
         Cursor cursor = database.rawQuery(query, null);
         cursor.moveToFirst();
 
+        Log.d(LOG_TAG, "Erstelle Liste mit allen Studenten --------------------------------------");
+
         while (!cursor.isAfterLast()) {
             student = cursorToStudent(cursor);
-            student.setAttd(getAttdCount(student));
+            student.setProgress(determine_progress(student));
             studentList.add(student);
-            Log.d(LOG_TAG, "ID: " + student.getId() + ", Inhalt: " + student.getSurname()
-                    + " " + student.getFirstname() + " " + student.getGroup());
+            Log.d(LOG_TAG, "Student " + student.getFirstname() + " " + student.getSurname() +
+                            " aus dem Praktikum " + student.getLabName() + " Gruppe " +
+                            student.getGroup() + " hinzugefügt.");
             cursor.moveToNext();
         }
         cursor.close();
+
+        Log.d(LOG_TAG, "Studentenliste erstellt -------------------------------------------------");
 
         return studentList;
     }
@@ -281,50 +284,71 @@ public class DataSource implements TaskCompleted {
         Cursor cursor = database.rawQuery(query, null);
         cursor.moveToFirst();
 
+        Log.d(LOG_TAG, "Erstelle Liste aus dem Praktikum " + lab + " Gruppe " + group + " ----------------");
+
         while (!cursor.isAfterLast()) {
             student = cursorToStudent(cursor);
-            student.setAttd(getAttdCount(student));
+            student.setProgress(determine_progress(student));
             studentList.add(student);
-            Log.d(LOG_TAG, "ID: " + student.getId() + ", Inhalt: " + student.getSurname()
-                    + " " + student.getFirstname() + " " + student.getGroup());
+            Log.d(LOG_TAG, "Student " + student.getFirstname() + " " + student.getSurname() +
+                    " aus dem Praktikum " + student.getLabName() + " Gruppe " +
+                    student.getGroup() + " hinzugefügt.");
             cursor.moveToNext();
         }
         cursor.close();
+
+        Log.d(LOG_TAG, "Studentenliste erstellt -------------------------------------------------");
 
         return studentList;
     }
 
     /**
      * Routine, die prüft, ob der Student bereits in der Datenbank existiert.
+     * Die Prüfung erfolgt anhand der übergebenen Matr.-Nr.
      *
-     * @param bibNo Die Prüfung erfolgt anhand der übergebenen Bib.-Nr.
+     * @param labName
+     * @param term
+     * @param bibNo
      * @return Boolean: true = vorhanden, false = nicht vorhanden
      */
-    public boolean studentExists(String bibNo) {
-        openR();
-        Cursor cursor = database.rawQuery("SELECT * FROM " + "student_list" +
-                " WHERE bib = '" + bibNo + "'", null);
+    public boolean studentExistsByBib(String labName, String term, String bibNo) {
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_STUDENT +
+                " WHERE " + DbHelper.COLUMN_LAB_NAME + " = '" + labName + "' AND " +
+                DbHelper.COLUMN_TERM + " = '" + term + "' AND " +
+                DbHelper.COLUMN_MATR + " = '" + bibNo + "'", null);
         boolean exists = (cursor.getCount() > 0);
         cursor.close();
-        close();
+
+        if (exists)
+            Log.d(LOG_TAG, "Student existiert " + bibNo);
+        else
+            Log.d(LOG_TAG, "Student existiert nicht " + bibNo);
+
         return exists;
     }
 
     /**
      * Routine, die prüft, ob der Student bereits in der Datenbank existiert.
+     * Die Prüfung erfolgt anhand der übergebenen Matr.-Nr.
      *
-     * @param bibNo Die Prüfung erfolgt anhand der übergebenen Bib.-Nr.
+     * @param labName
+     * @param term
+     * @param matr
      * @return Boolean: true = vorhanden, false = nicht vorhanden
      */
-    public boolean studentExists(String bibNo, boolean db_open) {
-        if(!db_open)
-            openR();
-        Cursor cursor = database.rawQuery("SELECT * FROM " + "student_list" +
-                " WHERE bib = '" + bibNo + "'", null);
+    public boolean studentExistsByMatr(String labName, String term, String matr) {
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_STUDENT +
+                " WHERE " + DbHelper.COLUMN_LAB_NAME + " = '" + labName + "' AND " +
+                DbHelper.COLUMN_TERM + " = '" + term + "' AND " +
+                DbHelper.COLUMN_MATR + " = '" + matr + "'", null);
         boolean exists = (cursor.getCount() > 0);
         cursor.close();
-        if (!db_open)
-            close();
+
+        if (exists)
+            Log.d(LOG_TAG, "Student existiert " + matr);
+        else
+            Log.d(LOG_TAG, "Student existiert nicht " + matr);
+
         return exists;
     }
 
@@ -334,8 +358,7 @@ public class DataSource implements TaskCompleted {
      * @param id
      * @param newComment
      */
-    public void updateComment(long id, String newComment) {
-        openW();
+    public void updateCommentStudent(long id, String newComment) {
         ContentValues commentValue = new ContentValues();
         commentValue.put(DbHelper.COLUMN_COMMENT, newComment);
 
@@ -344,8 +367,7 @@ public class DataSource implements TaskCompleted {
                 DbHelper.COLUMN_ID + "=" + id,
                 null);
 
-        setSyncMissing(id);
-        close();
+        Log.d(LOG_TAG, "Neuer Kommentar des Studenten mit der ID " + String.valueOf(id) + " ist jetzt " + newComment);
     }
 
     /**
@@ -355,70 +377,82 @@ public class DataSource implements TaskCompleted {
      */
 
     /**
+     * Funktion erstellt einen Eintrag in die Anforderungstabelle
+     *
+     * @param labName
+     * @param group
+     * @param term
+     * @param type
+     * @param count
      */
-    // TODO Funktionsparameter anpassen
-    public void createRequirement(String type, String name, String group,
-                                  String lab, String term) {
+    public void createRequirement(String labName, String group, String term, String type,
+                                  String count) {
 
         ContentValues valuesReq = new ContentValues();
 
-        valuesReq.put(DbHelper.COLUMN_TYPE, type);
-        valuesReq.put(DbHelper.COLUMN_NAME, name);
-        valuesReq.put(DbHelper.COLUMN_COUNT, "5");
+        valuesReq.put(DbHelper.COLUMN_LAB_NAME, labName);
         valuesReq.put(DbHelper.COLUMN_GROUP, group);
-        valuesReq.put(DbHelper.COLUMN_LAB_ID, lab);
         valuesReq.put(DbHelper.COLUMN_TERM, term);
+        valuesReq.put(DbHelper.COLUMN_TYPE, type);
+        valuesReq.put(DbHelper.COLUMN_COUNT, count);
 
         database.insert(DbHelper.TABLE_REQ, null, valuesReq);
+
+        Log.d(LOG_TAG, "Neue Anforderung erstellt (" + labName + "|" + group + "|" + term + "|" + type + "|" + count + ")");
     }
 
     /**
-     * @param grp
-     * @return
+     * @param labName
+     * @param group
+     * @param term
+     * @return gibt eine ArrayList mit den Anforderungen der aktuellen Gruppe zurück
      */
-    public ArrayList<Requirement> getGroupRequirements(String grp) {
+    public ArrayList<Requirement> getGroupRequirements(String labName, String group, String term) {
         ArrayList<Requirement> reqList = new ArrayList<>();
         Requirement req;
-        // TODO: SQL-Query exklusiv nur für Gruppe
-        String query = "SELECT * FROM " + DbHelper.TABLE_REQ;
-        Cursor cursor = database.rawQuery(query, null);
-        cursor.moveToFirst();
 
+        String query = "SELECT * FROM " + DbHelper.TABLE_REQ +
+                        " WHERE " + DbHelper.COLUMN_LAB_NAME + " = '" + labName + "' AND " +
+                        DbHelper.COLUMN_GROUP + " = '" + group + "' AND " +
+                        DbHelper.COLUMN_TERM + " = '" + term + "'";
+        Cursor cursor = database.rawQuery(query, null);
+
+        Log.d(LOG_TAG, "Erstelle Anforderungsliste (" + labName + "|" + group + "|" + term + ") -------------------------");
+
+        cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             req = cursorToRequirement(cursor);
             reqList.add(req);
-            Log.d(LOG_TAG, "Typ: " + req.getReqType() + ", Name: " + req.getReqName()
-                    + ", Anzahl: " + req.getCount() + ", Gruppe: " + req.getGroup());
+            Log.d(LOG_TAG, "Füge Anforderung hinzu (" + req.getType() + ": " + req.getCount() + ")");
             cursor.moveToNext();
         }
         cursor.close();
+
+        Log.d(LOG_TAG, "Anforderungsliste erstellt (" + labName + "|" + group + "|" + term + ") -------------------------");
 
         return reqList;
     }
 
     /**
      * @param cursor
-     * @return
+     * @return Requirement
      */
     private Requirement cursorToRequirement(Cursor cursor) {
         int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
-        int idType = cursor.getColumnIndex(DbHelper.COLUMN_TYPE);
-        int idName = cursor.getColumnIndex(DbHelper.COLUMN_NAME);
-        int idCount = cursor.getColumnIndex(DbHelper.COLUMN_COUNT);
+        int idLabName = cursor.getColumnIndex(DbHelper.COLUMN_LAB_NAME);
         int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_GROUP);
-        int idLabId = cursor.getColumnIndex(DbHelper.COLUMN_LAB_ID);
         int idTerm = cursor.getColumnIndex(DbHelper.COLUMN_TERM);
+        int idType = cursor.getColumnIndex(DbHelper.COLUMN_TYPE);
+        int idCount = cursor.getColumnIndex(DbHelper.COLUMN_COUNT);
 
-        String type = cursor.getString(idType);
-        String name = cursor.getString(idName);
-        String count = cursor.getString(idCount);
-        String group = cursor.getString(idGroup);
-        String lab_id = cursor.getString(idLabId);
-        String term = cursor.getString(idTerm);
         long id = cursor.getLong(idIndex);
+        String lab_name = cursor.getString(idLabName);
+        String group = cursor.getString(idGroup);
+        String term = cursor.getString(idTerm);
+        String type = cursor.getString(idType);
+        String count = cursor.getString(idCount);
 
-        return new Requirement(type, name, count, group, lab_id,
-                term);
+        return new Requirement(id, lab_name, group, term, type, count);
     }
 
 
@@ -430,37 +464,70 @@ public class DataSource implements TaskCompleted {
 
     /**
      *
-     * @param lab
      * @param lab_id
-     * @param group_no
+     * @param lab_name
+     * @param group
+     * @param term
      * @param supervisor
      */
-    public void createGroup(String lab, String lab_id, String group_no,
+    public void createGroup(String lab_id, String lab_name, String group, String term,
                             String supervisor) {
         ContentValues valuesGroup = new ContentValues();
 
-        valuesGroup.put(DbHelper.COLUMN_LAB, lab);
         valuesGroup.put(DbHelper.COLUMN_LAB_ID, lab_id);
-        valuesGroup.put(DbHelper.COLUMN_GROUP, group_no);
+        valuesGroup.put(DbHelper.COLUMN_LAB_NAME, lab_name);
+        valuesGroup.put(DbHelper.COLUMN_GROUP, group);
+        valuesGroup.put(DbHelper.COLUMN_TERM, term);
         valuesGroup.put(DbHelper.COLUMN_SUPERVISOR, supervisor);
+
         database.insert(DbHelper.TABLE_GROUP, null, valuesGroup);
 
+        Log.d(LOG_TAG, "Gruppe erstellt (" + lab_id + "|" + lab_name + "|" + group + "|" + term + "|" + supervisor + ")");
     }
 
     /**
      *
-     * @param groupNo
-     * @param lab_id
-     * @return
+     * @param lab_name
+     * @param group
+     * @param term
+     * @return boolean if Group exists
      */
-    public boolean groupExists(String groupNo, String lab_id){
-        openR();
+    public boolean groupExists(String lab_name, String group, String term) {
         Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_GROUP +
-                " WHERE (" + DbHelper.COLUMN_GROUP+ " = '" + groupNo + " AND "
-                + DbHelper.COLUMN_LAB_ID + " = '" + lab_id +")'", null);
+                " WHERE " + DbHelper.COLUMN_LAB_NAME + " = '" + lab_name + "' AND "
+                + DbHelper.COLUMN_GROUP + " = '" + group +"' AND "
+                + DbHelper.COLUMN_TERM + " = '" + term +"'", null);
         boolean exists = (cursor.getCount() > 0);
         cursor.close();
-        close();
+
+        if (exists)
+            Log.d(LOG_TAG, "Gruppe existiert (" + lab_name + "|" + group + "|" + term + ")");
+        else
+            Log.d(LOG_TAG, "Gruppe existiert nicht (" + lab_name + "|" + group + "|" + term + ")");
+
+        return exists;
+    }
+
+    /**
+     *
+     * @param lab_id
+     * @param group
+     * @param term
+     * @return boolean if Group exists
+     */
+    public boolean groupExistsByLabId(String lab_id, String group, String term) {
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_GROUP +
+                " WHERE " + DbHelper.COLUMN_LAB_NAME + " = '" + lab_id + "' AND "
+                + DbHelper.COLUMN_GROUP + " = '" + group +"' AND "
+                + DbHelper.COLUMN_TERM + " = '" + term +"'", null);
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+
+        if (exists)
+            Log.d(LOG_TAG, "Gruppe existiert (" + lab_id + "|" + group + "|" + term + ")");
+        else
+            Log.d(LOG_TAG, "Gruppe existiert nicht (" + lab_id + "|" + group + "|" + term + ")");
+
         return exists;
     }
 
@@ -475,79 +542,83 @@ public class DataSource implements TaskCompleted {
         Cursor cursor = database.rawQuery(query, null);
         cursor.moveToFirst();
 
+        Log.d(LOG_TAG, "Erstelle Liste mit allen Gruppen ----------------------------------------");
+
         while (!cursor.isAfterLast()) {
             group = cursorToGroup(cursor);
             groupList.add(group);
-            Log.d(LOG_TAG, "Lab: " + group.getLab()
-                    + ", Lab-ID: " + group.getLab_id()
-                    + ", Gruppe: " + group.getGroup_id()
-                    + ", Supervisor: " + group.getSupervisor());
+            Log.d(LOG_TAG, "Füge Gruppe hinzu (" + group.getLab_id() + "|" + group.getLab_name() + "|" +
+                            group.getGroup() + "|" + group.getTerm() + "|" + group.getSupervisor() + ")");
             cursor.moveToNext();
         }
         cursor.close();
 
+        Log.d(LOG_TAG, "Liste mit allen Gruppen erstellt ----------------------------------------");
+
         return groupList;
     }
 
+    /**
+     *
+     * @return Arraylist mit allen Gruppennamen
+     */
     public ArrayList<String> getAllGroupNames() {
-        openR();
         ArrayList<String> groupList = new ArrayList<>();
         String groupName;
         String query = "SELECT * FROM " + DbHelper.TABLE_GROUP;
         Cursor cursor = database.rawQuery(query, null);
         cursor.moveToFirst();
 
+        Log.d(LOG_TAG, "Erstelle Liste mit allen Gruppennamen -----------------------------------");
+
         while (!cursor.isAfterLast()) {
             groupName = cursorToGroupName(cursor);
             groupList.add(groupName);
-            Log.d(LOG_TAG, "Gruppe: " + groupName);
+            Log.d(LOG_TAG, "Füge Gruppe " + groupName + " hinzu");
             cursor.moveToNext();
         }
         cursor.close();
 
-        close();
+        Log.d(LOG_TAG, "Liste mit allen Gruppennamen erstellt -----------------------------------");
+
         return groupList;
     }
 
     /**
      * @param cursor
-     * @return
+     * @return neu erstellte Gruppe aus Datenbankeintrag(cursor)
      */
     private Group cursorToGroup(Cursor cursor) {
         int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
-        int idLab = cursor.getColumnIndex(DbHelper.COLUMN_LAB);
         int idLabId = cursor.getColumnIndex(DbHelper.COLUMN_LAB_ID);
+        int idLabName = cursor.getColumnIndex(DbHelper.COLUMN_LAB_NAME);
         int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_GROUP);
+        int idTerm = cursor.getColumnIndex(DbHelper.COLUMN_TERM);
         int idSupervisor = cursor.getColumnIndex(DbHelper.COLUMN_SUPERVISOR);
 
-        String lab = cursor.getString(idLab);
-        String lab_id = cursor.getString(idLabId);
-        String group = cursor.getString(idGroup);
-        String supervisor = cursor.getString(idSupervisor);
         long id = cursor.getLong(idIndex);
+        String lab_id = cursor.getString(idLabId);
+        String lab_name = cursor.getString(idLabName);
+        String group = cursor.getString(idGroup);
+        String term = cursor.getString(idTerm);
+        String supervisor = cursor.getString(idSupervisor);
 
-        return new Group(lab, lab_id, group, supervisor);
+        return new Group(id, lab_id, lab_name, group, term, supervisor, getStudentsFromGrp(lab_name, group));
     }
 
     /**
      * @param cursor
-     * @return
+     * @return String mit Gruppenname formatiert nach "[Nummer] _ Gruppenname"
      */
     private String cursorToGroupName(Cursor cursor) {
-        int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
-        int idLab = cursor.getColumnIndex(DbHelper.COLUMN_LAB);
-        int idLabId = cursor.getColumnIndex(DbHelper.COLUMN_LAB_ID);
+        int idLabName = cursor.getColumnIndex(DbHelper.COLUMN_LAB_NAME);
         int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_GROUP);
-        int idSupervisor = cursor.getColumnIndex(DbHelper.COLUMN_SUPERVISOR);
 
-        String lab = cursor.getString(idLab);
-        String lab_id = cursor.getString(idLabId);
+        String labName = cursor.getString(idLabName);
         String group = cursor.getString(idGroup);
-        String supervisor = cursor.getString(idSupervisor);
-        long id = cursor.getLong(idIndex);
 
-        return (lab + " " + group);
-    }
+        return ("[" + group + "] _ " + labName);
+     }
 
     /**
      * ***************************************************************
@@ -849,7 +920,7 @@ public class DataSource implements TaskCompleted {
         try {
             while ((line = buffer.readLine()) != null) {
                 String[] str = line.split(context.getString(R.string.comma_split));
-                if (!studentExists(str[6], true))
+                if (!studentExistsByBib(str[6], true))
                     createStudent(str[0], str[1], str[2], str[3], str[4], str[5], str[6]);
             }
         } catch (IOException e) {
