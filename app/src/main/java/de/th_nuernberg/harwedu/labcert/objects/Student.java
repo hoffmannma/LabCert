@@ -2,9 +2,7 @@ package de.th_nuernberg.harwedu.labcert.objects;
 
 
 /**
- * TODO:
- * - Constructors ergänzen
- * - attd / tasks -> array
+ *
  */
 
 
@@ -27,6 +25,8 @@ public class Student {
     private int attd_count;
     private int task_count;
 
+    private float progress;
+
 
     public Student() {
 
@@ -37,6 +37,8 @@ public class Student {
         this.firstname = firstname;
         this.attd = attd;
         this.tasks = tasks;
+        //TODO Progress Berechnung
+        progress = 0;
     }
 
     public Student(String surname, String firstname, String comment,
@@ -52,6 +54,8 @@ public class Student {
         this.attd = attd;
         this.tasks = tasks;
         this.id = id;
+        //TODO Progress Berechnung
+        progress = 0;
     }
 
     public String getSurname() {
@@ -197,4 +201,7 @@ public class Student {
         return sb.toString();
     }
 
+    public float getProgress() {
+        return progress;
+    }
 }

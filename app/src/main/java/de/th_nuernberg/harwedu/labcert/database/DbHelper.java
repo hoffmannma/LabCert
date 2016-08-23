@@ -21,7 +21,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final int DB_VERSION = 1;
 
     /**
-     * Konstantendefinitionen: Tabellen
+     * Tabellen
      * - Studentendaten
      * - Anwesenheit
      * - Aufgaben
@@ -35,7 +35,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String TABLE_LABS = "lab_list";
 
     /**
-     * Konstantendefinitionen: Gemeinsame verwendete Spaltennamen
+     * Gemeinsame verwendete Spaltennamen
      */
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_MATR = "matr";
@@ -48,7 +48,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_GROUP = "group_id";
 
     /**
-     * Konstantendefinitionen: Tabelle Student
+     * Tabelle Student
      * 1. ID
      * 2. Nachname
      * 3. Vorname
@@ -65,7 +65,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BIB = "bib";
 
     /**
-     * Konstantendefinitionen: Tabelle Anwesenheit
+     * Tabelle Anwesenheit
      * 1. ID
      * 2. Matrikelnummer
      * 3. Zeitstempel
@@ -77,7 +77,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DATE = "a_date";
 
     /**
-     * Konstantendefinitionen: Tabelle Aufgaben
+     * Tabelle Aufgaben
      * 1. ID
      * 2. Matrikelnummer
      * 3. Zeitstempel

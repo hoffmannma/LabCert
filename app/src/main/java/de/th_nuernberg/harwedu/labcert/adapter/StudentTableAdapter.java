@@ -45,8 +45,9 @@ public class StudentTableAdapter extends BaseAdapter{
         private class ViewHolder {
             TextView hSurnameTxt;
             TextView hFirstnameTxt;
-            TextView hAttdTxt;
-            TextView hTasksTxt;
+            TextView hProgressTxt;
+            //TextView hAttdTxt;
+            //TextView hTasksTxt;
         }
 
         @Override
@@ -62,9 +63,13 @@ public class StudentTableAdapter extends BaseAdapter{
                         convertView.findViewById(R.id.textview_row_surname);
                 holder.hFirstnameTxt = (TextView)
                         convertView.findViewById(R.id.textview_row_firstname);
+                holder.hProgressTxt = (TextView)
+                        convertView.findViewById(R.id.textview_row_progress);
+                /*
                 holder.hAttdTxt = (TextView) convertView
                         .findViewById(R.id.textview_row_attd);
                 holder.hTasksTxt = (TextView) convertView.findViewById(R.id.textview_row_task);
+                */
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -73,9 +78,11 @@ public class StudentTableAdapter extends BaseAdapter{
             Student student = studentList.get(position);
             holder.hSurnameTxt.setText(String.valueOf(student.getSurname()));
             holder.hFirstnameTxt.setText(student.getFirstname());
+            holder.hProgressTxt.setText(String.valueOf(student.getProgress() + "%"));
+            /*
             holder.hAttdTxt.setText(student.getAttdString());
             holder.hTasksTxt.setText(student.getTaskString());
-
+            */
             return convertView;
         }
 
