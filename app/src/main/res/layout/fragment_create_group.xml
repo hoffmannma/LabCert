@@ -18,15 +18,6 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/editText_hint_lab_id"
-        android:inputType="text"
-        android:id="@+id/editText_lab_id"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:hint="@string/editText_hint_group_no"
         android:inputType="text"
         android:id="@+id/editText_group_no"
@@ -41,7 +32,6 @@
         android:id="@+id/editText_supervisor"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
-
 
     <Button
         android:layout_width="match_parent"
