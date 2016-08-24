@@ -121,8 +121,7 @@ public class DataSource implements TaskCompleted {
         valuesStudent.put(DbHelper.COLUMN_EMAIL, email);
         valuesStudent.put(DbHelper.COLUMN_COMMENT, comment);
         valuesStudent.put(DbHelper.COLUMN_BIB, bib);
-        valuesStudent.put(DbHelper.COLUMN_TS,
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        valuesStudent.put(DbHelper.COLUMN_TS, getTimestamp());
 
         database.insert(DbHelper.TABLE_STUDENT, null, valuesStudent);
 
@@ -158,8 +157,7 @@ public class DataSource implements TaskCompleted {
         valuesStudent.put(DbHelper.COLUMN_MATR, matr);
         valuesStudent.put(DbHelper.COLUMN_EMAIL, email);
         valuesStudent.put(DbHelper.COLUMN_COMMENT, comment);
-        valuesStudent.put(DbHelper.COLUMN_TS,
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        valuesStudent.put(DbHelper.COLUMN_TS, getTimestamp());
         database.insert(DbHelper.TABLE_STUDENT, null, valuesStudent);
 
         Log.d(LOG_TAG, "Neuer Student " + firstname + " " + surname + " wurde angelegt.");
@@ -1052,6 +1050,10 @@ public class DataSource implements TaskCompleted {
     public void onTaskComplete(ArrayList<HashMap<String, String>> result) {
         //TODO Was tun wenn Sync fertig
         //insertAttd(result, NO);
+    }
+
+    public String getTimestamp(){
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
 
 }
