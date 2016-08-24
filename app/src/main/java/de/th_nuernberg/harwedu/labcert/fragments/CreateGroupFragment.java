@@ -45,7 +45,6 @@ public class CreateGroupFragment extends Fragment {
         dataSource.openW();
 
         final EditText editTextLab = (EditText) rootView.findViewById(R.id.editText_lab);
-        final EditText editTextLabId = (EditText) rootView.findViewById(R.id.editText_lab_id);
         final EditText editTextGroupNo = (EditText) rootView.findViewById(R.id.editText_group_no);
         final EditText editTextSupervisor = (EditText) rootView.findViewById(R.id.editText_supervisor);
 
@@ -56,15 +55,11 @@ public class CreateGroupFragment extends Fragment {
             public void onClick(View v) {
 
                 String labString = editTextLab.getText().toString();
-                String labIdString = editTextLabId.getText().toString();
                 String groupNoString = editTextGroupNo.getText().toString();
                 String supervisorString = editTextSupervisor.getText().toString();
 
                 if (TextUtils.isEmpty(labString)) {
                     editTextLab.setError(getString(R.string.editText_errorMessage));
-                    return;
-                } else if (TextUtils.isEmpty(labIdString)) {
-                    editTextLabId.setError(getString(R.string.editText_errorMessage));
                     return;
                 } else if (TextUtils.isEmpty(groupNoString)) {
                     editTextGroupNo.setError(getString(R.string.editText_errorMessage));
@@ -76,7 +71,6 @@ public class CreateGroupFragment extends Fragment {
 
 
                 editTextLab.setText("");
-                editTextLabId.setText("");
                 editTextGroupNo.setText("");
                 editTextSupervisor.setText("");
                 //TODO LAB-ID raus, Semester übergeben

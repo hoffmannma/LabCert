@@ -310,8 +310,8 @@ public class DataSource implements TaskCompleted {
         ArrayList<Student> studentList = new ArrayList<>();
         Student student;
         String query = "SELECT * FROM " + DbHelper.TABLE_STUDENT + " WHERE "
-                + DbHelper.COLUMN_LAB_NAME + " = " + lab + " AND "
-                + DbHelper.COLUMN_GROUP + " = " + group;
+                + DbHelper.COLUMN_LAB_NAME + " = '" + lab + "' AND "
+                + DbHelper.COLUMN_GROUP + " = '" + group + "'";
         Cursor cursor = database.rawQuery(query, null);
         cursor.moveToFirst();
 
