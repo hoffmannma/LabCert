@@ -33,18 +33,15 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_COMMENT = "comment";
     public static final String COLUMN_TS = "timestamp";
     public static final String COLUMN_LAB_NAME = "lab_name";
-    public static final String COLUMN_LAB_ID = "lab_id";
     public static final String COLUMN_GROUP = "group_id";
     public static final String COLUMN_SUPERVISOR = "supervisor";
     public static final String COLUMN_SURNAME = "surname";
     public static final String COLUMN_FIRSTNAME = "firstname";
-    //public static final String COLUMN_LABGROUP = "labgroup";
     public static final String COLUMN_BIB = "bib";
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_EMAIL = "email";
     public static final String COLUMN_TYPE = "type";
     public static final String COLUMN_COUNT = "count";
-    public static final String COLUMN_NAME = "name";
     public static final String COLUMN_TERM = "term";
     public static final String COLUMN_SCORE = "score";
 

@@ -80,7 +80,7 @@ public class CreateGroupFragment extends Fragment {
                 editTextGroupNo.setText("");
                 editTextSupervisor.setText("");
                 //TODO LAB-ID raus, Semester übergeben
-                dataSource.createGroup(labString, " ",groupNoString, "SS16", supervisorString);
+                dataSource.createGroup(labString, groupNoString, "SS16", supervisorString);
                 toastMsg("Gruppe erstellt");
 
                 try{

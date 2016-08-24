@@ -310,8 +310,8 @@ public class DataSource implements TaskCompleted {
         ArrayList<Student> studentList = new ArrayList<>();
         Student student;
         String query = "SELECT * FROM " + DbHelper.TABLE_STUDENT + " WHERE "
-                + DbHelper.COLUMN_LAB_NAME + " =  " + lab + " AND "
-                + DbHelper.COLUMN_GROUP + " =  " + group;
+                + DbHelper.COLUMN_LAB_NAME + " = " + lab + " AND "
+                + DbHelper.COLUMN_GROUP + " = " + group;
         Cursor cursor = database.rawQuery(query, null);
         cursor.moveToFirst();
 
@@ -495,25 +495,22 @@ public class DataSource implements TaskCompleted {
 
     /**
      *
-     * @param lab_id
      * @param lab_name
      * @param group
      * @param term
      * @param supervisor
      */
-    public void createGroup(String lab_id, String lab_name, String group, String term,
+    public void createGroup(String lab_name, String group, String term,
                             String supervisor) {
         ContentValues valuesGroup = new ContentValues();
 
-        valuesGroup.put(DbHelper.COLUMN_LAB_ID, lab_id);
         valuesGroup.put(DbHelper.COLUMN_LAB_NAME, lab_name);
         valuesGroup.put(DbHelper.COLUMN_GROUP, group);
         valuesGroup.put(DbHelper.COLUMN_TERM, term);
         valuesGroup.put(DbHelper.COLUMN_SUPERVISOR, supervisor);
-
         database.insert(DbHelper.TABLE_GROUP, null, valuesGroup);
 
-        Log.d(LOG_TAG, "Gruppe erstellt (" + lab_id + "|" + lab_name + "|" + group + "|" + term + "|" + supervisor + ")");
+        Log.d(LOG_TAG, "Gruppe erstellt (" + lab_name + "|" + group + "|" + term + "|" + supervisor + ")");
     }
 
     /**
@@ -621,20 +618,19 @@ public class DataSource implements TaskCompleted {
      */
     private Group cursorToGroup(Cursor cursor) {
         int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
-        int idLabId = cursor.getColumnIndex(DbHelper.COLUMN_LAB_ID);
         int idLabName = cursor.getColumnIndex(DbHelper.COLUMN_LAB_NAME);
         int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_GROUP);
         int idTerm = cursor.getColumnIndex(DbHelper.COLUMN_TERM);
         int idSupervisor = cursor.getColumnIndex(DbHelper.COLUMN_SUPERVISOR);
 
         long id = cursor.getLong(idIndex);
-        String lab_id = cursor.getString(idLabId);
+
         String lab_name = cursor.getString(idLabName);
         String group = cursor.getString(idGroup);
         String term = cursor.getString(idTerm);
         String supervisor = cursor.getString(idSupervisor);
 
-        return new Group(id, lab_id, lab_name, group, term, supervisor, getStudentsFromGrp(lab_name, group));
+        return new Group(id, lab_name, group, term, supervisor, getStudentsFromGrp(lab_name, group));
     }
 
     /**
@@ -648,7 +644,7 @@ public class DataSource implements TaskCompleted {
         String labName = cursor.getString(idLabName);
         String group = cursor.getString(idGroup);
 
-        return ("[" + group + "] _ " + labName);
+        return (group + " " + labName);
     }
 
     /**

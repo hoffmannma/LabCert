@@ -14,7 +14,7 @@ public class Group {
     private String term;
     private String supervisor;
 
-    public Group(long id, String lab_id, String lab_name, String group, String term, String supervisor,
+    public Group(long id, String lab_name, String group, String term, String supervisor,
                  ArrayList<Student> student) {
         this.id = id;
         this.lab_id = lab_id;
@@ -25,7 +25,7 @@ public class Group {
         this.student = student;
     }
 
-    public Group(long id, String lab_id, String lab_name, String group, String term, String supervisor) {
+    public Group(long id, String lab_name, String group, String term, String supervisor) {
         this.id = id;
         this.lab_id = lab_id;
         this.lab_name = lab_name;
