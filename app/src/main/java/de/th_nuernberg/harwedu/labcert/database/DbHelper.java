@@ -38,7 +38,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_SUPERVISOR = "supervisor";
     public static final String COLUMN_SURNAME = "surname";
     public static final String COLUMN_FIRSTNAME = "firstname";
-    public static final String COLUMN_LABGROUP = "labgroup";
+    //public static final String COLUMN_LABGROUP = "labgroup";
     public static final String COLUMN_BIB = "bib";
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_EMAIL = "email";

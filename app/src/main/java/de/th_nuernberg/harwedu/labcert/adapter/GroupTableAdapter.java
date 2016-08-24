@@ -66,8 +66,8 @@ public class GroupTableAdapter extends BaseAdapter {
         }
 
         Group group = groupList.get(position);
-        holder.hLabTxt.setText(group.getLab());
-        holder.hGroupNoTxt.setText(group.getGroup_id());
+        holder.hLabTxt.setText(group.getLab_name());
+        holder.hGroupNoTxt.setText(group.getGroup());
 
         return convertView;
     }

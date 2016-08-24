@@ -436,7 +436,7 @@ public class MainActivity extends AppCompatActivity
 
 
     /**
-     * Gruppe wählen
+     * Setzt Gruppe auf Spinnerauswahl
      *
      * @param grp
      */
@@ -450,10 +450,15 @@ public class MainActivity extends AppCompatActivity
         startActivity(getIntent());
     }
 
+    /**
+     * Erstellt Gruppenliste in Spinner
+     */
     private void updateSpinner(){
         ArrayList<String> groupList = new ArrayList<String>();
         DataSource datasource = new DataSource(this);
+        datasource.openR();
         groupList = datasource.getAllGroupNames();
+        datasource.close();
         groupList.add(ALL_STUDENTS);
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, groupList);

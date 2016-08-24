@@ -10,7 +10,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -119,6 +121,8 @@ public class DataSource implements TaskCompleted {
         valuesStudent.put(DbHelper.COLUMN_EMAIL, email);
         valuesStudent.put(DbHelper.COLUMN_COMMENT, comment);
         valuesStudent.put(DbHelper.COLUMN_BIB, bib);
+        valuesStudent.put(DbHelper.COLUMN_TS,
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 
         database.insert(DbHelper.TABLE_STUDENT, null, valuesStudent);
 
@@ -154,7 +158,8 @@ public class DataSource implements TaskCompleted {
         valuesStudent.put(DbHelper.COLUMN_MATR, matr);
         valuesStudent.put(DbHelper.COLUMN_EMAIL, email);
         valuesStudent.put(DbHelper.COLUMN_COMMENT, comment);
-
+        valuesStudent.put(DbHelper.COLUMN_TS,
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         database.insert(DbHelper.TABLE_STUDENT, null, valuesStudent);
 
         Log.d(LOG_TAG, "Neuer Student " + firstname + " " + surname + " wurde angelegt.");
@@ -276,11 +281,18 @@ public class DataSource implements TaskCompleted {
         return studentList;
     }
 
+    /**
+     *
+     * @param lab
+     * @param group
+     * @return ArrayList<Student> in welchem alle lokalen Studenten eingetragen sind.
+     */
     public ArrayList<Student> getStudentsFromGrp(String lab, String group) {
         ArrayList<Student> studentList = new ArrayList<>();
         Student student;
         String query = "SELECT * FROM " + DbHelper.TABLE_STUDENT + " WHERE "
-                + DbHelper.COLUMN_LABGROUP + " =  " + group;
+                + DbHelper.COLUMN_LAB_NAME + " =  " + lab + " AND "
+                + DbHelper.COLUMN_GROUP + " =  " + group;
         Cursor cursor = database.rawQuery(query, null);
         cursor.moveToFirst();
 

@@ -91,7 +91,7 @@ public class RequirementTableFragment extends Fragment {
         return rootView;
     }
 
-    private void showAllListEntries(View rootView) {
+    private void showAllListEntries() {
 
         // TODO Parameter labname, group, term
         // Liefert alle Datensätze
@@ -113,7 +113,7 @@ public class RequirementTableFragment extends Fragment {
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 RequirementFragment fragment = new RequirementFragment();
-                fragment.newInstance(req);
+                RequirementFragment.newInstance(req);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
@@ -129,7 +129,7 @@ public class RequirementTableFragment extends Fragment {
         Log.d(LOG_TAG, "+++ Resume: RequirementTable +++");
         dataSource.openR();
         Log.d(LOG_TAG, "Datenbank-Einträge:");
-        showAllListEntries(getView());
+        showAllListEntries();
     }
 
     // Fragment pausiert: Datenbankzugriff schließen
