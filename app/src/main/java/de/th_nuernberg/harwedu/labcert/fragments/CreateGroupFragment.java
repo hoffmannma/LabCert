@@ -1,7 +1,6 @@
 package de.th_nuernberg.harwedu.labcert.fragments;
 
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
@@ -16,8 +15,6 @@ import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
-import de.th_nuernberg.harwedu.labcert.main.MainActivity;
-import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 /**
  *
@@ -88,7 +85,7 @@ public class CreateGroupFragment extends Fragment {
 
                 try{
                     ((OnGroupCreatedListener) context).onGroupCreated(true);
-                } catch (ClassCastException cce){
+                } catch (ClassCastException ignored){
 
                 }
 
@@ -112,7 +109,7 @@ public class CreateGroupFragment extends Fragment {
     }
 
     public interface OnGroupCreatedListener{
-        public void onGroupCreated(boolean newGrp);
+        void onGroupCreated(boolean newGrp);
     }
 
 }

@@ -13,8 +13,9 @@ import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 /**
- * TODO
- * - switch Anweisung für verschiedene Ansichten?
+ *  Adapter für Studenten (einfach)
+ *  Nachname | Vorname
+ *
  */
 public class SimpleStudentTableAdapter extends BaseAdapter{
 
@@ -54,7 +55,7 @@ public class SimpleStudentTableAdapter extends BaseAdapter{
         LayoutInflater inflater = activity.getLayoutInflater();
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_row_student, null);
+            convertView = inflater.inflate(R.layout.list_row_student, parent, false);
             holder = new ViewHolder();
             holder.hSurnameTxt = (TextView)
                     convertView.findViewById(R.id.textview_row_surname);

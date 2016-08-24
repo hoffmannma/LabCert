@@ -49,14 +49,6 @@
             android:id="@+id/button_del_student"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Anwesenheitsdaten löschen"
-            android:id="@+id/button_del_attd"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" />
     </LinearLayout>
 
 </FrameLayout>

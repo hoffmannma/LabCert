@@ -11,12 +11,12 @@ import java.util.ArrayList;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.objects.Group;
-import de.th_nuernberg.harwedu.labcert.objects.Requirement;
 
 /**
- * Created by Edu on 21.08.2016.
+ * Adapter für Gruppen
+ * Laborname | Gruppennummer
  */
-public class GroupTableAdapter extends BaseAdapter{
+public class GroupTableAdapter extends BaseAdapter {
 
     public ArrayList<Group> groupList;
     Activity activity;
@@ -44,9 +44,7 @@ public class GroupTableAdapter extends BaseAdapter{
 
     private class ViewHolder {
         TextView hLabTxt;
-        TextView hLabIdTxt;
         TextView hGroupNoTxt;
-        TextView hSupervisorTxt;
     }
 
     @Override
@@ -56,33 +54,20 @@ public class GroupTableAdapter extends BaseAdapter{
         LayoutInflater inflater = activity.getLayoutInflater();
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_item_group, parent, false);
+            convertView = inflater.inflate(R.layout.list_row_group, parent, false);
             holder = new ViewHolder();
             convertView.setTag(holder);
             holder.hLabTxt = (TextView)
                     convertView.findViewById(R.id.textview_group_lab);
-            holder.hLabIdTxt = (TextView)
-                    convertView.findViewById(R.id.textview_group_lab_id);
             holder.hGroupNoTxt = (TextView)
                     convertView.findViewById(R.id.textview_group_group_no);
-            holder.hSupervisorTxt = (TextView)
-                    convertView.findViewById(R.id.textview_group_supervisor);
-
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-       Group group = groupList.get(position);
-        //holder.hTypeTxt.setText(requirement.getReqType());
+        Group group = groupList.get(position);
         holder.hLabTxt.setText(group.getLab());
-        holder.hLabIdTxt.setText(group.getLab_id());
         holder.hGroupNoTxt.setText(group.getGroup_id());
-        holder.hSupervisorTxt.setText(group.getSupervisor());
-        /*
-        holder.hGroupTxt.setText(String.valueOf(requirement.getGroup()));
-        holder.hLabIdTxt.setText(String.valueOf(requirement.getLab_id()));
-        holder.hTermTxt.setText(String.valueOf(requirement.getTerm()));
-        */
 
         return convertView;
     }

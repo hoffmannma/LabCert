@@ -61,9 +61,8 @@ public class SimpleStudentTableFragment extends Fragment {
     }
 
     /**
-     * Zeigt Studentenliste nur mit Vor- und Nachnamen
      *
-     * @param rootView
+     * @param rootView rootView
      */
     private void showAllListEntries(final View rootView) {
         // Liefert alle Datensätze

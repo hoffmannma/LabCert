@@ -19,7 +19,6 @@ public class CsvSampleFragment extends ListFragment {
     ArrayList<HashMap<String, String>> csvData;
 
     public CsvSampleFragment() {
-        // Required empty public constructor
     }
 
     @Override

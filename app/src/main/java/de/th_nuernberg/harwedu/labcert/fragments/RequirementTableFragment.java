@@ -14,7 +14,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import de.th_nuernberg.harwedu.labcert.R;
-import de.th_nuernberg.harwedu.labcert.adapter.RequirementTableAdapter;
+import de.th_nuernberg.harwedu.labcert.adapter.SimpleRequirementTableAdapter;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.objects.Requirement;
@@ -97,7 +97,7 @@ public class RequirementTableFragment extends Fragment {
         ArrayList<Requirement> reqList = dataSource.getGroupRequirements(mParam);
 
         //ListView reqListView = (ListView) rootView.findViewById(R.id.listview_req_table);
-        RequirementTableAdapter adapter = new RequirementTableAdapter(getActivity(), reqList);
+        SimpleRequirementTableAdapter adapter = new SimpleRequirementTableAdapter(getActivity(), reqList);
 
         Log.d(LOG_TAG, "RequirementTable: Versuche Adapter zu setzen...");
         reqListView.setAdapter(adapter);

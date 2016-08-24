@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.R;
@@ -19,6 +20,12 @@ import de.th_nuernberg.harwedu.labcert.adapter.StudentTableAdapter;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 
+/**
+ * Dieses Fragment öffnet die Datenbank und stellt alle
+ * Studenten der gewählten Gruppe tabellarisch dar:
+ *
+ * Nachname | Vorname | Fortschritt in %
+ */
 
 public class StudentTableFragment extends Fragment {
 
@@ -53,12 +60,18 @@ public class StudentTableFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     *
+     * @param rootView rootView
+     */
     private void showAllListEntries(View rootView) {
-
         // Liefert alle Datensätze
-        if (group != MainActivity.ALL_STUDENTS) {
+        if (!Objects.equals(group, MainActivity.ALL_STUDENTS)) {
+            // Liste der Studenten einer Gruppe
+            // TODO Parameter anpassen
             studentList = dataSource.getStudentsFromGrp(lab, group);
         } else {
+            // Liste aller Studenten
             studentList = dataSource.getAllStudents();
         }
 
@@ -75,7 +88,7 @@ public class StudentTableFragment extends Fragment {
                 Student student = (Student) adapter.getItemAtPosition(position);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 StudentFragment fragment = new StudentFragment();
-                fragment.newInstance(student);
+                StudentFragment.newInstance(student);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
@@ -83,7 +96,9 @@ public class StudentTableFragment extends Fragment {
         });
     }
 
-    // Fragment tritt in den Vordergrund: Datenbank neu aufrufen
+    /**
+     * Fragment tritt in den Vordergrund: Datenbank neu aufrufen
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -94,7 +109,9 @@ public class StudentTableFragment extends Fragment {
         showAllListEntries(getView());
     }
 
-    // Fragment pausiert: Datenbankzugriff schließen
+    /**
+     * Fragment pausiert: Datenbankzugriff schließen
+     */
     @Override
     public void onPause() {
         super.onPause();

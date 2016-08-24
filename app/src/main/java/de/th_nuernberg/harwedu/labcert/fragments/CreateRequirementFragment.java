@@ -19,19 +19,13 @@ import de.th_nuernberg.harwedu.labcert.database.DataSource;
 
 
 public class CreateRequirementFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM = "param";
 
-    // TODO: Rename and change types of parameters
+    private static final String ARG_PARAM = "param";
     private String mParam;
 
     public CreateRequirementFragment() {
-        // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static CreateRequirementFragment newInstance(String param) {
         CreateRequirementFragment fragment = new CreateRequirementFragment();
         Bundle args = new Bundle();
@@ -94,7 +88,7 @@ public class CreateRequirementFragment extends Fragment {
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 RequirementTableFragment fragment = new RequirementTableFragment();
-                fragment.newInstance(groupString);
+                RequirementTableFragment.newInstance(groupString);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();

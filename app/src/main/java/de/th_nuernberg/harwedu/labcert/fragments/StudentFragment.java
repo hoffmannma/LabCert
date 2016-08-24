@@ -51,7 +51,6 @@ public class StudentFragment extends Fragment {
         Button saveDataButton = (Button) rootView.findViewById(R.id.button_save_comment);
         Button createPdfButton = (Button) rootView.findViewById(R.id.button_create_pdf);
         Button delStudentButton = (Button) rootView.findViewById(R.id.button_del_student);
-        Button delAttdButton = (Button) rootView.findViewById(R.id.button_del_attd);
 
         studentTxt.setText(student.getStudentData());
         commEditTxt.setText(student.getCommentStudent());
@@ -78,9 +77,7 @@ public class StudentFragment extends Fragment {
                 PdfFile pdfCreator = new PdfFile();
                 try {
                     pdfCreator.createPdf(getActivity(), student);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (DocumentException e) {
+                } catch (FileNotFoundException | DocumentException e) {
                     e.printStackTrace();
                 }
             }
@@ -91,25 +88,11 @@ public class StudentFragment extends Fragment {
             public void onClick(View v) {
 
                 DataSource dataSource = new DataSource(getActivity());
-                dataSource.deleteAttdRecords(student);
                 dataSource.deleteStudent(student);
 
                 getActivity().getFragmentManager().popBackStack();
 
                 toastMsg("Student gelöscht");
-            }
-        });
-
-        delAttdButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                DataSource dataSource = new DataSource(getActivity());
-                dataSource.deleteAttdRecords(student);
-                Student student_new = dataSource.getStudent(student.getBib());
-                studentTxt.setText(student_new.getStudentData());
-
-                toastMsg("Anwesenheitsdaten gelöscht");
             }
         });
         return rootView;

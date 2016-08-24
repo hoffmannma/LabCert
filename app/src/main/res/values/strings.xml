@@ -58,6 +58,7 @@
     <string name="editText_hint_group_no">Gruppennummer</string>
     <string name="editText_hint_supervisor">Betreuer</string>
     <string name="all_groups">Alle Gruppen</string>
+    <string name="button_import_req">Anforderungen importieren</string>
 
     <string-array name="req_array">
         <item>Anwesenheit</item>

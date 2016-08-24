@@ -26,20 +26,15 @@ import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 public class CreateStudentFragment extends Fragment {
 
-    //private static final String ARG_PARAM = "param";
 
     private static String mBib;
     private static String mGroup;
 
     public CreateStudentFragment() {
-        // Required empty public constructor
     }
 
     public static CreateStudentFragment newInstance(String pBib, String pGroup) {
         CreateStudentFragment fragment = new CreateStudentFragment();
-        //Bundle args = new Bundle();
-        //args.putString(ARG_PARAM, param);
-        //fragment.setArguments(args);
         mBib = pBib;
         mGroup = pGroup;
         return fragment;
@@ -47,9 +42,6 @@ public class CreateStudentFragment extends Fragment {
 
     public static CreateStudentFragment newInstance(String pGroup) {
         CreateStudentFragment fragment = new CreateStudentFragment();
-        //Bundle args = new Bundle();
-        //args.putString(ARG_PARAM, param);
-        //fragment.setArguments(args);
         mGroup = pGroup;
         return fragment;
     }
@@ -57,15 +49,11 @@ public class CreateStudentFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*if (getArguments() != null) {
-            mBib = getArguments().getString(ARG_PARAM);
-        }*/
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_student, container, false);
 
         final DataSource dataSource = new DataSource(getActivity());
@@ -80,8 +68,8 @@ public class CreateStudentFragment extends Fragment {
 
         Button addStudentButton = (Button) rootView.findViewById(R.id.button_create_student);
 
-        //if(mBib != null)
-        editTextBib.setText(mBib);
+        if(mBib != null)
+            editTextBib.setText(mBib);
 
         addStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +96,6 @@ public class CreateStudentFragment extends Fragment {
                     return;
                 }
 
-
                 editTextSurname.setText("");
                 editTextFirstname.setText("");
                 editTextMatr.setText("");
@@ -122,7 +109,7 @@ public class CreateStudentFragment extends Fragment {
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 StudentFragment fragment = new StudentFragment();
-                fragment.newInstance(student);
+                StudentFragment.newInstance(student);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();

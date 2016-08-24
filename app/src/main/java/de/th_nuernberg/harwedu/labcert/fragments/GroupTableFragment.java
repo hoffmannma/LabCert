@@ -1,7 +1,6 @@
 package de.th_nuernberg.harwedu.labcert.fragments;
 
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -17,13 +16,9 @@ import java.util.ArrayList;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.adapter.GroupTableAdapter;
-import de.th_nuernberg.harwedu.labcert.adapter.RequirementTableAdapter;
-import de.th_nuernberg.harwedu.labcert.adapter.SimpleStudentTableAdapter;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.objects.Group;
-import de.th_nuernberg.harwedu.labcert.objects.Requirement;
-import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +27,7 @@ public class GroupTableFragment extends Fragment {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
     private DataSource dataSource;
-    private static String mParam;
+    //private static String mParam;
     Context context;
 
 
@@ -47,11 +42,13 @@ public class GroupTableFragment extends Fragment {
     }
 
 
+    /* Wird evtl noch benötigt: Parameterübergabe an Fragment
     public static GroupTableFragment newInstance(String param) {
         GroupTableFragment fragment = new GroupTableFragment();
         mParam = param;
         return fragment;
     }
+    */
 
 
     @Override
@@ -68,12 +65,12 @@ public class GroupTableFragment extends Fragment {
         dataSource = new DataSource(getActivity());
         dataSource.openR();
         Log.d(LOG_TAG, "GroupTableFragment - Datenbank-Einträge:");
-        showAllListEntries(rootView, groupListView);
+        showAllListEntries(groupListView);
         dataSource.close();
         return rootView;
     }
 
-    private void showAllListEntries(final View rootView, ListView groupListView) {
+    private void showAllListEntries(ListView groupListView) {
         // Liefert alle Datensätze
         ArrayList<Group> groupList = dataSource.getAllGroups();
 
@@ -90,7 +87,7 @@ public class GroupTableFragment extends Fragment {
                 try {
                     ((OnGroupSelectedListener) context).onGroupSelected(
                             group.getLab(), group.getGroup_id());
-                } catch (ClassCastException cce) {
+                } catch (ClassCastException ignored) {
 
                 }
                 /*
@@ -105,7 +102,7 @@ public class GroupTableFragment extends Fragment {
     }
 
     public interface OnGroupSelectedListener {
-        public void onGroupSelected(String lab, String grp);
+        void onGroupSelected(String lab, String grp);
     }
 
 }

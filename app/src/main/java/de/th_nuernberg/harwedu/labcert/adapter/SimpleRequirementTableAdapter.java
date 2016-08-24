@@ -13,15 +13,15 @@ import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.objects.Requirement;
 
 /**
- * Adapter für Anforderungen
- * Semester | Laborname | Gruppe | Typ | Anzahl
+ * Adapter für Anforderungen (einfach)
+ * Typ | Anzahl
  */
-public class RequirementTableAdapter extends BaseAdapter {
+public class SimpleRequirementTableAdapter extends BaseAdapter {
 
     public ArrayList<Requirement> requirementList;
     Activity activity;
 
-    public RequirementTableAdapter(Activity activity, ArrayList<Requirement> requirementList) {
+    public SimpleRequirementTableAdapter(Activity activity, ArrayList<Requirement> requirementList) {
         super();
         this.activity = activity;
         this.requirementList = requirementList;
@@ -43,9 +43,6 @@ public class RequirementTableAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        TextView hTermTxt;
-        TextView hLabTxt;
-        TextView hGrpTxt;
         TextView hTypeTxt;
         TextView hCountTxt;
     }
@@ -60,12 +57,6 @@ public class RequirementTableAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_row_req, parent, false);
             holder = new ViewHolder();
             convertView.setTag(holder);
-            holder.hTermTxt = (TextView)
-                    convertView.findViewById(R.id.textview_item_term);
-            holder.hLabTxt = (TextView)
-                    convertView.findViewById(R.id.textview_item_lab);
-            holder.hGrpTxt = (TextView)
-                    convertView.findViewById(R.id.textview_item_grp);
             holder.hTypeTxt = (TextView)
                     convertView.findViewById(R.id.textview_item_type);
             holder.hCountTxt = (TextView)
@@ -75,11 +66,9 @@ public class RequirementTableAdapter extends BaseAdapter {
         }
 
         Requirement requirement = requirementList.get(position);
-        holder.hTermTxt.setText(requirement.getReqName());
-        holder.hLabTxt.setText(String.valueOf(requirement.getCount()));
-        holder.hGrpTxt.setText(String.valueOf(requirement.getCount()));
         holder.hTypeTxt.setText(requirement.getReqName());
         holder.hCountTxt.setText(String.valueOf(requirement.getCount()));
+
 
         return convertView;
     }
