@@ -62,7 +62,7 @@ public class RequirementFragment extends Fragment {
                 String commentString = commEditTxt.getText().toString();
 
                 DataSource dataSource = new DataSource(getActivity());
-                dataSource.updateComment(student.getId(), commentString);
+                dataSource.updateCommentStudent(student.getId(), commentString);
 
                 getActivity().getFragmentManager().popBackStack();
 
@@ -105,7 +105,7 @@ public class RequirementFragment extends Fragment {
 
                 DataSource dataSource = new DataSource(getActivity());
                 dataSource.deleteAttdRecords(student);
-                Student student_new = dataSource.getStudent(student.getBib());
+                Student student_new = dataSource.getStudentByBib(student.getBib());
                 studentTxt.setText(student_new.getStudentData());
 
                 toastMsg("Anwesenheitsdaten gelöscht");

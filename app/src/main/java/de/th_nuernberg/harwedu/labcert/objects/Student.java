@@ -4,67 +4,73 @@ package de.th_nuernberg.harwedu.labcert.objects;
 /**
  *
  */
-
-
 public class Student {
+    private long id;
+    private String labName;
+    private String group;
+    private String term;
 
+    private String title;
     private String surname;
     private String firstname;
-    private String comment_student;
-    private String group;
-    private String team;
+
     private String matr;
+    private String email;
     private String bib;
-
-    private String[] comment_attd;
-    private String[] comment_task;
-
-    private long id;
-    private int[] attd;
-    private int[] tasks;
-    private int attd_count;
-    private int task_count;
+    private String comment;
 
     private float progress;
 
+    public Student(long id, String labName, String group, String term, String title, String surname,
+                   String firstname, String matr, String email, String bib, String comment) {
 
-    public Student() {
-
-    }
-
-    public Student(String surname, String firstname, int[] attd, int[] tasks) {
-        this.surname = surname;
-        this.firstname = firstname;
-        this.attd = attd;
-        this.tasks = tasks;
-        //TODO Progress Berechnung
-        progress = 0;
-    }
-
-    public Student(String surname, String firstname, String comment,
-                   String group, String team, String matr,
-                   String bib, int[] attd, int[] tasks, long id) {
-        this.surname = surname;
-        this.firstname = firstname;
-        this.comment_student = comment;
-        this.group = group;
-        this.team = team;
-        this.matr = matr;
-        this.bib = bib;
-        this.attd = attd;
-        this.tasks = tasks;
         this.id = id;
+        this.labName = labName;
+        this.group = group;
+        this.term = term;
+
+        this.title = title;
+        this.surname = surname;
+        this.firstname = firstname;
+
+        this.matr = matr;
+        this.email = email;
+        this.bib = bib;
+        this.comment = comment;
+
         //TODO Progress Berechnung
         progress = 0;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getLabName() { return labName; }
+
+    public void setLabName(String labName) { this.labName = labName; }
+
+    public String getGroup() { return group; }
+
+    public void setGroup(String group) { this.group = group; }
+
+    public String getTerm() { return term; }
+
+    public void setTerm(String term) { this.term = term; }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getSurname() {
         return surname;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
+    public void setSurname(String surname) {this.surname = surname; }
 
     public String getFirstname() {
         return firstname;
@@ -72,30 +78,6 @@ public class Student {
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
-    }
-
-    public String getCommentStudent() {
-        return comment_student;
-    }
-
-    public void setCommentStudent(String comment) {
-        this.comment_student = comment;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public String getTeam() {
-        return team;
-    }
-
-    public void setTeam(String team) {
-        this.team = team;
     }
 
     public String getMatr() {
@@ -106,6 +88,14 @@ public class Student {
         this.matr = matr;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getBib() {
         return bib;
     }
@@ -114,57 +104,45 @@ public class Student {
         this.bib = bib;
     }
 
-    public long getId() {
-        return id;
+    public String getComment() {
+        return comment;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
-    public int[] getAttd() {
-        return attd;
+    public float getProgress() {
+        return progress;
     }
 
-    public void setAttd(int[] attd) {
-        this.attd = attd;
+    public void setProgress(float progress) {
+        this.progress = progress;
     }
 
-    public int[] getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(int[] tasks) {
-        this.tasks = tasks;
-    }
-
-    public String[] getComment_attd() {
-        return comment_attd;
-    }
-
-    public void setComment_attd(String[] comment_attd) {
-        this.comment_attd = comment_attd;
-    }
-
-    public String getStudentData() {
+    //TODO löschen?
+    /*public String getStudentData() {
         attd_count = 5;
         String output = surname + ", " + firstname + "\n" +
                 "\nGruppe: " + group +
                 "\nTeam: " + team +
-                "\nAnwesenheit: " + intToString(attd, attd_count)/* +
-                "\nAufgabenstatus: " + intToString(tasks)*/;
+                "\nAnwesenheit: " + intToString(attd, attd_count)// +
+                //"\nAufgabenstatus: " + intToString(tasks);
+                ;
         return output;
     }
 
-    public String getAttdString() {
-        attd_count = 5;
-        return intToString(attd, attd_count);
-    }
-
-    public String getTaskString() {
-        task_count = 5;
-        return intToString(tasks, task_count);
-    }
+    private String intToString(int[] intArray, int count) {
+        String delimiter = " | ";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            if (sb.length() > 0) {
+                sb.append(delimiter);
+            }
+            sb.append(intArray[i]);
+        }
+        return sb.toString();
+    }*/
 
     /*
     @Override
@@ -188,20 +166,4 @@ public class Student {
         }
     }
     */
-
-    private String intToString(int[] intArray, int count) {
-        String delimiter = " | ";
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < count; i++) {
-            if (sb.length() > 0) {
-                sb.append(delimiter);
-            }
-            sb.append(intArray[i]);
-        }
-        return sb.toString();
-    }
-
-    public float getProgress() {
-        return progress;
-    }
 }

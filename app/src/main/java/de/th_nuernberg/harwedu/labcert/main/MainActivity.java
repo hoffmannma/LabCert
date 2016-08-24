@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity
                 if (dataSource.studentExists(scanContent)) {
                     //dataSource.insertAttd(scanContent, getEditor());
                     //toastMsg(getString(R.string.attd_updated));
-                    Student student = dataSource.getStudent(scanContent);
+                    Student student = dataSource.getStudentByBib(scanContent);
                     student.setAttd(dataSource.getAttdCount(student));
                     jumpToStudent(student);
                 } else {

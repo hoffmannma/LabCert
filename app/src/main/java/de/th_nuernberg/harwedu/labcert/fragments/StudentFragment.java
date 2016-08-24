@@ -53,7 +53,7 @@ public class StudentFragment extends Fragment {
         Button delStudentButton = (Button) rootView.findViewById(R.id.button_del_student);
 
         studentTxt.setText(student.getStudentData());
-        commEditTxt.setText(student.getCommentStudent());
+        commEditTxt.setText(student.getComment());
 
         saveDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +62,7 @@ public class StudentFragment extends Fragment {
                 String commentString = commEditTxt.getText().toString();
 
                 DataSource dataSource = new DataSource(getActivity());
-                dataSource.updateComment(student.getId(), commentString);
+                dataSource.updateCommentStudent(student.getId(), commentString);
 
                 getActivity().getFragmentManager().popBackStack();
 
