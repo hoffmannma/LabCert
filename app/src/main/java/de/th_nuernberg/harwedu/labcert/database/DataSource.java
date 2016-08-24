@@ -235,17 +235,36 @@ public class DataSource implements TaskCompleted {
     /**
      * Routine, um den Datensatz eines bestimmten Studenten als Objekt zu erhalten.
      *
+     * @param matr Übergabe der Matr.-Nr. (String)
+     * @return Objekt Student, dass alle Daten enthält.
+     */
+    public Student getStudentByMatr(String labName, String term, String matr) {
+        Student student = null;
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_STUDENT +
+                " WHERE " + DbHelper.COLUMN_LAB_NAME + " = '" + labName + "' AND " +
+                DbHelper.COLUMN_TERM + " = '" + term + "' AND " +
+                DbHelper.COLUMN_MATR + " = '" + matr + "'", null);
+        if (cursor != null && cursor.moveToFirst())
+            student = cursorToStudent(cursor);
+        assert cursor != null;
+            cursor.close();
+        return student;
+    }
+
+    /**
+     * Routine, um den Datensatz eines bestimmten Studenten als Objekt zu erhalten.
+     *
      * @param bibNo Übergabe der Bib.-Nr. (String)
      * @return Objekt Student, dass alle Daten enthält.
      */
     public Student getStudentByBib(String labName, String term, String bibNo) {
+        Student student = null;
         Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_STUDENT +
                 " WHERE " + DbHelper.COLUMN_LAB_NAME + " = '" + labName + "' AND " +
                 DbHelper.COLUMN_TERM + " = '" + term + "' AND " +
-                DbHelper.COLUMN_MATR + " = '" + bibNo + "'", null);
-        if (cursor != null)
-            cursor.moveToFirst();
-        Student student = cursorToStudent(cursor);
+                DbHelper.COLUMN_BIB + " = '" + bibNo + "'", null);
+        if (cursor != null && cursor.moveToFirst())
+            student = cursorToStudent(cursor);
         assert cursor != null;
         cursor.close();
         return student;

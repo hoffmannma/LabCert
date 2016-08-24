@@ -109,7 +109,7 @@ public class CreateStudentFragment extends Fragment {
                         String matr, String email, String comment, String bib)
                         */
                 //TODO Parameter labname, term, bib
-                Student student = dataSource.getStudentByBib("LABNAME", "SS16", bibString);
+                Student student = dataSource.getStudentByMatr("LABNAME","SS16",matrString);
                 toastMsg("Student hinzugefügt");
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
