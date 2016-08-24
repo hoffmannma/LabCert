@@ -5,13 +5,20 @@
     android:orientation="vertical"
     tools:context=".fragments.CreateStudentFragment">
 
+    <Spinner
+        android:id="@+id/spinner_student_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/editText_hint_surname"
         android:inputType="text"
         android:id="@+id/editText_surname"
-        android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
 
@@ -45,9 +52,36 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/editText_hint_labteam"
+        android:hint="@string/editText_hint_email"
+        android:inputType="textEmailAddress"
+        android:id="@+id/editText_student_email"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_lab"
         android:inputType="text"
-        android:id="@+id/editText_labteam"
+        android:id="@+id/editText_student_lab"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_group_no"
+        android:inputType="text"
+        android:id="@+id/editText_student_group"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/editText_hint_term"
+        android:inputType="text"
+        android:id="@+id/editText_student_term"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
 

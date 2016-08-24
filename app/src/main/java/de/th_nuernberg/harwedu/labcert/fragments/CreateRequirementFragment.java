@@ -46,16 +46,18 @@ public class CreateRequirementFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_create_requirement, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_create_requirement, container, false);
 
-        Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner_req_type);
+        final Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner_req_type);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.req_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         //TODO Auf Spinnerauswahl reagieren
+        final EditText editTextCount = (EditText) rootView.findViewById(R.id.editText_reqCount);
         final EditText editTextLab = (EditText) rootView.findViewById(R.id.editText_reqLab);
         final EditText editTextGroup = (EditText) rootView.findViewById(R.id.editText_reqGroup);
+        final EditText editTextTerm = (EditText) rootView.findViewById(R.id.editText_reqTerm);
         //TODO Öffnen von EditTextGroup öffnet Spinner oben; was drinsteht abhängig von Spinner oben
         editTextGroup.setText(mParam);
 
@@ -64,10 +66,16 @@ public class CreateRequirementFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                String groupString = editTextGroup.getText().toString();
+                String typeString = spinner.getSelectedItem().toString();
+                String countString = editTextCount.getText().toString();
                 String labString = editTextLab.getText().toString();
+                String groupString = editTextGroup.getText().toString();
+                String termString = editTextTerm.getText().toString();
 
-                if (TextUtils.isEmpty(groupString)) {
+                if (TextUtils.isEmpty(countString)) {
+                    editTextCount.setError(getString(R.string.editText_errorMessage));
+                    return;
+                } else if (TextUtils.isEmpty(groupString)) {
                     editTextGroup.setError(getString(R.string.editText_errorMessage));
                     return;
                 } else if (TextUtils.isEmpty(labString)) {
@@ -83,7 +91,8 @@ public class CreateRequirementFragment extends Fragment {
                 // TODO Gruppen-ID holen (über Objekt Gruppe)
                 // TODO Übergabeparameter anpassen
                 // lab, group, term, type, count
-                dataSource.createRequirement("Dies", "ist", "nur", "ein", "Test");
+                dataSource.createRequirement(labString, groupString, termString, typeString,
+                        countString);
                 toastMsg("Anforderung erstellt");
                 dataSource.close();
 

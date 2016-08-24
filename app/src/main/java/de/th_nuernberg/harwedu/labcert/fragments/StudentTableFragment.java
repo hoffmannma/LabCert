@@ -34,8 +34,8 @@ public class StudentTableFragment extends Fragment {
     private DataSource dataSource;
     ArrayList<Student> studentList;
 
-    private static String lab;
-    private static String group;
+    //private static String lab;
+    //private static String group;
 
 
     public StudentTableFragment() {
@@ -44,8 +44,8 @@ public class StudentTableFragment extends Fragment {
 
     public static StudentTableFragment newInstance(String param1, String param2) {
         StudentTableFragment fragment = new StudentTableFragment();
-        lab = param1;
-        group = param2;
+       // lab = param1;
+       // group = param2;
         return fragment;
     }
 
@@ -66,10 +66,11 @@ public class StudentTableFragment extends Fragment {
      */
     private void showAllListEntries(View rootView) {
         // Liefert alle Datensätze
-        if (!Objects.equals(group, MainActivity.ALL_STUDENTS)) {
+        if (!Objects.equals(MainActivity.currentGroup, MainActivity.ALL_STUDENTS)) {
             // Liste der Studenten einer Gruppe
             // TODO Parameter anpassen
-            studentList = dataSource.getStudentsFromGrp(lab, group);
+            studentList = dataSource.getStudentsFromGrp(MainActivity.currentLab,
+                    MainActivity.currentGroup);
         } else {
             // Liste aller Studenten
             studentList = dataSource.getAllStudents();

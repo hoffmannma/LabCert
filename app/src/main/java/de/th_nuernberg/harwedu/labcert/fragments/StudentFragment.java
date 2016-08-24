@@ -52,7 +52,7 @@ public class StudentFragment extends Fragment {
         Button createPdfButton = (Button) rootView.findViewById(R.id.button_create_pdf);
         Button delStudentButton = (Button) rootView.findViewById(R.id.button_del_student);
 
-        studentTxt.setText(student.getStudentData());
+        studentTxt.setText(student.getSurname());
         commEditTxt.setText(student.getComment());
 
         saveDataButton.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +88,9 @@ public class StudentFragment extends Fragment {
             public void onClick(View v) {
 
                 DataSource dataSource = new DataSource(getActivity());
+                dataSource.openW();
                 dataSource.deleteStudent(student);
+                dataSource.close();
 
                 getActivity().getFragmentManager().popBackStack();
 

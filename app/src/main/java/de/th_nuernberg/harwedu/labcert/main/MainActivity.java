@@ -72,9 +72,9 @@ public class MainActivity extends AppCompatActivity
 
     private static String userName;
     private static String userMail;
-    private static String term;
-    private static String currentLab;
-    private static String currentGroup;
+    public static String term;
+    public static String currentLab;
+    public static String currentGroup;
 
     private static TextView userNameTxt;
     private static TextView userMailTxt;

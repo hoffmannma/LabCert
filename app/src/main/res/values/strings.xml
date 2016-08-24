@@ -48,7 +48,7 @@
     <string name="str_reqType">Typ</string>
     <string name="str_reqName">Name</string>
     <string name="str_Group">Gruppe</string>
-    <string name="str_Lab">Praktikum</string>
+    <string name="str_Lab">Fach</string>
     <string name="str_Term">Semester</string>
     <string name="str_createReq">Anforderung erstellen</string>
     <string name="import_requirement">Anforderung importieren</string>
@@ -60,6 +60,9 @@
     <string name="all_groups">Alle Gruppen</string>
     <string name="button_import_req">Anforderungen importieren</string>
     <string name="split_blank">\\s+</string>
+    <string name="str_count">Anzahl</string>
+    <string name="editText_hint_email">Email</string>
+    <string name="editText_hint_term">Semester</string>
 
     <string-array name="req_array">
         <item>Anwesenheit</item>
@@ -68,6 +71,11 @@
         <item>Eingangstest</item>
         <item>Kurztest</item>
         <item>Abfrage</item>
+    </string-array>
+
+    <string-array name="title_array">
+        <item>Herr</item>
+        <item>Frau</item>
     </string-array>
 
 </resources>
