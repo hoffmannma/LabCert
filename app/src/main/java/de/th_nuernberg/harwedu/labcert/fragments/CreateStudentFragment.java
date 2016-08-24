@@ -79,7 +79,6 @@ public class CreateStudentFragment extends Fragment {
                 String firstnameString = editTextFirstname.getText().toString();
                 String matrString = editTextMatr.getText().toString();
                 String bibString = editTextBib.getText().toString();
-                String labteamString = editTextLabteam.getText().toString();
                 String commentString = editTextComment.getText().toString();
 
                 if (TextUtils.isEmpty(surnameString)) {
@@ -101,10 +100,16 @@ public class CreateStudentFragment extends Fragment {
                 editTextMatr.setText("");
                 editTextBib.setText("");
                 editTextLabteam.setText("");
-
-                dataSource.createStudent(surnameString, firstnameString,
-                        commentString, mGroup, labteamString, matrString, bibString);
-                Student student = dataSource.getStudentByBib(bibString);
+                // TODO Variablen implementieren, Parameter an Fragment übergeben
+                dataSource.createStudent("LABNAME", mGroup, "SS16", "HERR", surnameString,
+                        firstnameString, matrString, "E@MAIL.COM", commentString);
+                /*
+                (String lab_name, String group, String term,
+                        String title, String surname, String firstname,
+                        String matr, String email, String comment, String bib)
+                        */
+                //TODO Parameter labname, term, bib
+                Student student = dataSource.getStudentByBib("LABNAME", "SS16", bibString);
                 toastMsg("Student hinzugefügt");
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();

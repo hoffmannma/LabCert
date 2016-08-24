@@ -83,10 +83,11 @@ public class GroupTableFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapter, View v, int position,
                                     long arg3) {
                 Group group = (Group) adapter.getItemAtPosition(position);
-                Toast.makeText(getActivity(), group.getGroup_id(), Toast.LENGTH_SHORT).show();
+                // TODO Checken ob Labname passt
+                Toast.makeText(getActivity(), group.getGroup(), Toast.LENGTH_SHORT).show();
                 try {
                     ((OnGroupSelectedListener) context).onGroupSelected(
-                            group.getLab(), group.getGroup_id());
+                            group.getLab_name(), group.getGroup());
                 } catch (ClassCastException ignored) {
 
                 }

@@ -30,7 +30,7 @@ public class RequirementTableFragment extends Fragment {
     private DataSource dataSource;
 
     // TODO: Rename and change types of parameters
-    private String mParam;
+    private String mGroup;
 
 
     public RequirementTableFragment() {
@@ -52,7 +52,7 @@ public class RequirementTableFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam = getArguments().getString(ARG_PARAM);
+            mGroup = getArguments().getString(ARG_PARAM);
         }
     }
 
@@ -93,8 +93,9 @@ public class RequirementTableFragment extends Fragment {
 
     private void showAllListEntries(View rootView) {
 
+        // TODO Parameter labname, group, term
         // Liefert alle Datensätze
-        ArrayList<Requirement> reqList = dataSource.getGroupRequirements(mParam);
+        ArrayList<Requirement> reqList = dataSource.getGroupRequirements("LABNAME",mGroup,"SS16");
 
         //ListView reqListView = (ListView) rootView.findViewById(R.id.listview_req_table);
         SimpleRequirementTableAdapter adapter = new SimpleRequirementTableAdapter(getActivity(), reqList);

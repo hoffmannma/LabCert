@@ -845,7 +845,7 @@ public class DataSource implements TaskCompleted {
     public void syncAttdToRemote() throws
             InterruptedException, ExecutionException, TimeoutException {
         Log.d(LOG_TAG, "Aufruf syncAttdWithRemote");
-        deleteAttdRecords();
+        //deleteAttdRecords();
         GetRemoteAttdTask getRemoteAttdTask = new GetRemoteAttdTask(context);
         getRemoteAttdTask.delegate = this;
         getRemoteAttdTask.execute();
@@ -909,8 +909,11 @@ public class DataSource implements TaskCompleted {
         try {
             while ((line = buffer.readLine()) != null) {
                 String[] str = line.split(context.getString(R.string.comma_split));
-                if (!studentExistsByBib(str[6], true))
-                    createStudent(str[0], str[1], str[2], str[3], str[4], str[5], str[6]);
+                //TODO Parameter anpassen
+                // Vergleich: labname, semester, matrikel
+                if (!studentExistsByMatr(str[0],str[2], str[6]))
+                    createStudent(str[0], str[1], str[2], str[3], str[4], str[5], str[6],
+                            str[7], str[8]);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -1017,10 +1020,11 @@ public class DataSource implements TaskCompleted {
         database.execSQL(updateQuery);
     }
 */
-    /*
+
     @Override
     public void onTaskComplete(ArrayList<HashMap<String, String>> result) {
-        insertAttd(result, NO);
-    }*/
+        //TODO Was tun wenn Sync fertig
+        //insertAttd(result, NO);
+    }
 
 }

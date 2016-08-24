@@ -69,12 +69,11 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_TS + " TEXT NOT NULL);";
     /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Gruppen'
-     * ID | Labor-ID | Laborname | Gruppe | Semester | Betreuer-Kennung
+     * ID | Laborname | Gruppe | Semester | Betreuer-Kennung
      */
     public static final String CREATE_GROUP_TABLE =
             "CREATE TABLE " + TABLE_GROUP +
                     "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_LAB_ID + " TEXT NOT NULL, " +
                     COLUMN_LAB_NAME + " TEXT NOT NULL, " +
                     COLUMN_GROUP + " TEXT, " +
                     COLUMN_TERM + " TEXT NOT NULL, " +

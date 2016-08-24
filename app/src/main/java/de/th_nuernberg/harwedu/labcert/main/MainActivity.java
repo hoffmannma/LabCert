@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -29,8 +30,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
@@ -73,6 +72,7 @@ public class MainActivity extends AppCompatActivity
 
     private static String userName;
     private static String userMail;
+    private static String term;
     private static String currentLab;
     private static String currentGroup;
 
@@ -124,11 +124,12 @@ public class MainActivity extends AppCompatActivity
         currentLabTxt = (TextView) header.findViewById(R.id.textview_current_lab);
         currentGroupTxt = (TextView) header.findViewById(R.id.textview_current_group);
 
-        // TODO: Datenbank / Shared Memory Abfrage von Userdaten
+        // TODO: Datenbank / Shared Memory Abfrage von Userdaten; TERM ANPASSEN
         userName = "Eduard Harwart";
         userMail = "harwartedu58020@th-nuernberg.de";
         userNameTxt.setText(userName);
         userMailTxt.setText(userMail);
+        term = "SS16";
 
         /**
          *      Spinner mit Gruppenauswahl
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity
                                        int arg2, long arg3) {
                 String spinnerString = spinner.getSelectedItem().toString();
                 if (spinnerString != ALL_STUDENTS) {
-                    String splitSpinnerString[] = spinnerString.split("\\s+");
+                    String splitSpinnerString[] = spinnerString.split(getString(R.string.split_blank));
                     currentLab = splitSpinnerString[0];
                     currentGroup = splitSpinnerString[1];
                 }
@@ -192,8 +193,8 @@ public class MainActivity extends AppCompatActivity
      */
 
     @Override
-    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int permsRequestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         switch (permsRequestCode) {
             case 200:
                 readExtAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
@@ -228,11 +229,12 @@ public class MainActivity extends AppCompatActivity
 
             if ((scanContent != null) && (scanFormat != null)) {
                 DataSource dataSource = new DataSource(this);
-                if (dataSource.studentExists(scanContent)) {
+                // TODO Parameter labname, term, bib
+                if (dataSource.studentExistsByBib(currentLab, term, scanContent)) {
                     //dataSource.insertAttd(scanContent, getEditor());
                     //toastMsg(getString(R.string.attd_updated));
-                    Student student = dataSource.getStudentByBib(scanContent);
-                    student.setAttd(dataSource.getAttdCount(student));
+                    // TODO Parameter labname, term, bib
+                    Student student = dataSource.getStudentByBib(currentLab, term, scanContent);
                     jumpToStudent(student);
                 } else {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -366,13 +368,15 @@ public class MainActivity extends AppCompatActivity
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_sync_db) {
+
+            /* TODO Sync überarbeiten
             DataSource dataSource = new DataSource(this);
             dataSource.uploadNewAttdRecords();
             try {
                 dataSource.syncAttdToRemote();
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 e.printStackTrace();
-            }
+            }*/
         } else if (id == R.id.nav_import_csv) {
 
             DataSource dataSource = new DataSource(this);

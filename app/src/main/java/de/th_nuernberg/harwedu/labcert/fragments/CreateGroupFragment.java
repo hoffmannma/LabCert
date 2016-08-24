@@ -79,8 +79,8 @@ public class CreateGroupFragment extends Fragment {
                 editTextLabId.setText("");
                 editTextGroupNo.setText("");
                 editTextSupervisor.setText("");
-
-                dataSource.createGroup(labString, labIdString, groupNoString, supervisorString);
+                //TODO LAB-ID raus, Semester übergeben
+                dataSource.createGroup(labString, " ",groupNoString, "SS16", supervisorString);
                 toastMsg("Gruppe erstellt");
 
                 try{

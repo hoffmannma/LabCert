@@ -34,7 +34,7 @@ import de.th_nuernberg.harwedu.labcert.database.DataSource;
 
 public class WebSyncFragment extends Fragment {
 
-
+/*
     private static final String LOG_TAG = "WebSyncFragment";
     private static final String SYNC_ATTD_URL =
             "http://josuaa.de/labcert/sync/insert_attendance.php";
@@ -76,7 +76,7 @@ public class WebSyncFragment extends Fragment {
         int a = 1;
         client.setTimeout(DEFAULT_TIMEOUT);
 
-        if (a == 1/*userList.size()!=0*/) {
+        if (a == 1) {
             if (controller.dbSyncCount() != 0) {
 
                 prgDialog.show();
@@ -106,16 +106,6 @@ public class WebSyncFragment extends Fragment {
 
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject obj = jsonArray.getJSONObject(i);
-                                /*
-                                System.out.println(obj.get("id"));
-                                System.out.println(obj.get("matr"));
-                                System.out.println(obj.get("ts"));
-                                System.out.println(obj.get("editor"));
-                                System.out.println(obj.get("a_date"));
-                                System.out.println(obj.get("comment"));
-                                System.out.println(obj.get("status"));
-                                System.out.println(obj.get("new_entry"));
-                                */
                                 queryValues = new HashMap<>();
                                 queryValues.put("id", obj.get("id").toString());
                                 queryValues.put("matr", obj.get("matr").toString());
@@ -160,5 +150,5 @@ public class WebSyncFragment extends Fragment {
         } else
             Log.d(LOG_TAG, "No data in SQLite DB");
 
-    }
+    }*/
 }

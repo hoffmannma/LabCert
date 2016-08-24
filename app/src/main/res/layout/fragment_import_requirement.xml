@@ -9,14 +9,14 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/listview_req_table"
+        <ListView android:id="@+id/listview_req_table"
             android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_gravity="center_horizontal"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:choiceMode="multipleChoice"
-            />
+            android:paddingLeft="@dimen/page_margin"
+            android:paddingRight="@dimen/page_margin"
+            android:scrollbarStyle="outsideOverlay"
+            android:choiceMode="multipleChoice" />
 
         <Button
             android:id="@+id/button_import_req"

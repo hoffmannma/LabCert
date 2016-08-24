@@ -75,10 +75,10 @@ public class RequirementTableAdapter extends BaseAdapter {
         }
 
         Requirement requirement = requirementList.get(position);
-        holder.hTermTxt.setText(requirement.getReqName());
+        holder.hTermTxt.setText(requirement.getType());
         holder.hLabTxt.setText(String.valueOf(requirement.getCount()));
         holder.hGrpTxt.setText(String.valueOf(requirement.getCount()));
-        holder.hTypeTxt.setText(requirement.getReqName());
+        holder.hTypeTxt.setText(requirement.getType());
         holder.hCountTxt.setText(String.valueOf(requirement.getCount()));
 
         return convertView;

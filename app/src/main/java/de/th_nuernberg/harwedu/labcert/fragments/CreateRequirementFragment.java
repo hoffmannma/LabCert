@@ -82,7 +82,8 @@ public class CreateRequirementFragment extends Fragment {
                 dataSource.openW();
                 // TODO Gruppen-ID holen (über Objekt Gruppe)
                 // TODO Übergabeparameter anpassen
-                dataSource.createRequirement();
+                // lab, group, term, type, count
+                dataSource.createRequirement("Dies", "ist", "nur", "ein", "Test");
                 toastMsg("Anforderung erstellt");
                 dataSource.close();
 

@@ -120,18 +120,14 @@ public class Student {
         this.progress = progress;
     }
 
-    //TODO löschen?
-    /*public String getStudentData() {
-        attd_count = 5;
+    //TODO erweitern
+    public String getStudentData() {
         String output = surname + ", " + firstname + "\n" +
-                "\nGruppe: " + group +
-                "\nTeam: " + team +
-                "\nAnwesenheit: " + intToString(attd, attd_count)// +
-                //"\nAufgabenstatus: " + intToString(tasks);
-                ;
+                "\nGruppe: " + group;
         return output;
     }
 
+    //TODO löschen?
     private String intToString(int[] intArray, int count) {
         String delimiter = " | ";
         StringBuilder sb = new StringBuilder();
@@ -142,7 +138,7 @@ public class Student {
             sb.append(intArray[i]);
         }
         return sb.toString();
-    }*/
+    }
 
     /*
     @Override
