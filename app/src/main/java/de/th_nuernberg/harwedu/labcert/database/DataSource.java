@@ -666,64 +666,62 @@ public class DataSource implements TaskCompleted {
     }
     */
 
+    /**
+     * Fügt zu einem Studenten die BIB-Nummer zu einer Matr-Nr. ein, ausgehen vom Objekt Studenten
+     * @param student
+     */
     public void insertBib(Student student) {
-        openW();
         String updateQuery = "Update " + DbHelper.TABLE_STUDENT +
                 " set " + DbHelper.COLUMN_BIB + " = '" + student.getBib()
                 + "' WHERE " + DbHelper.COLUMN_MATR + " = '" + student.getMatr() + "'";
         Log.d("query", updateQuery);
         database.execSQL(updateQuery);
-        close();
+    }
+
+    /**
+     * Fortschritt einfügen
+     */
+
+    public void insertProg(HashMap<String, String> queryValues) {
+        ContentValues values = new ContentValues();
+        values.put(DbHelper.COLUMN_LAB_NAME, queryValues.get(RemoteDb.COLUMN_LAB_NAME));
+        values.put(DbHelper.COLUMN_GROUP, queryValues.get(RemoteDb.COLUMN_GROUP));
+        values.put(DbHelper.COLUMN_TERM, queryValues.get(RemoteDb.COLUMN_TERM));
+        values.put(DbHelper.COLUMN_TYPE, queryValues.get(RemoteDb.COLUMN_TYPE));
+        values.put(DbHelper.COLUMN_MATR, queryValues.get(RemoteDb.COLUMN_MATR));
+        values.put(DbHelper.COLUMN_SCORE, queryValues.get(RemoteDb.COLUMN_SCORE));
+        values.put(DbHelper.COLUMN_COMMENT, queryValues.get(RemoteDb.COLUMN_COMMENT));
+        values.put(DbHelper.COLUMN_TS, queryValues.get(RemoteDb.COLUMN_TS));
+        database.rawQuery("DELETE FROM " + DbHelper.TABLE_PROGRESS + ";", null);
+        database.insert(DbHelper.TABLE_PROGRESS, null, values);
     }
 
     /**
      * Anwesenheit einfügen
-     */
-    /*
-    public void insertAttd(HashMap<String, String> queryValues) {
-        openW();
-        ContentValues values = new ContentValues();
-        values.put(DbHelper.COLUMN_MATR, queryValues.get("matr"));
-        values.put(DbHelper.COLUMN_TS, queryValues.get("ts"));
-        values.put(DbHelper.COLUMN_EDITOR, queryValues.get("editor"));
-        values.put(DbHelper.COLUMN_DATE, queryValues.get("a_date"));
-        values.put(DbHelper.COLUMN_COMMENT, queryValues.get("comment"));
-        values.put(DbHelper.COLUMN_LAB, queryValues.get("status"));
-        values.put(DbHelper.COLUMN_NEW_ENTRY, queryValues.get("new_entry"));
-        database.rawQuery("DELETE FROM " + DbHelper.TABLE_ATTENDANCE + ";", null);
-        database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
-        close();
-    }
-*/
-    /**
-     * Anwesenheit einfügen
      *
+     * //TODO noch zu gebrauchen?
      * @param queryValues
-     */
-    /*
-    public void insertAttd(HashMap<String, String> queryValues, String newEntry) {
-        openW();
+     *//*
+    public void insertProg(HashMap<String, String> queryValues, String newEntry) {
         ContentValues values = new ContentValues();
-        values.put(DbHelper.COLUMN_MATR, queryValues.get("MATR"));
-        values.put(DbHelper.COLUMN_TS, queryValues.get("TS"));
-        values.put(DbHelper.COLUMN_EDITOR, queryValues.get("EDITOR"));
-        values.put(DbHelper.COLUMN_DATE, queryValues.get("DATE_"));
-        values.put(DbHelper.COLUMN_COMMENT, queryValues.get("COMMENT_"));
-        values.put(DbHelper.COLUMN_COMMENT, queryValues.get("LAB_ID"));
-        values.put(DbHelper.COLUMN_NEW_ENTRY, newEntry);
-        database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
-        close();
-    }
-    */
+        values.put(DbHelper.COLUMN_LAB_NAME, queryValues.get(DbHelper.COLUMN_LAB_NAME));
+        values.put(DbHelper.COLUMN_GROUP, queryValues.get(DbHelper.COLUMN_GROUP));
+        values.put(DbHelper.COLUMN_TERM, queryValues.get(DbHelper.COLUMN_TERM));
+        values.put(DbHelper.COLUMN_TYPE, queryValues.get(DbHelper.COLUMN_TYPE));
+        values.put(DbHelper.COLUMN_MATR, queryValues.get(DbHelper.COLUMN_MATR));
+        values.put(DbHelper.COLUMN_SCORE, queryValues.get(DbHelper.COLUMN_SCORE));
+        values.put(DbHelper.COLUMN_COMMENT, queryValues.get(DbHelper.COLUMN_COMMENT));
+        values.put(DbHelper.COLUMN_TS, queryValues.get(DbHelper.COLUMN_TS));
+        //values.put(DbHelper.COLUMN_NEW_ENTRY, newEntry);
+        database.insert(DbHelper.TABLE_PROGRESS, null, values);
+    }*/
 
     /**
-     * Anwesenheit einfügen
+     * Fortschritt einfügen mit newEntry
      *
      * @param queryValues
-     */
-    /*
-    public void insertAttd(ArrayList<HashMap<String, String>> queryValues, String newEntry) {
-        openW();
+     *//*
+    public void insertProg(ArrayList<HashMap<String, String>> queryValues, String newEntry) {
         ContentValues values = new ContentValues();
         // Zeilenanzahl bestimmen!!!
         for (int i = 0; i < queryValues.size(); i++) {
@@ -742,19 +740,18 @@ public class DataSource implements TaskCompleted {
             values.put(DbHelper.COLUMN_NEW_ENTRY, newEntry);
             database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
         }
-        close();
-    }
-    */
+    }*/
+
 
     /**
      * Anwesenheit einfügen
      *
+     * //TODO glaub keine verwendung mehr (nur zu testzwecken benutzt) //kein editor bei Progress-Table immoment
      * @param matr
      * @param editor
      */
     /*
     public void insertAttd(String matr, String editor) {
-        openW();
         ContentValues values = new ContentValues();
         values.put(DbHelper.COLUMN_MATR, matr);
         values.put(DbHelper.COLUMN_TS,
@@ -766,58 +763,89 @@ public class DataSource implements TaskCompleted {
         values.put(DbHelper.COLUMN_LAB, "no");
         values.put(DbHelper.COLUMN_NEW_ENTRY, "yes");
         database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
-        close();
     }
 */
 
     /**
-     * Anwesenheit einfügen
+     * Fügt einen Fortschritt anhand einzelner Variablen ein
      *
+     * @param labName
+     * @param group
+     * @param term
+     * @param type
      * @param matr
-     * @param editor
+     * @param score
      */
-    /*
-    public void insertAttd(String matr, String editor, String date, String comment) {
-        openW();
+    public void insertProg(String labName, String group, String term, String type, String matr, String score) {
         ContentValues values = new ContentValues();
+        values.put(DbHelper.COLUMN_LAB_NAME, labName);
+        values.put(DbHelper.COLUMN_GROUP, group);
+        values.put(DbHelper.COLUMN_TERM, term);
+        values.put(DbHelper.COLUMN_TYPE, type);
         values.put(DbHelper.COLUMN_MATR, matr);
-        values.put(DbHelper.COLUMN_TS,
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        values.put(DbHelper.COLUMN_EDITOR, editor);
-        values.put(DbHelper.COLUMN_DATE,
-                new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        values.put(DbHelper.COLUMN_COMMENT, "");
-        values.put(DbHelper.COLUMN_LAB, "no");
-        values.put(DbHelper.COLUMN_NEW_ENTRY, "yes");
-        database.insert(DbHelper.TABLE_ATTENDANCE, null, values);
-        close();
+        values.put(DbHelper.COLUMN_SCORE, score);
+        values.put(DbHelper.COLUMN_TS, getTimestamp());
+        //values.put(DbHelper.COLUMN_NEW_ENTRY, "yes");
+        database.insert(DbHelper.TABLE_PROGRESS, null, values);
     }
-*/
 
     /**
-     * Ermittelt die Anzahl wahrgenommener Termine
      *
-     * @param student
-     * @return
+     * @param labName
+     * @param group
+     * @param term
+     * @param matr
+     * @param type
+     * @return int of the sumScore of a Type in the Progress-Table
      */
-    /*
-    public int[] getAttdCount(Student student) {
-        int[] attdRecords = new int[5];
-        for (int i = 0; i < 5; i++)
-            attdRecords[i] = 0;
-        openR();
-        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_ATTENDANCE +
-                " WHERE " + DbHelper.COLUMN_MATR + " = '" + student.getBib() + "'", null);
-        int n = cursor.getCount();
-        if (n > 5)
-            n = 5;
-        for (int i = 0; i < n; i++)
-            attdRecords[i] = 1;
-        cursor.close();
-        close();
-        return attdRecords;
+    public int getSumScore(String labName, String group, String term, String matr, String type) {
+        int SumScore = 0;
+        Cursor cursor = database.rawQuery("Select SUM(" + DbHelper.COLUMN_SCORE + ") FROM " +
+                DbHelper.TABLE_PROGRESS + " WHERE " +
+                DbHelper.COLUMN_LAB_NAME + " = '" + labName + "' AND " +
+                DbHelper.COLUMN_GROUP + " = '" + group + "' AND " +
+                DbHelper.COLUMN_TERM + " = '" + term + "' AND " +
+                DbHelper.COLUMN_MATR + " = '" + matr + "' AND " +
+                DbHelper.COLUMN_TYPE + " = '" + type + "'", null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int idSumScore = cursor.getColumnIndex("SUM(" + DbHelper.COLUMN_ID + ")");
+            SumScore = cursor.getInt(idSumScore);
+        }
+
+        assert cursor != null;
+            cursor.close();
+
+        return SumScore;
     }
-*/
+
+    /**
+     *
+     * @param labName
+     * @param group
+     * @param term
+     * @param matr
+     * @param type
+     * @return int of the counted Progress-Entries of a Type
+     */
+    public int getCountOfAType(String labName, String group, String term, String matr, String type) {
+        int CountOfAType = 0;
+        Cursor cursor = database.rawQuery("Select * FROM " + DbHelper.TABLE_PROGRESS + " WHERE " +
+                DbHelper.COLUMN_LAB_NAME + " = '" + labName + "' AND " +
+                DbHelper.COLUMN_GROUP + " = '" + group + "' AND " +
+                DbHelper.COLUMN_TERM + " = '" + term + "' AND " +
+                DbHelper.COLUMN_MATR + " = '" + matr + "' AND " +
+                DbHelper.COLUMN_TYPE + " = '" + type + "'", null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            CountOfAType = cursor.getCount();
+        }
+
+        assert cursor != null;
+        cursor.close();
+
+        return CountOfAType;
+    }
 
     /**
      * Synchronisiert neue Einträge in lokaler Datenbank mit Oracle-Datenbank
@@ -860,8 +888,8 @@ public class DataSource implements TaskCompleted {
         cursor.close();
         close();
         return true;
-    }
-*/
+    }*/
+
     /**
      * Überschreibt lokale Attendance-Einträge mit den Einträgen der Oracle-Datenbank
      *
@@ -945,6 +973,8 @@ public class DataSource implements TaskCompleted {
         }
         close();
     }
+
+
 
     /**
      * Funktion zum Abruf aller Anwesenheitsdaten als Hashmap
@@ -1055,5 +1085,6 @@ public class DataSource implements TaskCompleted {
     public String getTimestamp(){
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
+
 
 }

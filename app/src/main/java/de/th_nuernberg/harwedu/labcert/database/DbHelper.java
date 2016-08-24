@@ -45,7 +45,6 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TERM = "term";
     public static final String COLUMN_SCORE = "score";
 
-
     /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Studenten'
      * ID | Laborname | Gruppe | Semester| Anrede | Nachname | Vorname | Matr | Email | Bib-Nr. | Kommentar
