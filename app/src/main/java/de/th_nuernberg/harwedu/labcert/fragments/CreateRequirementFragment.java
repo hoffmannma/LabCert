@@ -48,7 +48,7 @@ public class CreateRequirementFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_create_requirement, container, false);
 
-        Spinner spinner = (Spinner) rootView.findViewById(R.id.req_spinner);
+        Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner_req_type);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.req_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

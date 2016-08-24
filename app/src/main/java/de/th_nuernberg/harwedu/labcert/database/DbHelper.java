@@ -7,7 +7,7 @@ import android.util.Log;
 
 
 /**
- * TODO Tabellen überarbeiten
+ * TODO TS TEXT NOT NULL
  */
 
 
@@ -63,7 +63,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_EMAIL + " TEXT NOT NULL, " +
                     COLUMN_BIB + " TEXT, " +
                     COLUMN_COMMENT + " TEXT, " +
-                    COLUMN_TS + " TEXT NOT NULL);";
+                    COLUMN_TS + " TEXT);";
     /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Gruppen'
      * ID | Laborname | Gruppe | Semester | Betreuer-Kennung
@@ -89,7 +89,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_TERM + " TEXT NOT NULL, " +
                     COLUMN_TYPE + " TEXT NOT NULL, " +
                     COLUMN_COUNT + " TEXT NOT NULL, " +
-                    COLUMN_TS + " TEXT NOT NULL);";
+                    COLUMN_TS + " TEXT);";
 
     /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Fortschritt'
@@ -105,7 +105,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_MATR + " TEXT NOT NULL, " +
                     COLUMN_SCORE + " TEXT, " +
                     COLUMN_COMMENT + " TEXT, " +
-                    COLUMN_TS + " TEXT NOT NULL);";
+                    COLUMN_TS + " TEXT);";
 
 
     public DbHelper(Context context) {
