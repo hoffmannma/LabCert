@@ -464,6 +464,33 @@ public class DataSource implements TaskCompleted {
     }
 
     /**
+     * @return ArrayList mit allen Anforderungen
+     */
+    public ArrayList<Requirement> getAllRequirements() {
+        ArrayList<Requirement> reqList = new ArrayList<>();
+        Requirement req;
+
+        String query = "SELECT * FROM " + DbHelper.TABLE_REQ;
+        Cursor cursor = database.rawQuery(query, null);
+
+        Log.d(LOG_TAG, "Alle Requirements geholt!");
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            req = cursorToRequirement(cursor);
+            reqList.add(req);
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return reqList;
+    }
+
+    public void updateReq(Requirement req, String lab, String grp, String term){
+        //TODO Definition
+    }
+
+    /**
      * @param cursor
      * @return Requirement
      */

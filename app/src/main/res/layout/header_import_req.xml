@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="@string/all_groups"
-        android:background="#8BC34A" />
+        android:text="@string/import_requirement"
+        android:background="#FF9800" />
 
 </LinearLayout>

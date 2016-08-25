@@ -14,8 +14,9 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import de.th_nuernberg.harwedu.labcert.R;
-import de.th_nuernberg.harwedu.labcert.adapter.SimpleRequirementTableAdapter;
+import de.th_nuernberg.harwedu.labcert.adapter.RequirementTableAdapter;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
+import de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener;
 import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.objects.Requirement;
 
@@ -23,14 +24,14 @@ import de.th_nuernberg.harwedu.labcert.objects.Requirement;
 public class RequirementTableFragment extends Fragment {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private static final String ARG_PARAM = "param";
+
+    private static String mLab;
+    private static String mGroup;
+    private static String mTerm;
 
     ListView reqListView;
 
     private DataSource dataSource;
-
-    // TODO: Rename and change types of parameters
-    private String mGroup;
 
 
     public RequirementTableFragment() {
@@ -39,21 +40,17 @@ public class RequirementTableFragment extends Fragment {
 
 
 
-    public static RequirementTableFragment newInstance(String param) {
+    public static RequirementTableFragment newInstance(String lab, String grp, String term) {
         RequirementTableFragment fragment = new RequirementTableFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM, param);
-
-        fragment.setArguments(args);
+        mLab = lab;
+        mGroup = grp;
+        mTerm = term;
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mGroup = getArguments().getString(ARG_PARAM);
-        }
     }
 
     @Override
@@ -61,10 +58,24 @@ public class RequirementTableFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_requirement_table, container, false);
         dataSource = new DataSource(getActivity());
-
         reqListView = (ListView) rootView.findViewById(R.id.listview_req_table);
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.header_req_list,
+                reqListView, false);
+        reqListView.addHeaderView(header, null, false);
+
         Button newReqButton = (Button) rootView.findViewById(R.id.button_new_requirement);
         Button importReqButton = (Button) rootView.findViewById(R.id.button_import_requirement);
+
+        showAllListEntries();
+        MainActivity.addGroupChangeListener(new GroupChangeListener() {
+            @Override
+            public void onGroupChanged(String lab, String group, String term) {
+                mLab = lab;
+                mGroup = group;
+                mTerm = term;
+                showAllListEntries();
+            }
+        });
 
         newReqButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,10 +106,11 @@ public class RequirementTableFragment extends Fragment {
 
         // TODO Parameter labname, group, term
         // Liefert alle Datensätze
-        ArrayList<Requirement> reqList = dataSource.getGroupRequirements("LABNAME",mGroup,"SS16");
-
+        dataSource.openR();
+        ArrayList<Requirement> reqList = dataSource.getGroupRequirements(mLab, mGroup, mTerm);
+        dataSource.close();
         //ListView reqListView = (ListView) rootView.findViewById(R.id.listview_req_table);
-        SimpleRequirementTableAdapter adapter = new SimpleRequirementTableAdapter(getActivity(), reqList);
+        RequirementTableAdapter adapter = new RequirementTableAdapter(getActivity(), reqList);
 
         Log.d(LOG_TAG, "RequirementTable: Versuche Adapter zu setzen...");
         reqListView.setAdapter(adapter);
@@ -119,25 +131,6 @@ public class RequirementTableFragment extends Fragment {
                 transaction.commit();
             }
         });
-    }
-
-    // Fragment tritt in den Vordergrund: Datenbank neu aufrufen
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Log.d(LOG_TAG, "+++ Resume: RequirementTable +++");
-        dataSource.openR();
-        Log.d(LOG_TAG, "Datenbank-Einträge:");
-        showAllListEntries();
-    }
-
-    // Fragment pausiert: Datenbankzugriff schließen
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(LOG_TAG, "+++ Pause: RequirementTable +++");
-        dataSource.close();
     }
 
 }

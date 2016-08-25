@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
+import de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener;
 import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 
@@ -32,20 +33,23 @@ public class CreateStudentFragment extends Fragment {
 
 
     private static String mBib;
+    private static String mLab;
     private static String mGroup;
 
     public CreateStudentFragment() {
     }
 
-    public static CreateStudentFragment newInstance(String pBib, String pGroup) {
+    public static CreateStudentFragment newInstance(String pBib, String pLab, String pGroup) {
         CreateStudentFragment fragment = new CreateStudentFragment();
         mBib = pBib;
+        mLab = pLab;
         mGroup = pGroup;
         return fragment;
     }
 
-    public static CreateStudentFragment newInstance(String pGroup) {
+    public static CreateStudentFragment newInstance(String pLab, String pGroup) {
         CreateStudentFragment fragment = new CreateStudentFragment();
+        mLab = pLab;
         mGroup = pGroup;
         return fragment;
     }
@@ -81,9 +85,19 @@ public class CreateStudentFragment extends Fragment {
 
         if(mBib != null)
             editTextBib.setText(mBib);
-        editTextLab.setText(MainActivity.currentLab);
-        editTextGroup.setText(MainActivity.currentGroup);
+        editTextLab.setText(mLab);
+        editTextGroup.setText(mGroup);
+        // TODO Semester übergeben
         editTextTerm.setText(MainActivity.term);
+
+        MainActivity.addGroupChangeListener(new GroupChangeListener() {
+            @Override
+            public void onGroupChanged(String lab, String group, String term) {
+                editTextLab.setText(lab);
+                editTextGroup.setText(group);
+                editTextTerm.setText(term);
+            }
+        });
 
         addStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,8 +135,7 @@ public class CreateStudentFragment extends Fragment {
                 editTextBib.setText("");
                 // TODO Variablen implementieren, Parameter an Fragment übergeben
                 // Momentan werden lab und group direkt aus main übernommen
-                labString = MainActivity.currentLab;
-                groupString = MainActivity.currentGroup;
+
                 dataSource.createStudent(labString, groupString, termString, titleString,
                         surnameString, firstnameString, matrString, mailString, commentString);
                 /*
@@ -153,5 +166,4 @@ public class CreateStudentFragment extends Fragment {
         Toast toast = Toast.makeText(context, msg, duration);
         toast.show();
     }
-
 }

@@ -16,30 +16,30 @@ import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
+import de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener;
+import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 
 
 public class CreateRequirementFragment extends Fragment {
 
-    private static final String ARG_PARAM = "param";
-    private String mParam;
+    private static String mLab;
+    private static String mGroup;
+    private static String mTerm;
 
     public CreateRequirementFragment() {
     }
 
-    public static CreateRequirementFragment newInstance(String param) {
+    public static CreateRequirementFragment newInstance(String lab, String grp, String term) {
         CreateRequirementFragment fragment = new CreateRequirementFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM, param);
-        fragment.setArguments(args);
+        mLab = lab;
+        mGroup = grp;
+        mTerm = term;
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam = getArguments().getString(ARG_PARAM);
-        }
     }
 
     @Override
@@ -53,15 +53,23 @@ public class CreateRequirementFragment extends Fragment {
                 R.array.req_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        //TODO Auf Spinnerauswahl reagieren
         final EditText editTextCount = (EditText) rootView.findViewById(R.id.editText_reqCount);
         final EditText editTextLab = (EditText) rootView.findViewById(R.id.editText_reqLab);
         final EditText editTextGroup = (EditText) rootView.findViewById(R.id.editText_reqGroup);
         final EditText editTextTerm = (EditText) rootView.findViewById(R.id.editText_reqTerm);
-        //TODO Öffnen von EditTextGroup öffnet Spinner oben; was drinsteht abhängig von Spinner oben
-        editTextGroup.setText(mParam);
-
         Button createReqButton = (Button) rootView.findViewById(R.id.button_create_req);
+        editTextLab.setText(mLab);
+        editTextGroup.setText(mGroup);
+        editTextTerm.setText(mTerm);
+
+        MainActivity.addGroupChangeListener(new GroupChangeListener() {
+            @Override
+            public void onGroupChanged(String lab, String group, String term) {
+                editTextLab.setText(lab);
+                editTextGroup.setText(group);
+                editTextGroup.setText(term);
+            }
+        });
         createReqButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +106,7 @@ public class CreateRequirementFragment extends Fragment {
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 RequirementTableFragment fragment = new RequirementTableFragment();
-                RequirementTableFragment.newInstance(groupString);
+                RequirementTableFragment.newInstance(labString, groupString, termString);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();

@@ -26,8 +26,10 @@ public class SimpleStudentTableFragment extends Fragment {
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private DataSource dataSource;
-    private static String mParam;
-
+    private static String mBib;
+    private static String mLab;
+    private static String mGroup;
+    private static String mTerm;
 
     public SimpleStudentTableFragment() {
         // Required empty public constructor
@@ -36,12 +38,13 @@ public class SimpleStudentTableFragment extends Fragment {
     /**
      * Übergibt Bib-Nr. an Fragment
      */
-    public static SimpleStudentTableFragment newInstance(String param) {
+    public static SimpleStudentTableFragment newInstance(String lab, String grp, String term,
+                                                         String bib) {
         SimpleStudentTableFragment fragment = new SimpleStudentTableFragment();
-        //Bundle args = new Bundle();
-        //args.putString(ARG_PARAM, param);
-        //fragment.setArguments(args);
-        mParam = param;
+        mLab = lab;
+        mGroup = grp;
+        mTerm = term;
+        mBib = bib;
         return fragment;
     }
 
@@ -80,7 +83,7 @@ public class SimpleStudentTableFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapter, View v, int position,
                                     long arg3) {
                 Student student = (Student) adapter.getItemAtPosition(position);
-                student.setBib(mParam);
+                student.setBib(mBib);
                 dataSource.insertBib(student);
                 // Normale Tabelle wieder anzeigen und Toast für "Bib-Nr. aktualisiert" anzeigen
                 String toastStr = "Bib.-Nr. eingetragen für " +

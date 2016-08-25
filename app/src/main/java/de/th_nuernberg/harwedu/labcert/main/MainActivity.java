@@ -30,10 +30,12 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.fragments.GroupTableFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.ImportRequirementFragment;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 import de.th_nuernberg.harwedu.labcert.fragments.CreateStudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.CreateGroupFragment;
@@ -61,11 +63,13 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         CreateGroupFragment.OnGroupCreatedListener, GroupTableFragment.OnGroupSelectedListener{
 
-    public static final String ALL_STUDENTS = "Alle Studenten";
+    private static final String ALL_STUDENTS = "Alle Studenten";
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String STUDENT_TABLE_TAG = "STUDENT_TABLE";
     private static final String csv_name = "students.csv";
+
+    public static final String CHOOSE_GROUP = "Gruppe wählen";
 
     private static boolean readExtAccepted;
     private static boolean writeExtAccepted;
@@ -73,8 +77,29 @@ public class MainActivity extends AppCompatActivity
     private static String userName;
     private static String userMail;
     public static String term;
-    public static String currentLab;
-    public static String currentGroup;
+    private static String currentLab;
+    private static String currentGroup;
+
+    private static String spinnerString;
+    private static List<de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener> listeners
+            = new ArrayList<de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener>();
+
+    public String getCurrentGroup(){
+        return currentGroup;
+    }
+
+    public void setCurrentGroup(String grp){
+        currentGroup = grp;
+        for (de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener g: listeners){
+            g.onGroupChanged(currentLab, currentGroup, term);
+        }
+    }
+
+    public static void addGroupChangeListener(de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener g){
+        listeners.add(g);
+    }
+
+
 
     private static TextView userNameTxt;
     private static TextView userMailTxt;
@@ -142,24 +167,18 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
-                String spinnerString = spinner.getSelectedItem().toString();
+                spinnerString = spinner.getSelectedItem().toString();
                 if (spinnerString != ALL_STUDENTS) {
                     String splitSpinnerString[] = spinnerString.split(getString(R.string.split_blank));
                     currentLab = splitSpinnerString[0];
-                    currentGroup = splitSpinnerString[1];
+                    setCurrentGroup(splitSpinnerString[1]);
                 }
                 else {
                     currentLab = "";
-                    currentGroup = spinnerString;
+                    setCurrentGroup(CHOOSE_GROUP);
                 }
                 currentLabTxt.setText(currentLab);
                 currentGroupTxt.setText(currentGroup);
-                StudentTableFragment fragment = (StudentTableFragment) getFragmentManager()
-                        .findFragmentByTag(STUDENT_TABLE_TAG);
-                if (fragment != null && fragment.isVisible()) {
-                    jumpToStudentTable();
-                }
-
             }
 
 
@@ -176,14 +195,6 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null) {
             jumpToStudentTable();
             //navigationView.getMenu().getItem(0).setChecked(true);
-            //jumpToStudentTable();
-            /*
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            StudentTableFragment fragment = new StudentTableFragment();
-            transaction.replace(R.id.fragment_container,fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-            */
         }
     }
 
@@ -239,7 +250,8 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     UnknownStudentFragment fragment = new UnknownStudentFragment();
-                    UnknownStudentFragment.newInstance(scanFormat, scanContent, currentGroup);
+                    UnknownStudentFragment.newInstance(scanFormat, scanContent, currentLab,
+                            currentGroup, term);
                     transaction.replace(R.id.fragment_container, fragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
@@ -336,7 +348,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_add_member) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             CreateStudentFragment fragment = new CreateStudentFragment();
-            CreateStudentFragment.newInstance(currentGroup);
+            CreateStudentFragment.newInstance(currentLab, currentGroup, term);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -349,21 +361,21 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_requirements) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             RequirementTableFragment fragment = new RequirementTableFragment();
-            RequirementTableFragment.newInstance(currentGroup);
+            RequirementTableFragment.newInstance(currentLab, currentGroup, term);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_import_requirement) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            RequirementTableFragment fragment = new RequirementTableFragment();
-            RequirementTableFragment.newInstance(currentGroup);
+            ImportRequirementFragment fragment = new ImportRequirementFragment();
+            ImportRequirementFragment.newInstance(currentLab, currentGroup, term);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_create_requirement) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             CreateRequirementFragment fragment = new CreateRequirementFragment();
-            SwitchGroupFragment.newInstance(currentGroup);
+            CreateRequirementFragment.newInstance(currentLab, currentGroup, term);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -399,7 +411,7 @@ public class MainActivity extends AppCompatActivity
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         StudentTableFragment fragment = new StudentTableFragment();
-        StudentTableFragment.newInstance(currentLab, currentGroup);
+        StudentTableFragment.newInstance(currentLab, currentGroup, term);
         transaction.replace(R.id.fragment_container, fragment, STUDENT_TABLE_TAG);
         //transaction.addToBackStack(null);
         transaction.commit();
@@ -435,16 +447,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    /**
-     * Setzt Gruppe auf Spinnerauswahl
-     *
-     * @param grp
-     */
-    public void setGroup(String grp) {
-        currentGroup = grp;
-        currentGroupTxt.setText(grp);
-    }
-
     public void reload(){
         finish();
         startActivity(getIntent());
@@ -460,9 +462,8 @@ public class MainActivity extends AppCompatActivity
         groupList = datasource.getAllGroupNames();
         datasource.close();
         groupList.add(ALL_STUDENTS);
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, groupList);
-        // Adapter einfügen
+        adapter = new ArrayAdapter<String>(this,R.layout.spinner_item_main, groupList);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
         spinner.setAdapter(adapter);
     }
 
@@ -483,5 +484,8 @@ public class MainActivity extends AppCompatActivity
         jumpToStudentTable();
     }
 
+    public interface GroupChangeListener {
+        void onGroupChanged(String grp);
+    }
 
 }
