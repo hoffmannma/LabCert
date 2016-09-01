@@ -32,6 +32,7 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable {
         setChecked(!mChecked);
     }
 
+
     @Override
     public int[] onCreateDrawableState(int extraSpace) {
         final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);

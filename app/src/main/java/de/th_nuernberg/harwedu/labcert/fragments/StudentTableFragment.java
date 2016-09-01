@@ -10,10 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
+import de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener;
 import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.adapter.StudentTableAdapter;
@@ -29,23 +31,29 @@ import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 public class StudentTableFragment extends Fragment {
 
+    //TODO Interface einfügen
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private DataSource dataSource;
     ArrayList<Student> studentList;
+    ListView studentListView;
 
-    private static String lab;
-    private static String group;
+    private static String mLab;
+    private static String mGroup;
+    private static String mTerm;
+
+    private View rootView;
 
 
     public StudentTableFragment() {
         // Required empty public constructor
     }
 
-    public static StudentTableFragment newInstance(String param1, String param2) {
+    public static StudentTableFragment newInstance(String lab, String grp, String term) {
         StudentTableFragment fragment = new StudentTableFragment();
-        lab = param1;
-        group = param2;
+        mLab = lab;
+        mGroup = grp;
+        mTerm = term;
         return fragment;
     }
 
@@ -53,31 +61,45 @@ public class StudentTableFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_student_table, container, false);
+        rootView = inflater.inflate(R.layout.fragment_student_table, container, false);
+        studentListView = (ListView) rootView.findViewById(R.id.listview_student_table);
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.header_student_list,
+                studentListView, false);
+        studentListView.addHeaderView(header, null, false);
 
         Log.d(LOG_TAG, "Das Datenquellen-Objekt wird angelegt.");
         dataSource = new DataSource(getActivity());
+        showAllListEntries();
+
+        MainActivity.addGroupChangeListener(new GroupChangeListener() {
+            @Override
+            public void onGroupChanged(String lab, String group, String term) {
+                mLab = lab;
+                mGroup = group;
+                mTerm = term;
+                showAllListEntries();
+            }
+        });
         return rootView;
     }
 
     /**
      *
-     * @param rootView rootView
      */
-    private void showAllListEntries(View rootView) {
+    private void showAllListEntries() {
         // Liefert alle Datensätze
-        if (!Objects.equals(group, MainActivity.ALL_STUDENTS)) {
+        dataSource.openR();
+        if (!Objects.equals(mGroup, MainActivity.CHOOSE_GROUP)) {
             // Liste der Studenten einer Gruppe
             // TODO Parameter anpassen
-            studentList = dataSource.getStudentsFromGrp(lab, group);
+            studentList = dataSource.getStudentsFromGrp(mLab, mGroup);
         } else {
             // Liste aller Studenten
             studentList = dataSource.getAllStudents();
         }
+        dataSource.close();
 
-        ListView studentListView = (ListView) rootView.findViewById(R.id.listview_student_table);
         StudentTableAdapter adapter = new StudentTableAdapter(getActivity(), studentList);
-
         studentListView.setAdapter(adapter);
 
         // Auf Auswahl eines Studenten reagieren
@@ -99,6 +121,7 @@ public class StudentTableFragment extends Fragment {
     /**
      * Fragment tritt in den Vordergrund: Datenbank neu aufrufen
      */
+    /*
     @Override
     public void onResume() {
         super.onResume();
@@ -107,15 +130,16 @@ public class StudentTableFragment extends Fragment {
         dataSource.openR();
         Log.d(LOG_TAG, "Datenbank-Einträge:");
         showAllListEntries(getView());
-    }
+    }*/
 
     /**
      * Fragment pausiert: Datenbankzugriff schließen
      */
+    /*
     @Override
     public void onPause() {
         super.onPause();
         Log.d(LOG_TAG, "+++ Pause +++");
         dataSource.close();
-    }
+    }*/
 }

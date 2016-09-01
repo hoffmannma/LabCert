@@ -424,6 +424,7 @@ public class DataSource implements TaskCompleted {
         valuesReq.put(DbHelper.COLUMN_TERM, term);
         valuesReq.put(DbHelper.COLUMN_TYPE, type);
         valuesReq.put(DbHelper.COLUMN_COUNT, count);
+        valuesReq.put(DbHelper.COLUMN_TS, getTimestamp());
 
         database.insert(DbHelper.TABLE_REQ, null, valuesReq);
 
@@ -460,6 +461,33 @@ public class DataSource implements TaskCompleted {
         Log.d(LOG_TAG, "Anforderungsliste erstellt (" + labName + "|" + group + "|" + term + ") -------------------------");
 
         return reqList;
+    }
+
+    /**
+     * @return ArrayList mit allen Anforderungen
+     */
+    public ArrayList<Requirement> getAllRequirements() {
+        ArrayList<Requirement> reqList = new ArrayList<>();
+        Requirement req;
+
+        String query = "SELECT * FROM " + DbHelper.TABLE_REQ;
+        Cursor cursor = database.rawQuery(query, null);
+
+        Log.d(LOG_TAG, "Alle Requirements geholt!");
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            req = cursorToRequirement(cursor);
+            reqList.add(req);
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return reqList;
+    }
+
+    public void updateReq(Requirement req, String lab, String grp, String term){
+        //TODO Definition
     }
 
     /**
@@ -506,6 +534,7 @@ public class DataSource implements TaskCompleted {
         valuesGroup.put(DbHelper.COLUMN_GROUP, group);
         valuesGroup.put(DbHelper.COLUMN_TERM, term);
         valuesGroup.put(DbHelper.COLUMN_SUPERVISOR, supervisor);
+        valuesGroup.put(DbHelper.COLUMN_TS, getTimestamp());
         database.insert(DbHelper.TABLE_GROUP, null, valuesGroup);
 
         Log.d(LOG_TAG, "Gruppe erstellt (" + lab_name + "|" + group + "|" + term + "|" + supervisor + ")");
@@ -642,7 +671,7 @@ public class DataSource implements TaskCompleted {
         String labName = cursor.getString(idLabName);
         String group = cursor.getString(idGroup);
 
-        return (group + " " + labName);
+        return (labName + " " + group);
     }
 
     /**

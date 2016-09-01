@@ -9,12 +9,17 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
+import de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener;
+import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 /**
@@ -28,20 +33,23 @@ public class CreateStudentFragment extends Fragment {
 
 
     private static String mBib;
+    private static String mLab;
     private static String mGroup;
 
     public CreateStudentFragment() {
     }
 
-    public static CreateStudentFragment newInstance(String pBib, String pGroup) {
+    public static CreateStudentFragment newInstance(String pBib, String pLab, String pGroup) {
         CreateStudentFragment fragment = new CreateStudentFragment();
         mBib = pBib;
+        mLab = pLab;
         mGroup = pGroup;
         return fragment;
     }
 
-    public static CreateStudentFragment newInstance(String pGroup) {
+    public static CreateStudentFragment newInstance(String pLab, String pGroup) {
         CreateStudentFragment fragment = new CreateStudentFragment();
+        mLab = pLab;
         mGroup = pGroup;
         return fragment;
     }
@@ -59,28 +67,54 @@ public class CreateStudentFragment extends Fragment {
         final DataSource dataSource = new DataSource(getActivity());
         dataSource.openW();
 
+        final Spinner titleSpinner = (Spinner) rootView.findViewById(R.id.spinner_student_title);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.title_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        titleSpinner.setAdapter(adapter);
         final EditText editTextSurname = (EditText) rootView.findViewById(R.id.editText_surname);
         final EditText editTextFirstname = (EditText) rootView.findViewById(R.id.editText_firstname);
         final EditText editTextMatr = (EditText) rootView.findViewById(R.id.editText_matr);
         final EditText editTextBib = (EditText) rootView.findViewById(R.id.editText_bib);
-        final EditText editTextLabteam = (EditText) rootView.findViewById(R.id.editText_labteam);
+        final EditText editTextMail = (EditText) rootView.findViewById(R.id.editText_student_email);
+        final TextView editTextLab = (TextView) rootView.findViewById(R.id.editText_student_lab);
+        final TextView editTextGroup = (TextView) rootView.findViewById(R.id.editText_student_group);
+        final TextView editTextTerm = (TextView) rootView.findViewById(R.id.editText_student_term);
         final EditText editTextComment = (EditText) rootView.findViewById(R.id.editText_comment);
-
         Button addStudentButton = (Button) rootView.findViewById(R.id.button_create_student);
 
         if(mBib != null)
             editTextBib.setText(mBib);
+        editTextLab.setText(mLab);
+        editTextGroup.setText(mGroup);
+        // TODO Semester übergeben
+        editTextTerm.setText(MainActivity.term);
+
+        MainActivity.addGroupChangeListener(new GroupChangeListener() {
+            @Override
+            public void onGroupChanged(String lab, String group, String term) {
+                editTextLab.setText(lab);
+                editTextGroup.setText(group);
+                editTextTerm.setText(term);
+            }
+        });
 
         addStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                String titleString = titleSpinner.getSelectedItem().toString();
                 String surnameString = editTextSurname.getText().toString();
                 String firstnameString = editTextFirstname.getText().toString();
                 String matrString = editTextMatr.getText().toString();
                 String bibString = editTextBib.getText().toString();
+                String mailString = editTextMail.getText().toString();
+                String labString = editTextLab.getText().toString();
+                String groupString = editTextGroup.getText().toString();
+                String termString = editTextTerm.getText().toString();
                 String commentString = editTextComment.getText().toString();
 
+                // TODO Bedingungen
                 if (TextUtils.isEmpty(surnameString)) {
                     editTextSurname.setError(getString(R.string.editText_errorMessage));
                     return;
@@ -99,17 +133,18 @@ public class CreateStudentFragment extends Fragment {
                 editTextFirstname.setText("");
                 editTextMatr.setText("");
                 editTextBib.setText("");
-                editTextLabteam.setText("");
                 // TODO Variablen implementieren, Parameter an Fragment übergeben
-                dataSource.createStudent("LABNAME", mGroup, "SS16", "HERR", surnameString,
-                        firstnameString, matrString, "E@MAIL.COM", commentString);
+                // Momentan werden lab und group direkt aus main übernommen
+
+                dataSource.createStudent(labString, groupString, termString, titleString,
+                        surnameString, firstnameString, matrString, mailString, commentString);
                 /*
                 (String lab_name, String group, String term,
                         String title, String surname, String firstname,
                         String matr, String email, String comment, String bib)
                         */
                 //TODO Parameter labname, term, bib
-                Student student = dataSource.getStudentByMatr("LABNAME","SS16",matrString);
+                Student student = dataSource.getStudentByMatr(labString, termString, matrString);
                 toastMsg("Student hinzugefügt");
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -131,5 +166,4 @@ public class CreateStudentFragment extends Fragment {
         Toast toast = Toast.makeText(context, msg, duration);
         toast.show();
     }
-
 }

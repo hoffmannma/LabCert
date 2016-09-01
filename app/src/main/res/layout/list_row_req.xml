@@ -3,14 +3,14 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
+<!--
     <TextView
         android:id = "@+id/textview_item_term"
         android:layout_width = "0dp"
         android:layout_height = "match_parent"
         android:layout_weight = "1"
         android:ellipsize = "end"
-        android:padding = "5dp"
+        android:padding = "1dp"
         android:singleLine = "true" />
 
     <TextView
@@ -19,7 +19,7 @@
         android:layout_height = "match_parent"
         android:layout_weight = "1"
         android:ellipsize = "end"
-        android:padding = "5dp"
+        android:padding = "1dp"
         android:singleLine = "true" />
 
     <TextView
@@ -28,16 +28,16 @@
         android:layout_height = "match_parent"
         android:layout_weight = "1"
         android:ellipsize = "end"
-        android:padding = "5dp"
+        android:padding = "1dp"
         android:singleLine = "true" />
-
+-->
     <TextView
         android:id = "@+id/textview_item_type"
         android:layout_width = "0dp"
         android:layout_height = "match_parent"
         android:layout_weight = "1"
         android:ellipsize = "end"
-        android:padding = "5dp"
+        android:padding = "1dp"
         android:singleLine = "true" />
 
     <TextView
@@ -46,7 +46,7 @@
         android:layout_height = "match_parent"
         android:layout_weight = "1"
         android:ellipsize = "end"
-        android:padding = "5dp"
+        android:padding = "1dp"
         android:singleLine = "true" />
 
 </LinearLayout>

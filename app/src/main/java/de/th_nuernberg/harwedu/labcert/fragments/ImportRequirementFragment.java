@@ -5,18 +5,19 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
 import de.th_nuernberg.harwedu.labcert.R;
-import de.th_nuernberg.harwedu.labcert.adapter.SimpleRequirementTableAdapter;
+import de.th_nuernberg.harwedu.labcert.adapter.ImportRequirementAdapter;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
+import de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener;
 import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.objects.Requirement;
 
@@ -24,17 +25,17 @@ import de.th_nuernberg.harwedu.labcert.objects.Requirement;
  *
  */
 public class ImportRequirementFragment extends Fragment {
-
+//TODO Interface für Gruppenänderung
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String ARG_PARAM = "param";
-
     ListView reqListView;
 
     private DataSource dataSource;
-
-    // TODO: Rename and change types of parameters
-    private String mGroup;
+    ArrayList<Requirement> reqList;
+    private static String mLab;
+    private static String mGroup;
+    private static String mTerm;
 
 
     public ImportRequirementFragment() {
@@ -43,12 +44,11 @@ public class ImportRequirementFragment extends Fragment {
 
 
 
-    public static ImportRequirementFragment newInstance(String param) {
+    public static ImportRequirementFragment newInstance(String lab, String grp, String term) {
         ImportRequirementFragment fragment = new ImportRequirementFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM, param);
-
-        fragment.setArguments(args);
+        mLab = lab;
+        mGroup = grp;
+        mTerm = term;
         return fragment;
     }
 
@@ -63,29 +63,37 @@ public class ImportRequirementFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_requirement_table, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_import_requirement, container, false);
         dataSource = new DataSource(getActivity());
-
         reqListView = (ListView) rootView.findViewById(R.id.listview_req_table);
-        Button newReqButton = (Button) rootView.findViewById(R.id.button_new_requirement);
-        Button importReqButton = (Button) rootView.findViewById(R.id.button_import_requirement);
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.header_import_req,
+                reqListView, false);
+        reqListView.addHeaderView(header, null, false);
+        Button importCheckedReqButton = (Button) rootView.findViewById(R.id.button_import_req);
 
-        newReqButton.setOnClickListener(new View.OnClickListener() {
+        MainActivity.addGroupChangeListener(new GroupChangeListener() {
             @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                CreateRequirementFragment fragment = new CreateRequirementFragment();
-                transaction.replace(R.id.fragment_container, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+            public void onGroupChanged(String lab, String group, String term) {
+                mLab = lab;
+                mGroup = group;
+                mTerm = term;
             }
         });
 
-        importReqButton.setOnClickListener(new View.OnClickListener() {
+        importCheckedReqButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SparseBooleanArray checked = reqListView.getCheckedItemPositions();
+                dataSource.openW();
+                for (int i = 0; i < reqListView.getAdapter().getCount(); ++i) {
+                    if (checked.get(i-1)) {
+                        Requirement req = reqList.get(i-1);
+                        dataSource.updateReq(req, mLab, mGroup, mTerm);
+                    }
+                }
+                dataSource.close();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                ImportRequirementFragment fragment = new ImportRequirementFragment();
+                RequirementTableFragment fragment = new RequirementTableFragment();
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
@@ -95,34 +103,23 @@ public class ImportRequirementFragment extends Fragment {
         return rootView;
     }
 
-    private void showAllListEntries(View rootView) {
-
-        // Liefert alle Datensätze
-        //TODO Parameter
-        ArrayList<Requirement> reqList = dataSource.getGroupRequirements("LABNAME",mGroup,"TERM");
-
-        //ListView reqListView = (ListView) rootView.findViewById(R.id.listview_req_table);
-        SimpleRequirementTableAdapter adapter = new SimpleRequirementTableAdapter(getActivity(), reqList);
-
-        Log.d(LOG_TAG, "RequirementTable: Versuche Adapter zu setzen...");
+    private void showAllListEntries() {
+        dataSource.openR();
+        reqList = dataSource.getAllRequirements();
+        dataSource.close();
+        ImportRequirementAdapter adapter = new ImportRequirementAdapter(getActivity(), reqList);
         reqListView.setAdapter(adapter);
-        Log.d(LOG_TAG, "RequirementTable: Versuche OnClickListener zu setzen...");
-        // Auf Auswahl eines Studenten reagieren
 
+        /*
         reqListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View v, int position,
                                     long arg3) {
                 Requirement req = (Requirement) adapter.getItemAtPosition(position);
-
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                RequirementFragment fragment = new RequirementFragment();
-                RequirementFragment.newInstance(req);
-                transaction.replace(R.id.fragment_container, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
             }
         });
+        */
+
     }
 
     // Fragment tritt in den Vordergrund: Datenbank neu aufrufen
@@ -133,7 +130,7 @@ public class ImportRequirementFragment extends Fragment {
         Log.d(LOG_TAG, "+++ Resume: RequirementTable +++");
         dataSource.openR();
         Log.d(LOG_TAG, "Datenbank-Einträge:");
-        showAllListEntries(getView());
+        showAllListEntries();
     }
 
     // Fragment pausiert: Datenbankzugriff schließen
