@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.fragments.GroupTableFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.SettingsFragment;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 import de.th_nuernberg.harwedu.labcert.fragments.CreateStudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.CreateGroupFragment;
@@ -304,11 +305,28 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_refresh) {
             jumpToStudentTable();
         }
-        /*
+
+        //Button: Settings
         if (id == R.id.action_settings) {
+            try {
+                Log.d(LOG_TAG, "Lege Setting-Einträge an.");
+                DataSource datasource = new DataSource(this);
+                datasource.openW();
+                datasource.settingsCreation();
+                datasource.close();
+                Log.d(LOG_TAG, "Setting-Einträge angelegt.");
+            } catch (Exception ex) {
+                Log.e(LOG_TAG, "Fehler beim Erstellen der Setting-Einträge: " + ex.getMessage());
+            }
+
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            SettingsFragment fragment = new SettingsFragment();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
             return true;
         }
-        */
+
 
         return super.onOptionsItemSelected(item);
     }

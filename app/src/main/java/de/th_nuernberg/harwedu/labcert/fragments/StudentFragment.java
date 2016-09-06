@@ -51,6 +51,7 @@ public class StudentFragment extends Fragment {
         Button saveDataButton = (Button) rootView.findViewById(R.id.button_save_comment);
         Button createPdfButton = (Button) rootView.findViewById(R.id.button_create_pdf);
         Button delStudentButton = (Button) rootView.findViewById(R.id.button_del_student);
+        Button sendMailButton = (Button) rootView.findViewById(R.id.button_send_mail);
 
         studentTxt.setText(student.getStudentData());
         commEditTxt.setText(student.getComment());
@@ -93,6 +94,14 @@ public class StudentFragment extends Fragment {
                 getActivity().getFragmentManager().popBackStack();
 
                 toastMsg("Student gelöscht");
+            }
+        });
+
+        sendMailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //getActivity().getFragmentManager().popBackStack();
+                toastMsg("Mail versendet");
             }
         });
         return rootView;

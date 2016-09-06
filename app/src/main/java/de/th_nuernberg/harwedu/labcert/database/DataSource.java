@@ -86,6 +86,77 @@ public class DataSource implements TaskCompleted {
 
     /**
      * ***************************************************************
+     *                             Settings
+     * ***************************************************************
+     */
+
+
+
+    public void settingsCreation() {
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_SETTINGS, null);
+        if (!(cursor != null && cursor.moveToFirst())) {
+            createSetting(DbHelper.SETTING_MAIL_USERNAME, "");
+            createSetting(DbHelper.SETTING_MAIL_PASSWORD, "");
+            Log.d(LOG_TAG, "Einstellungseinträge angelegt.");
+        }
+        assert cursor != null;
+        cursor.close();
+    }
+
+    /**
+     *
+     * @param type
+     * @param value
+     */
+    public void createSetting(String type, String value) {
+        ContentValues valueSetting = new ContentValues();
+
+        // Tabelle Settings füllen
+        valueSetting.put(DbHelper.COLUMN_TYPE, type);
+        valueSetting.put(DbHelper.COLUMN_VALUE, value);
+
+        database.insert(DbHelper.TABLE_SETTINGS, null, valueSetting);
+
+        Log.d(LOG_TAG, "Einstellungseintrag mit Typ " + type + " und Value " + value + " wurde angelegt.");
+    }
+
+    /**
+     *
+     * @param type
+     * @param value
+     */
+    public void updateSetting(String type, String value) {
+        ContentValues typeValue = new ContentValues();
+        typeValue.put(DbHelper.COLUMN_VALUE, value);
+
+        database.update(DbHelper.TABLE_SETTINGS,
+                typeValue,
+                DbHelper.COLUMN_TYPE + "='" + type + "'",
+                null);
+
+        Log.d(LOG_TAG, "Neuer Eintrag für Einstellung " + type + " ist jetzt " + value);
+    }
+
+    /**
+     *
+     * @param type
+     * @return
+     */
+    public String getSetting(String type) {
+        String value = "";
+        Cursor cursor = database.rawQuery("SELECT " + DbHelper.COLUMN_VALUE + " FROM " + DbHelper.TABLE_SETTINGS +
+                " WHERE " + DbHelper.COLUMN_TYPE + " = '" + type + "'", null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int idValue = cursor.getColumnIndex(DbHelper.COLUMN_VALUE);
+            value = cursor.getString(idValue);
+        }
+        assert cursor != null;
+        cursor.close();
+        return value;
+    }
+
+    /**
+     * ***************************************************************
      *                             Teilnehmer
      * ***************************************************************
      */
