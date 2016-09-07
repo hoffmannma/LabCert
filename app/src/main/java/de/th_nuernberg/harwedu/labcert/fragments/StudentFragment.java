@@ -73,13 +73,15 @@ public class StudentFragment extends Fragment {
         createPdfButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // TODO create pdf auskommentiert
+/*
                 PdfFile pdfCreator = new PdfFile();
                 try {
                     pdfCreator.createPdf(getActivity(), student);
                 } catch (FileNotFoundException | DocumentException e) {
                     e.printStackTrace();
                 }
+                */
             }
         });
 

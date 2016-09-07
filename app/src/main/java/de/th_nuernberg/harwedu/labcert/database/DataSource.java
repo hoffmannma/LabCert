@@ -707,6 +707,36 @@ public class DataSource implements TaskCompleted {
     }
 
     /**
+     *
+     * @param labName
+     * @param group
+     * @param term
+     * @param matr
+     * @param type
+     * @return int of the sumScore of a Type in the Progress-Table
+     */
+    public int getSumScore(String labName, String group, String term, String matr, String type) {
+        int SumScore = 0;
+        Cursor cursor = database.rawQuery("Select SUM(" + DbHelper.COLUMN_SCORE + ") FROM " +
+                DbHelper.TABLE_PROGRESS + " WHERE " +
+                DbHelper.COLUMN_LAB_NAME + " = '" + labName + "' AND " +
+                DbHelper.COLUMN_GROUP + " = '" + group + "' AND " +
+                DbHelper.COLUMN_TERM + " = '" + term + "' AND " +
+                DbHelper.COLUMN_MATR + " = '" + matr + "' AND " +
+                DbHelper.COLUMN_TYPE + " = '" + type + "'", null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int idSumScore = cursor.getColumnIndex("SUM(" + DbHelper.COLUMN_ID + ")");
+            SumScore = cursor.getInt(idSumScore);
+        }
+
+        assert cursor != null;
+        cursor.close();
+
+        return SumScore;
+    }
+
+    /**
      * Anwesenheit einfügen
      */
     /*

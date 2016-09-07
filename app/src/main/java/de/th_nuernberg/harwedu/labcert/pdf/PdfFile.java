@@ -43,10 +43,6 @@ import de.th_nuernberg.harwedu.labcert.objects.Student;
  */
 
 /**
- * TODO
- * - Api 15+ Kompatibilität (aktuell 19+)
- * - Pfad anpassen
- * - internen Speicher verwenden, falls externer nicht verfügbar
  */
 
 
@@ -142,8 +138,7 @@ public class PdfFile {
      * @param pdfFile
      * @param student
      * @throws FileNotFoundException
-     * @throws DocumentException     TODO
-     *                               Struktur / Inhalt ...
+     * @throws DocumentException
      */
     private void writeToPdf(File pdfFile, Student student,Group group) throws
             FileNotFoundException, DocumentException {
@@ -274,7 +269,8 @@ public class PdfFile {
         for (Requirement requirement:RequirementInformation){
             table_final.addCell(new Phrase (requirement.getType(),text_font));
             table_final.addCell(new Phrase (requirement.getCount(),text_font));
-            table_final.addCell(new Phrase (sb.toString(datasource.getSumScore(group.getLab_name(), group.getGroup(), group.getTerm(), student.getMatr(),requirement.getType())),text_font));
+            //TODO Funktionsfähig machen
+            //table_final.addCell(new Phrase (sb.toString(datasource.getSumScore(group.getLab_name(), group.getGroup(), group.getTerm(), student.getMatr(),requirement.getType())),text_font));
 
         }
         table_final.addCell(" ");
