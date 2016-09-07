@@ -44,6 +44,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_COUNT = "count";
     public static final String COLUMN_TERM = "term";
     public static final String COLUMN_SCORE = "score";
+    public static final String COLUMN_DEF = "definition";
 
 
     /**
@@ -104,6 +105,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_TYPE + " TEXT NOT NULL, " +
                     COLUMN_MATR + " TEXT NOT NULL, " +
                     COLUMN_SCORE + " TEXT, " +
+                    COLUMN_DEF + " TEXT, " +
                     COLUMN_COMMENT + " TEXT, " +
                     COLUMN_TS + " TEXT);";
 

@@ -20,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.interfaces.TaskCompleted;
 import de.th_nuernberg.harwedu.labcert.objects.Group;
+import de.th_nuernberg.harwedu.labcert.objects.Progress;
 import de.th_nuernberg.harwedu.labcert.objects.Requirement;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 import de.th_nuernberg.harwedu.labcert.sync.GetRemoteAttdTask;
@@ -1074,6 +1075,80 @@ public class DataSource implements TaskCompleted {
         database.execSQL(updateQuery);
     }
 */
+
+    /**
+     * Listed den Fortschritt zu einem einzelnen Requirement eines Studenten auf
+     *
+     * @param labName
+     * @param group
+     * @param term
+     * @param type
+     * @param matr
+     * @return
+     */
+    public ArrayList<Progress> getProgress(String labName, String group, String term, String type, String matr) {
+        ArrayList<Progress> progressList = new ArrayList<>();
+
+        String query = "SELECT * FROM " + DbHelper.TABLE_PROGRESS + " WHERE " +
+                       DbHelper.COLUMN_LAB_NAME + " = " + labName + " AND " +
+                       DbHelper.COLUMN_GROUP + " = " + group + " AND " +
+                       DbHelper.COLUMN_TERM + " = " + term + " AND " +
+                       DbHelper.COLUMN_TYPE + " = " + type + " AND " +
+                       DbHelper.COLUMN_MATR + " = " + matr;
+        Cursor cursor = database.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        Log.d(LOG_TAG, "Erstelle Liste mit Progresseintraegen -----------------------------------");
+
+        while (!cursor.isAfterLast()) {
+            progressList.add(cursorToProgress(cursor));
+            Log.d(LOG_TAG, "Fortschritt hinzugefuehgt");
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        Log.d(LOG_TAG, "Progressliste erstellt --------------------------------------------------");
+
+        return progressList ;
+    }
+
+    /**
+     * Erstellt Progress aus Datenbankabfrage
+     * @param cursor
+     *
+     * @return
+     */
+    private Progress cursorToProgress(Cursor cursor) {
+        int idIndex = cursor.getColumnIndex(DbHelper.COLUMN_ID);
+        int idLabName = cursor.getColumnIndex(DbHelper.COLUMN_LAB_NAME);
+        int idGroup = cursor.getColumnIndex(DbHelper.COLUMN_GROUP);
+        int idTerm = cursor.getColumnIndex(DbHelper.COLUMN_TERM);
+        int idType = cursor.getColumnIndex(DbHelper.COLUMN_TYPE);
+        int idMatr = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
+        int idScore = cursor.getColumnIndex(DbHelper.COLUMN_SCORE);
+        int idDef = cursor.getColumnIndex(DbHelper.COLUMN_DEF);
+        int idComment = cursor.getColumnIndex(DbHelper.COLUMN_COMMENT);
+        int idTs = cursor.getColumnIndex(DbHelper.COLUMN_TS);
+
+
+        long id = cursor.getLong(idIndex);
+        String lab_name = cursor.getString(idLabName);
+        String group = cursor.getString(idGroup);
+        String term = cursor.getString(idTerm);
+        String type = cursor.getString(idType);
+        String matr = cursor.getString(idMatr);
+        String score = cursor.getString(idScore);
+        String def = cursor.getString(idDef);
+        String comment = cursor.getString(idComment);
+        String ts = cursor.getString(idTs);
+
+        return new Progress(id, lab_name, group, term, type, matr, score, def, comment, ts);
+    }
+
+
+
+
+
 
     @Override
     public void onTaskComplete(ArrayList<HashMap<String, String>> result) {
