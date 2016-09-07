@@ -92,7 +92,7 @@ public class MailSender extends javax.mail.Authenticator {
                 message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
 
             Log.d(LOG_TAG, "creating transport connection");
-            transport.connect(CONFIG.MAILHOST, CONFIG.USERNAME, CONFIG.PASSWORD);
+            transport.connect(CONFIG.getMAILHOST(), CONFIG.getUSERNAME(), CONFIG.getPASSWORD());
             Log.d(LOG_TAG, "sending message");
             transport.sendMessage(message, message.getAllRecipients());
             Log.d(LOG_TAG, "close transport connection");

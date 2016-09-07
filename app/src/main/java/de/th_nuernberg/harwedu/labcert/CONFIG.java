@@ -7,15 +7,15 @@ import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.DbHelper;
 
 public class CONFIG {
-    public static Context context; //getActivity()
+    private static Context context; //getActivity()
     //updateable
-    public static String EMAIL;
-    public static String USERNAME;
-    public static String PASSWORD;
-    public static String TERM = "WS1617";
+    private static String EMAIL;
+    private static String USERNAME;
+    private static String PASSWORD;
+    private static String TERM = "WS1617";
 
     //not updateable
-    public static final String MAILHOST ="my.ohmportal.de";
+    private static final String MAILHOST ="my.ohmportal.de";
 
     public static void updateConfig(Context context) {
         DataSource datasource = new DataSource(context);
@@ -27,5 +27,21 @@ public class CONFIG {
         TERM = datasource.getSetting(DbHelper.SETTING_TERM);
 
         datasource.close();
+    }
+
+    public static Context getContext() { return context; }
+
+    public static String getEMAIL() { return EMAIL; }
+
+    public static String getUSERNAME() { return USERNAME; }
+
+    public static String getPASSWORD() { return PASSWORD; }
+
+    public static String getTERM() { return TERM; }
+
+    public static String getMAILHOST() { return MAILHOST; }
+
+    public static void setContext(Context context) {
+        CONFIG.context = context;
     }
 }

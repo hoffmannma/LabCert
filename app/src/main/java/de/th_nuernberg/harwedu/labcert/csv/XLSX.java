@@ -83,11 +83,11 @@ public class XLSX extends AsyncTask<String, Integer, String> {
 
                                     supervisor = sheet.getRow(r - 2).getCell(1).getStringCellValue(); //TODO supervisor noch richtig beschneiden
 
-                                    Log.d(LOG_TAG, "7: " + lab_id + " " + String.valueOf(groups) + " " + CONFIG.TERM + " " + supervisor);
+                                    Log.d(LOG_TAG, "7: " + lab_id + " " + String.valueOf(groups) + " " + CONFIG.getTERM() + " " + supervisor);
                                     //erstelle gruppe in Datenbank
                                     DataSource datasource = new DataSource(context);
                                     datasource.openW();
-                                    datasource.createGroup(lab_id, String.valueOf(groups), CONFIG.TERM, supervisor);
+                                    datasource.createGroup(lab_id, String.valueOf(groups), CONFIG.getTERM(), supervisor);
                                     datasource.close();
 
                                     Log.d(LOG_TAG, "Gruppe " + groups + ":");
@@ -105,7 +105,7 @@ public class XLSX extends AsyncTask<String, Integer, String> {
                                     //Studentendaten in lokale Datenbank schreiben
                                     DataSource datasource = new DataSource(context);
                                     datasource.openW();
-                                    datasource.createStudent(lab_id, String.valueOf(groups), CONFIG.TERM, salut, surname, firstname, String.valueOf(matr), email, "");
+                                    datasource.createStudent(lab_id, String.valueOf(groups), CONFIG.getTERM(), salut, surname, firstname, String.valueOf(matr), email, "");
                                     datasource.close();
                                 }
                             }

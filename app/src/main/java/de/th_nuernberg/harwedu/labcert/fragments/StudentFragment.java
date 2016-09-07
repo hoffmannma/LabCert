@@ -107,10 +107,10 @@ public class StudentFragment extends Fragment {
         sendMailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MailSenderAsync sendMailTask = new MailSenderAsync(CONFIG.context,
+                MailSenderAsync sendMailTask = new MailSenderAsync(CONFIG.getContext(),
                         "Betreffzeile",
                         "Email Text",
-                        CONFIG.EMAIL,
+                        CONFIG.getEMAIL(),
                         student.getEmail());
                 sendMailTask.execute();
                 //getActivity().getFragmentManager().popBackStack();

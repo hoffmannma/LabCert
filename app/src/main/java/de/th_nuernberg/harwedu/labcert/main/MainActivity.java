@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         //Klassen Mainactivity übergeben
-        CONFIG.context = this;
+        CONFIG.setContext(this);
 
         // Berechtigungen
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {

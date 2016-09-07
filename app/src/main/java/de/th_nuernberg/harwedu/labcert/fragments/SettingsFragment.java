@@ -34,18 +34,16 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        final TextView usernameTxt = (TextView) rootView.findViewById(R.id.textview_username);
-        final TextView passwordTxt = (TextView) rootView.findViewById(R.id.textview_password);
+        final TextView settingsTxt = (TextView) rootView.findViewById(R.id.textview_settings);
         final TextView termTxt = (TextView) rootView.findViewById(R.id.textview_term);
         final EditText commUsernameTxt = (EditText) rootView.findViewById(R.id.edittext_username);
         final EditText commPasswordTxt = (EditText) rootView.findViewById(R.id.edittext_password);
         final EditText commTermTxt = (EditText) rootView.findViewById(R.id.edittext_term);
         Button saveDataButton = (Button) rootView.findViewById(R.id.button_save_data);
 
-        usernameTxt.setText("Benutzername");
-        passwordTxt.setText("Passwort");
-        termTxt.setText("Semester auswählen");
-        DataSource datasource = new DataSource(CONFIG.context);
+        settingsTxt.setText("Papi Email-Login-Daten:");
+        termTxt.setText("Semester auswählen:");
+        DataSource datasource = new DataSource(CONFIG.getContext());
 
         datasource.openR();
         commUsernameTxt.setText(datasource.getSetting(DbHelper.SETTING_MAIL_USERNAME));
@@ -61,7 +59,7 @@ public class SettingsFragment extends Fragment {
                 String passwordString = commPasswordTxt.getText().toString();
                 String termString = commTermTxt.getText().toString();
 
-                DataSource datasource = new DataSource(CONFIG.context);
+                DataSource datasource = new DataSource(CONFIG.getContext());
                 datasource.openW();
                 datasource.updateSetting(DbHelper.SETTING_MAIL_USERNAME, usernameString);
                 datasource.updateSetting(DbHelper.SETTING_MAIL_PASSWORD, passwordString);
@@ -71,7 +69,7 @@ public class SettingsFragment extends Fragment {
                 getActivity().getFragmentManager().popBackStack();
 
                 //daten in CONFIG updaten
-                CONFIG.updateConfig(CONFIG.context);
+                CONFIG.updateConfig(CONFIG.getContext());
 
                 toastMsg("Daten gespeichert...");
             }

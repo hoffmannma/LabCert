@@ -14,7 +14,7 @@ tools:context=".fragments.SettingsFragment">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textview_username"
+        android:id="@+id/textview_settings"
         android:textSize="20sp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
@@ -23,13 +23,6 @@ tools:context=".fragments.SettingsFragment">
         android:layout_height="wrap_content"
         android:id="@+id/edittext_username"
         android:hint="@string/editText_hint_username"
-        android:textSize="20sp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textview_password"
         android:textSize="20sp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />

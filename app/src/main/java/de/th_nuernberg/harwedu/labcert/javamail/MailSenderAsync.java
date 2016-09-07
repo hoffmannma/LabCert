@@ -50,7 +50,7 @@ public class MailSenderAsync extends AsyncTask<String, Integer, String> {
     @Override
     protected String doInBackground(String... strings) {
         Log.d(LOG_TAG, "Authentificat with server");
-        MailSender sender = new MailSender(CONFIG.USERNAME, CONFIG.PASSWORD);
+        MailSender sender = new MailSender(CONFIG.getUSERNAME(), CONFIG.getPASSWORD());
         Log.d(LOG_TAG, "Sending Mail");
         fail = !(sender.sendMail(subject, body, senderaddress, recipientsaddress));
         return null;
