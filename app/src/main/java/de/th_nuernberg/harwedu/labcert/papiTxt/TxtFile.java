@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import de.th_nuernberg.harwedu.labcert.objects.Group;
@@ -18,6 +19,9 @@ import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 public class TxtFile {
 
+    private ArrayList<Student> studentList;
+    private String lab;
+    private String group;
 
     /**
      * Created by Marius on 06.09.2016.
@@ -29,17 +33,23 @@ public class TxtFile {
      * directory ? documents is ok or not
      * combine with email function automatic send to a mail ...
      */
+    public TxtFile(ArrayList<Student> studentList, String lab, String group) {
+        this.studentList = studentList;
+        this.lab = lab;
+        this.group = group;
+    }
 
-
-    public void createTxt(Group group) throws
+    public void createTxt() throws
             FileNotFoundException, DocumentException {
         // Speicherort (Ordner) initialisieren
+
+
         File txtFile = null;
         // Zeitstempel erstellen
         Date date = new Date();
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(date);
-//path should be considered todo
-        String fileName = (group.getGroup() + "_" + timeStamp + ".txt");
+        //TODO fileName and Path should be changed
+        String fileName = ("LN_" + lab + "_" + group + "_" + timeStamp + ".txt");
 
 
         File txtFolder = new File(Environment.getExternalStorageDirectory() + "/Documents");
@@ -52,9 +62,9 @@ public class TxtFile {
         } else {
             // Failure
         }
+        for (Student student : studentList) {
 
-
-        for (Student student : group.getStudent()) {
+            //for (Student student : group.getStudent()) {
             writeTxt(txtFile, student);
         }
 
@@ -82,5 +92,4 @@ public class TxtFile {
         }
 
     }
-
 }

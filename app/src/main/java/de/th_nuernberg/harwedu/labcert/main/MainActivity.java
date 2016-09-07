@@ -28,7 +28,9 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.itextpdf.text.DocumentException;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,7 @@ import de.th_nuernberg.harwedu.labcert.fragments.RequirementTableFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.StudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.StudentTableFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.UnknownStudentFragment;
+import de.th_nuernberg.harwedu.labcert.papiTxt.TxtFile;
 
 /**
  * TODO
@@ -422,7 +425,21 @@ public class MainActivity extends AppCompatActivity
             toastMsg(getString(R.string.file_imported));
             jumpToStudentTable();
         } else if (id == R.id.nav_cert) {
-            toastMsg("Aktuell keine Funktion");
+            DataSource dataSource = new DataSource(this);
+            dataSource.openR();
+            TxtFile txtFile = new TxtFile(dataSource.getStudentsFromGrp(currentLab,currentGroup),
+                    currentLab, currentGroup);
+            dataSource.close();
+            try {
+                txtFile.createTxt();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                toastMsg("Fehler: Verzeichnis nicht vorhanden");
+            } catch (DocumentException e) {
+                e.printStackTrace();
+                toastMsg("Fehler: Datei konnte nicht erstellt werden");
+            }
+            toastMsg("Leistungsnachweis für Gruppe " + currentGroup + " erzeugt");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
