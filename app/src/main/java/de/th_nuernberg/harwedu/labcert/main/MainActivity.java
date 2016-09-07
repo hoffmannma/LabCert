@@ -34,7 +34,6 @@ import java.util.List;
 
 import de.th_nuernberg.harwedu.labcert.CONFIG;
 import de.th_nuernberg.harwedu.labcert.R;
-import de.th_nuernberg.harwedu.labcert.csv.CsvParser;
 import de.th_nuernberg.harwedu.labcert.csv.XLSX;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.fragments.GroupTableFragment;
@@ -47,7 +46,6 @@ import de.th_nuernberg.harwedu.labcert.fragments.CreateRequirementFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.RequirementTableFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.StudentFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.StudentTableFragment;
-import de.th_nuernberg.harwedu.labcert.fragments.SwitchGroupFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.UnknownStudentFragment;
 
 /**
@@ -413,7 +411,7 @@ public class MainActivity extends AppCompatActivity
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 e.printStackTrace();
             }*/
-        } else if (id == R.id.nav_import_csv) {
+        } else if (id == R.id.nav_import_table) {
             XLSX xlsx = new XLSX(this, xlsx_name);
             xlsx.execute();
             updateSpinner();

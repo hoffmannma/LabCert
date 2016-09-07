@@ -47,9 +47,9 @@
                 android:icon="@drawable/ic_m_sync_db"
                 android:title="@string/sync_db" />
             <item
-                android:id="@+id/nav_import_csv"
+                android:id="@+id/nav_import_table"
                 android:icon="@drawable/ic_m_import_csv"
-                android:title="@string/import_csv" />
+                android:title="@string/import_table" />
             <item
                 android:id="@+id/nav_cert"
                 android:icon="@drawable/ic_m_accomp_txt"
