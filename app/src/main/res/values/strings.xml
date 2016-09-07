@@ -62,7 +62,6 @@
     <string name="split_blank">\\s+</string>
     <string name="str_count">Anzahl</string>
     <string name="editText_hint_email">Email</string>
-    <string name="editText_hint_term">Semester</string>
 
     <string name="editText_hint_username">Benutzername</string>
     <string name="textview_username">Benutzername</string>

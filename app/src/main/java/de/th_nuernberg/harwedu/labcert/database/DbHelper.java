@@ -114,7 +114,6 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_TYPE + " TEXT NOT NULL, " +
                     COLUMN_MATR + " TEXT NOT NULL, " +
                     COLUMN_SCORE + " TEXT, " +
-                    COLUMN_DEF + " TEXT, " +
                     COLUMN_COMMENT + " TEXT, " +
                     COLUMN_TS + " TEXT);";
 

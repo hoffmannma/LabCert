@@ -416,6 +416,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_import_csv) {
             XLSX xlsx = new XLSX(this, xlsx_name);
             xlsx.execute();
+            updateSpinner();
             //CsvParser csvparser = new CsvParser(this, xlsx_name);
             //csvparser.XLSXImport();
             //DataSource dataSource = new DataSource(this);
@@ -510,9 +511,4 @@ public class MainActivity extends AppCompatActivity
         }
         jumpToStudentTable();
     }
-
-    public interface GroupChangeListener {
-        void onGroupChanged(String grp);
-    }
-
 }

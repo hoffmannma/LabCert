@@ -77,16 +77,17 @@ public class XLSX extends AsyncTask<String, Integer, String> {
                                 //Log.d("XLS-IMPORT", "" + sheet.getRow(r+1).getCell(1).getCellType()); //0 = Integer; 1=String; 3=Leer
                                 //Gruppentrigger
                                 if (row.getCell(1).getCellType() == 1 && row.getCell(1).getStringCellValue().equals("Num")) {
+                                    groups++;
                                     //String supervisor_ = sheet.getRow(r-3).getCell(1).getStringCellValue();
                                     //supervisor = supervisor_.substring(supervisor.indexOf(": ") + 2, supervisor.indexOf(")") - 1);
 
                                     supervisor = sheet.getRow(r - 2).getCell(1).getStringCellValue(); //TODO supervisor noch richtig beschneiden
 
-                                    Log.d(LOG_TAG, "7: " + lab_id + " " + String.valueOf(++groups) + " " + CONFIG.TERM + " " + supervisor);
+                                    Log.d(LOG_TAG, "7: " + lab_id + " " + String.valueOf(groups) + " " + CONFIG.TERM + " " + supervisor);
                                     //erstelle gruppe in Datenbank
                                     DataSource datasource = new DataSource(context);
                                     datasource.openW();
-                                    datasource.createGroup(lab_id, String.valueOf(++groups), CONFIG.TERM, supervisor);
+                                    datasource.createGroup(lab_id, String.valueOf(groups), CONFIG.TERM, supervisor);
                                     datasource.close();
 
                                     Log.d(LOG_TAG, "Gruppe " + groups + ":");
