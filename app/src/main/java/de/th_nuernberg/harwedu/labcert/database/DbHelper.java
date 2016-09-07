@@ -12,6 +12,7 @@ import android.util.Log;
 
 
 public class DbHelper extends SQLiteOpenHelper {
+    Context context;
 
     private static final String LOG_TAG = DbHelper.class.getSimpleName();
     public static final String DB_NAME = "labcert_group.db";
@@ -24,6 +25,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String TABLE_GROUP = "group_table";
     public static final String TABLE_REQ = "requirement_table";
     public static final String TABLE_PROGRESS = "progress_table";
+    public static final String TABLE_SETTINGS = "settings_table";
 
     /**
      * Spalten
@@ -45,7 +47,14 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TERM = "term";
     public static final String COLUMN_SCORE = "score";
     public static final String COLUMN_DEF = "definition";
+    public static final String COLUMN_VALUE = "value";
 
+    /**
+     * Spalten
+     */
+    public static final String SETTING_MAIL_USERNAME = "mail_username";
+    public static final String SETTING_MAIL_PASSWORD = "mail_password";
+    public static final String SETTING_TERM = "term";
 
     /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Studenten'
@@ -109,10 +118,21 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_COMMENT + " TEXT, " +
                     COLUMN_TS + " TEXT);";
 
+    /**
+     * SQL-Befehl (String) zum Erzeugen der Tabelle 'Fortschritt'
+     * ID | Typ | Value
+     */
+    public static final String CREATE_SETTINGS_TABLE =
+            "CREATE TABLE " + TABLE_SETTINGS +
+                    "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_TYPE + " TEXT NOT NULL, " +
+                    COLUMN_VALUE + " TEXT);";
+
 
     public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
+        this.context = context;
     }
 
     @Override
@@ -130,6 +150,9 @@ public class DbHelper extends SQLiteOpenHelper {
             Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
                     CREATE_PROGRESS_TABLE + " angelegt.");
             db.execSQL(CREATE_PROGRESS_TABLE);
+            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " +
+                    CREATE_SETTINGS_TABLE + " angelegt");
+            db.execSQL(CREATE_SETTINGS_TABLE);
         } catch (Exception ex) {
             Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle: " + ex.getMessage());
         }
@@ -139,5 +162,4 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-
 }

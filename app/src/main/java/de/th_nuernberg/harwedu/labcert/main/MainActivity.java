@@ -32,9 +32,13 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.th_nuernberg.harwedu.labcert.CONFIG;
 import de.th_nuernberg.harwedu.labcert.R;
+import de.th_nuernberg.harwedu.labcert.csv.CsvParser;
+import de.th_nuernberg.harwedu.labcert.csv.XLSX;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.fragments.GroupTableFragment;
+import de.th_nuernberg.harwedu.labcert.fragments.SettingsFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.ImportRequirementFragment;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 import de.th_nuernberg.harwedu.labcert.fragments.CreateStudentFragment;
@@ -68,6 +72,7 @@ public class MainActivity extends AppCompatActivity
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String STUDENT_TABLE_TAG = "STUDENT_TABLE";
     private static final String csv_name = "students.csv";
+    private static final String xlsx_name = "Testatbogen.xlsx";
 
     public static final String CHOOSE_GROUP = "Gruppe wählen";
 
@@ -119,6 +124,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Klassen Mainactivity übergeben
+        CONFIG.context = this;
 
         // Berechtigungen
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -316,11 +323,28 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_refresh) {
             jumpToStudentTable();
         }
-        /*
+
+        //Button: Settings
         if (id == R.id.action_settings) {
+            try {
+                Log.d(LOG_TAG, "Lege Setting-Einträge an.");
+                DataSource datasource = new DataSource(this);
+                datasource.openW();
+                datasource.settingsCreation();
+                datasource.close();
+                Log.d(LOG_TAG, "Setting-Einträge angelegt.");
+            } catch (Exception ex) {
+                Log.e(LOG_TAG, "Fehler beim Erstellen der Setting-Einträge: " + ex.getMessage());
+            }
+
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            SettingsFragment fragment = new SettingsFragment();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
             return true;
         }
-        */
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -390,9 +414,12 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }*/
         } else if (id == R.id.nav_import_csv) {
-
-            DataSource dataSource = new DataSource(this);
-            dataSource.importCSV(this, csv_name);
+            XLSX xlsx = new XLSX(this, xlsx_name);
+            xlsx.execute();
+            //CsvParser csvparser = new CsvParser(this, xlsx_name);
+            //csvparser.XLSXImport();
+            //DataSource dataSource = new DataSource(this);
+            //dataSource.importCSV(this, csv_name);
             toastMsg(getString(R.string.file_imported));
             jumpToStudentTable();
         } else if (id == R.id.nav_cert) {

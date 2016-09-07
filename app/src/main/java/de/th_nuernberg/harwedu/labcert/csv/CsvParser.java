@@ -11,9 +11,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.util.Log;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import de.th_nuernberg.harwedu.labcert.CONFIG;
+import de.th_nuernberg.harwedu.labcert.database.DataSource;
 
 public class CsvParser {
-
+    private static final String LOG_TAG = CsvParser.class.getSimpleName();
     Context context;
     String file_name;
     ArrayList<HashMap<String, String>> CSVData;
@@ -46,5 +54,4 @@ public class CsvParser {
         }
         return CSVData;
     }
-
 }
