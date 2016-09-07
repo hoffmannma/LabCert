@@ -497,6 +497,7 @@ public class DataSource implements TaskCompleted {
         valuesReq.put(DbHelper.COLUMN_TERM, term);
         valuesReq.put(DbHelper.COLUMN_TYPE, type);
         valuesReq.put(DbHelper.COLUMN_COUNT, count);
+        valuesReq.put(DbHelper.COLUMN_TS, getTimestamp());
 
         database.insert(DbHelper.TABLE_REQ, null, valuesReq);
 
@@ -606,6 +607,7 @@ public class DataSource implements TaskCompleted {
         valuesGroup.put(DbHelper.COLUMN_GROUP, group);
         valuesGroup.put(DbHelper.COLUMN_TERM, term);
         valuesGroup.put(DbHelper.COLUMN_SUPERVISOR, supervisor);
+        valuesGroup.put(DbHelper.COLUMN_TS, getTimestamp());
         database.insert(DbHelper.TABLE_GROUP, null, valuesGroup);
 
         Log.d(LOG_TAG, "Gruppe erstellt (" + lab_name + "|" + group + "|" + term + "|" + supervisor + ")");

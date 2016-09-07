@@ -50,7 +50,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_VALUE = "value";
 
     /**
-     * Spalten
+     * Settings
      */
     public static final String SETTING_MAIL_USERNAME = "mail_username";
     public static final String SETTING_MAIL_PASSWORD = "mail_password";
