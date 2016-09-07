@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import de.th_nuernberg.harwedu.labcert.CONFIG;
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.DbHelper;
@@ -35,19 +36,21 @@ public class SettingsFragment extends Fragment {
 
         final TextView usernameTxt = (TextView) rootView.findViewById(R.id.textview_username);
         final TextView passwordTxt = (TextView) rootView.findViewById(R.id.textview_password);
+        final TextView termTxt = (TextView) rootView.findViewById(R.id.textview_term);
         final EditText commUsernameTxt = (EditText) rootView.findViewById(R.id.edittext_username);
         final EditText commPasswordTxt = (EditText) rootView.findViewById(R.id.edittext_password);
+        final EditText commTermTxt = (EditText) rootView.findViewById(R.id.edittext_term);
         Button saveDataButton = (Button) rootView.findViewById(R.id.button_save_data);
 
         usernameTxt.setText("Benutzername");
         passwordTxt.setText("Passwort");
-        DataSource datasource = new DataSource(getActivity());
+        termTxt.setText("Semester auswählen");
+        DataSource datasource = new DataSource(CONFIG.context);
 
         datasource.openR();
         commUsernameTxt.setText(datasource.getSetting(DbHelper.SETTING_MAIL_USERNAME));
-        Log.d(LOG_TAG, "Benutzername: " + datasource.getSetting(DbHelper.SETTING_MAIL_USERNAME));
         commPasswordTxt.setText(datasource.getSetting(DbHelper.SETTING_MAIL_PASSWORD));
-        Log.d(LOG_TAG, "Passwort: " + datasource.getSetting(DbHelper.SETTING_MAIL_PASSWORD));
+        commTermTxt.setText(datasource.getSetting(DbHelper.SETTING_TERM));
         datasource.close();
 
         saveDataButton.setOnClickListener(new View.OnClickListener() {
@@ -56,16 +59,19 @@ public class SettingsFragment extends Fragment {
 
                 String usernameString = commUsernameTxt.getText().toString();
                 String passwordString = commPasswordTxt.getText().toString();
+                String termString = commTermTxt.getText().toString();
 
-                DataSource datasource = new DataSource(getActivity());
+                DataSource datasource = new DataSource(CONFIG.context);
                 datasource.openW();
                 datasource.updateSetting(DbHelper.SETTING_MAIL_USERNAME, usernameString);
-                Log.d(LOG_TAG, "Benutzername aktualisiert: " + datasource.getSetting(DbHelper.SETTING_MAIL_USERNAME));
                 datasource.updateSetting(DbHelper.SETTING_MAIL_PASSWORD, passwordString);
-                Log.d(LOG_TAG, "Passwort aktualisiert: " + datasource.getSetting(DbHelper.SETTING_MAIL_PASSWORD));
+                datasource.updateSetting(DbHelper.SETTING_TERM, termString);
                 datasource.close();
 
                 getActivity().getFragmentManager().popBackStack();
+
+                //daten in CONFIG updaten
+                CONFIG.updateConfig(CONFIG.context);
 
                 toastMsg("Daten gespeichert...");
             }

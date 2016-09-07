@@ -97,6 +97,7 @@ public class DataSource implements TaskCompleted {
         if (!(cursor != null && cursor.moveToFirst())) {
             createSetting(DbHelper.SETTING_MAIL_USERNAME, "");
             createSetting(DbHelper.SETTING_MAIL_PASSWORD, "");
+            createSetting(DbHelper.SETTING_TERM, "WS1617");
             Log.d(LOG_TAG, "Einstellungseinträge angelegt.");
         }
         assert cursor != null;

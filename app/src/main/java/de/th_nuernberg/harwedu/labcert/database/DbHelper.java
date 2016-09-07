@@ -53,6 +53,7 @@ public class DbHelper extends SQLiteOpenHelper {
      */
     public static final String SETTING_MAIL_USERNAME = "mail_username";
     public static final String SETTING_MAIL_PASSWORD = "mail_password";
+    public static final String SETTING_TERM = "term";
 
     /**
      * SQL-Befehl (String) zum Erzeugen der Tabelle 'Studenten'

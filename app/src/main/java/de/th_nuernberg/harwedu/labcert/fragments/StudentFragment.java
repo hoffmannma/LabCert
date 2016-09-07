@@ -16,8 +16,11 @@ import com.itextpdf.text.DocumentException;
 
 import java.io.FileNotFoundException;
 
+import de.th_nuernberg.harwedu.labcert.CONFIG;
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
+import de.th_nuernberg.harwedu.labcert.database.DbHelper;
+import de.th_nuernberg.harwedu.labcert.javamail.MailSenderAsync;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 import de.th_nuernberg.harwedu.labcert.pdf.PdfFile;
 
@@ -26,7 +29,7 @@ import de.th_nuernberg.harwedu.labcert.pdf.PdfFile;
  */
 
 public class StudentFragment extends Fragment {
-
+    public static Context context;
     private static Student student;
 
 
@@ -100,6 +103,12 @@ public class StudentFragment extends Fragment {
         sendMailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MailSenderAsync sendMailTask = new MailSenderAsync(CONFIG.context,
+                        "Betreffzeile",
+                        "Email Text",
+                        CONFIG.EMAIL,
+                        student.getEmail());
+                sendMailTask.execute();
                 //getActivity().getFragmentManager().popBackStack();
                 toastMsg("Mail versendet");
             }

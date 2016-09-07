@@ -31,7 +31,10 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 
+import de.th_nuernberg.harwedu.labcert.CONFIG;
 import de.th_nuernberg.harwedu.labcert.R;
+import de.th_nuernberg.harwedu.labcert.csv.CsvParser;
+import de.th_nuernberg.harwedu.labcert.csv.XLSX;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.fragments.GroupTableFragment;
 import de.th_nuernberg.harwedu.labcert.fragments.SettingsFragment;
@@ -67,6 +70,7 @@ public class MainActivity extends AppCompatActivity
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String STUDENT_TABLE_TAG = "STUDENT_TABLE";
     private static final String csv_name = "students.csv";
+    private static final String xlsx_name = "Testatbogen.xlsx";
 
     private static boolean readExtAccepted;
     private static boolean writeExtAccepted;
@@ -95,6 +99,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Klassen Mainactivity übergeben
+        CONFIG.context = this;
 
         // Berechtigungen
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -396,9 +402,12 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }*/
         } else if (id == R.id.nav_import_csv) {
-
-            DataSource dataSource = new DataSource(this);
-            dataSource.importCSV(this, csv_name);
+            XLSX xlsx = new XLSX(this, xlsx_name);
+            xlsx.execute();
+            //CsvParser csvparser = new CsvParser(this, xlsx_name);
+            //csvparser.XLSXImport();
+            //DataSource dataSource = new DataSource(this);
+            //dataSource.importCSV(this, csv_name);
             toastMsg(getString(R.string.file_imported));
             jumpToStudentTable();
         } else if (id == R.id.nav_cert) {
