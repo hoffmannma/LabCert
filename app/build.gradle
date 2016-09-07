@@ -34,6 +34,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //compile 'com.oracle.jdbc:ojdbc7:12.1.0.2'
     compile files('libs/ojdbc14.jar')
+    compile files('libs/mail.jar')
+    compile files('libs/additionnal.jar')
+    compile files('libs/activation.jar')
+    compile files('libs/aa-poi-3.10-min-0.1.5.jar')
+    compile files('libs/aa-poi-ooxml-schemas-3.10-reduced-more-0.1.5.jar')
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:design:24.0.0'
     compile 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
