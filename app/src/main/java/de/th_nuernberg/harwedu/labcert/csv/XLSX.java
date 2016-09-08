@@ -92,7 +92,9 @@ public class XLSX extends AsyncTask<String, Integer, String> {
                                     //erstelle gruppe in Datenbank
                                     DataSource datasource = new DataSource(context);
                                     datasource.openW();
-                                    datasource.createGroup(lab_id, String.valueOf(groups), CONFIG.getTERM(), supervisor);
+                                    //Gruppe nur einfügen wenn diese noch nicht in Datenbank existiert.
+                                    if (!datasource.groupExists(lab_id, String.valueOf(groups), CONFIG.getTERM()))
+                                        datasource.createGroup(lab_id, String.valueOf(groups), CONFIG.getTERM(), supervisor);
                                     datasource.close();
 
                                     Log.d(LOG_TAG, "Gruppe " + groups + ":");
@@ -110,7 +112,9 @@ public class XLSX extends AsyncTask<String, Integer, String> {
                                     //Studentendaten in lokale Datenbank schreiben
                                     DataSource datasource = new DataSource(context);
                                     datasource.openW();
-                                    datasource.createStudent(lab_id, String.valueOf(groups), CONFIG.getTERM(), salut, surname, firstname, String.valueOf(matr), email, "");
+                                    //Studenten nur einfügen, wenn dieser noch nicht in Datenbank existiert.
+                                    if (!datasource.studentExistsByMatr(lab_id, CONFIG.getTERM(), String.valueOf(matr)))
+                                        datasource.createStudent(lab_id, String.valueOf(groups), CONFIG.getTERM(), salut, surname, firstname, String.valueOf(matr), email, "");
                                     datasource.close();
                                 }
                             }
