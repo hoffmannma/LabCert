@@ -35,22 +35,26 @@ public class CreateStudentFragment extends Fragment {
     private static String mBib;
     private static String mLab;
     private static String mGroup;
+    private static String mTerm;
 
     public CreateStudentFragment() {
     }
 
-    public static CreateStudentFragment newInstance(String pBib, String pLab, String pGroup) {
+    public static CreateStudentFragment newInstance(String pBib, String pLab, String pGroup,
+                                                    String pTerm) {
         CreateStudentFragment fragment = new CreateStudentFragment();
         mBib = pBib;
         mLab = pLab;
         mGroup = pGroup;
+        mTerm = pTerm;
         return fragment;
     }
 
-    public static CreateStudentFragment newInstance(String pLab, String pGroup) {
+    public static CreateStudentFragment newInstance(String pLab, String pGroup, String pTerm) {
         CreateStudentFragment fragment = new CreateStudentFragment();
         mLab = pLab;
         mGroup = pGroup;
+        mTerm = pTerm;
         return fragment;
     }
 
@@ -87,8 +91,7 @@ public class CreateStudentFragment extends Fragment {
             editTextBib.setText(mBib);
         editTextLab.setText(mLab);
         editTextGroup.setText(mGroup);
-        // TODO Semester übergeben
-        editTextTerm.setText(MainActivity.term);
+        editTextTerm.setText(mTerm);
 
         MainActivity.addGroupChangeListener(new GroupChangeListener() {
             @Override

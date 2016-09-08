@@ -149,5 +149,14 @@ public class XLSX extends AsyncTask<String, Integer, String> {
             Toast.makeText(context, "XLSX-Import fehlgeschlagen!", Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(context, "XLSX-Import erfolgreich!", Toast.LENGTH_SHORT).show();
+        try{
+            ((OnImportCompleted) context).onImportCompleted(true);
+        } catch (ClassCastException ignored){
+
+        }
+    }
+
+    public interface OnImportCompleted{
+        void onImportCompleted(boolean completed);
     }
 }

@@ -67,9 +67,10 @@ public class CreateRequirementFragment extends Fragment {
             public void onGroupChanged(String lab, String group, String term) {
                 editTextLab.setText(lab);
                 editTextGroup.setText(group);
-                editTextGroup.setText(term);
+                editTextTerm.setText(term);
             }
         });
+
         createReqButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

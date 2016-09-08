@@ -77,7 +77,7 @@ public class UnknownStudentFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 CreateStudentFragment fragment = new CreateStudentFragment();
-                fragment.newInstance(mContent, mGroup);
+                fragment.newInstance(mContent, mLab, mGroup, mTerm);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();

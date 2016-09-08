@@ -15,9 +15,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -66,7 +68,8 @@ import de.th_nuernberg.harwedu.labcert.papiTxt.TxtFile;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        CreateGroupFragment.OnGroupCreatedListener, GroupTableFragment.OnGroupSelectedListener{
+        CreateGroupFragment.OnGroupCreatedListener, GroupTableFragment.OnGroupSelectedListener,
+        XLSX.OnImportCompleted, StudentTableFragment.OnStudentSelected{
 
     private static final String ALL_STUDENTS = "Alle Studenten";
 
@@ -97,7 +100,7 @@ public class MainActivity extends AppCompatActivity
     public void setCurrentGroup(String grp){
         currentGroup = grp;
         for (de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener g: listeners){
-            g.onGroupChanged(currentLab, currentGroup, term);
+            g.onGroupChanged(currentLab, currentGroup, CONFIG.TERM);
         }
     }
 
@@ -140,6 +143,7 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity
         userMail = "harwartedu58020@th-nuernberg.de";
         userNameTxt.setText(userName);
         userMailTxt.setText(userMail);
-        term = "SS16";
+        //term = CONFIG.TERM;
 
         /**
          *      Spinner mit Gruppenauswahl
@@ -249,17 +253,17 @@ public class MainActivity extends AppCompatActivity
             if ((scanContent != null) && (scanFormat != null)) {
                 DataSource dataSource = new DataSource(this);
                 // TODO Parameter labname, term, bib
-                if (dataSource.studentExistsByBib(currentLab, term, scanContent)) {
+                if (dataSource.studentExistsByBib(currentLab, CONFIG.TERM, scanContent)) {
                     //dataSource.insertAttd(scanContent, getEditor());
                     //toastMsg(getString(R.string.attd_updated));
                     // TODO Parameter labname, term, bib
-                    Student student = dataSource.getStudentByBib(currentLab, term, scanContent);
+                    Student student = dataSource.getStudentByBib(currentLab, CONFIG.TERM, scanContent);
                     jumpToStudent(student);
                 } else {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     UnknownStudentFragment fragment = new UnknownStudentFragment();
                     UnknownStudentFragment.newInstance(scanFormat, scanContent, currentLab,
-                            currentGroup, term);
+                            currentGroup, CONFIG.TERM);
                     transaction.replace(R.id.fragment_container, fragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
@@ -293,6 +297,7 @@ public class MainActivity extends AppCompatActivity
         }
         // ...sonst zurück zu vorheriger Ansicht
         else {
+            enableSpinner();
             jumpToStudentTable();
             // Nur einen Schritt zurück
             //getFragmentManager().popBackStack();
@@ -363,44 +368,51 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_group) {
+            enableSpinner();
             jumpToStudentTable();
         } else if (id == R.id.nav_all_groups) {
+            disableSpinner();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             GroupTableFragment fragment = new GroupTableFragment();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_add_member) {
+            enableSpinner();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             CreateStudentFragment fragment = new CreateStudentFragment();
-            CreateStudentFragment.newInstance(currentLab, currentGroup, term);
+            CreateStudentFragment.newInstance(currentLab, currentGroup, CONFIG.TERM);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_new_group) {
+            enableSpinner();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             CreateGroupFragment fragment = new CreateGroupFragment();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_requirements) {
+            enableSpinner();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             RequirementTableFragment fragment = new RequirementTableFragment();
-            RequirementTableFragment.newInstance(currentLab, currentGroup, term);
+            RequirementTableFragment.newInstance(currentLab, currentGroup, CONFIG.TERM);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_import_requirement) {
+            enableSpinner();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             ImportRequirementFragment fragment = new ImportRequirementFragment();
-            ImportRequirementFragment.newInstance(currentLab, currentGroup, term);
+            ImportRequirementFragment.newInstance(currentLab, currentGroup, CONFIG.TERM);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_create_requirement) {
+            enableSpinner();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             CreateRequirementFragment fragment = new CreateRequirementFragment();
-            CreateRequirementFragment.newInstance(currentLab, currentGroup, term);
+            CreateRequirementFragment.newInstance(currentLab, currentGroup, CONFIG.TERM);
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -417,13 +429,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_import_table) {
             XLSX xlsx = new XLSX(this, xlsx_name);
             xlsx.execute();
-            updateSpinner();
             //CsvParser csvparser = new CsvParser(this, xlsx_name);
             //csvparser.XLSXImport();
             //DataSource dataSource = new DataSource(this);
             //dataSource.importCSV(this, csv_name);
             toastMsg(getString(R.string.file_imported));
-            jumpToStudentTable();
         } else if (id == R.id.nav_cert) {
             DataSource dataSource = new DataSource(this);
             dataSource.openR();
@@ -454,7 +464,7 @@ public class MainActivity extends AppCompatActivity
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         StudentTableFragment fragment = new StudentTableFragment();
-        StudentTableFragment.newInstance(currentLab, currentGroup, term);
+        StudentTableFragment.newInstance(currentLab, currentGroup, CONFIG.TERM);
         transaction.replace(R.id.fragment_container, fragment, STUDENT_TABLE_TAG);
         //transaction.addToBackStack(null);
         transaction.commit();
@@ -496,6 +506,22 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
+     *  Aktiviert Spinner
+     */
+    private void enableSpinner(){
+        spinner.setVisibility(View.VISIBLE);
+        spinner.setEnabled(true);
+    }
+
+    /**
+     * Deaktiviert Spinner (wird aber noch angezeigt)
+     */
+    private void disableSpinner(){
+        spinner.setVisibility(View.GONE);
+        spinner.setEnabled(false);
+    }
+
+    /**
      * Erstellt Gruppenliste in Spinner
      */
     private void updateSpinner(){
@@ -504,7 +530,7 @@ public class MainActivity extends AppCompatActivity
         datasource.openR();
         groupList = datasource.getAllGroupNames();
         datasource.close();
-        groupList.add(ALL_STUDENTS);
+        //groupList.add(ALL_STUDENTS);
         adapter = new ArrayAdapter<String>(this,R.layout.spinner_item_main, groupList);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
         spinner.setAdapter(adapter);
@@ -518,12 +544,25 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onGroupSelected(String lab, String grp){
+        enableSpinner();
         if (!grp.equals(null)) {
-            String compareString = grp + " " + lab;
+            String compareString = lab + " " + grp;
             int spinnerPos = adapter.getPosition(compareString);
-            Log.d(LOG_TAG, "Abgleich des Spinners mit: " + compareString);
             spinner.setSelection(spinnerPos);
+            Log.d(LOG_TAG, "Abgleich des Spinners mit: " + compareString);
         }
         jumpToStudentTable();
+    }
+
+    @Override
+    public void onImportCompleted(boolean completed) {
+        if (completed)
+            updateSpinner();
+    }
+
+    @Override
+    public void onStudentSelected(boolean selected) {
+        if (selected)
+            disableSpinner();
     }
 }
