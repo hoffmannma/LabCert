@@ -88,6 +88,8 @@ public class GroupTableFragment extends Fragment {
                 try {
                     ((OnGroupSelectedListener) context).onGroupSelected(
                             group.getLab_name(), group.getGroup());
+                    Log.d(LOG_TAG, "Der Main Activity wird jetzt" + group.getLab_name() + " "
+                    + group.getGroup() + "übergeben");
                 } catch (ClassCastException ignored) {
 
                 }

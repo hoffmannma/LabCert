@@ -82,6 +82,7 @@ public class RequirementTableFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 CreateRequirementFragment fragment = new CreateRequirementFragment();
+                CreateRequirementFragment.newInstance(mLab, mGroup, mTerm);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();

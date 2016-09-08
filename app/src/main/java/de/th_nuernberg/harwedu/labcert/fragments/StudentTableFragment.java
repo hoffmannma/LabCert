@@ -4,10 +4,12 @@ package de.th_nuernberg.harwedu.labcert.fragments;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import de.th_nuernberg.harwedu.labcert.main.MainActivity;
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.adapter.StudentTableAdapter;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
+import de.th_nuernberg.harwedu.labcert.objects.Requirement;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 
 /**
@@ -107,10 +110,17 @@ public class StudentTableFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapter, View v, int position,
                                     long arg3) {
+                try{
+                    ((OnStudentSelected) getContext()).onStudentSelected(true);
+                } catch (ClassCastException ignored) {
+                }
                 Student student = (Student) adapter.getItemAtPosition(position);
+                dataSource.openR();
+                ArrayList<Requirement> reqList = dataSource.getGroupRequirements(mLab, mGroup, mTerm);
+                dataSource.close();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 StudentFragment fragment = new StudentFragment();
-                StudentFragment.newInstance(student);
+                StudentFragment.newInstance(student, reqList);
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
@@ -142,4 +152,9 @@ public class StudentTableFragment extends Fragment {
         Log.d(LOG_TAG, "+++ Pause +++");
         dataSource.close();
     }*/
+
+    public interface OnStudentSelected{
+        void onStudentSelected(boolean selected);
+    }
+
 }
