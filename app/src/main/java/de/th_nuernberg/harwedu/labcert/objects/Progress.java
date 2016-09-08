@@ -27,6 +27,18 @@ public class Progress {
         this.ts = ts;
     }
 
+    public Progress(long id, String lab_name, String group, String term, String type, String matr, String score, String comment, String ts) {
+        this.id = id;
+        this.lab_name = lab_name;
+        this.group = group;
+        this.term = term;
+        this.type = type;
+        this.matr = matr;
+        this.score = score;
+        this.def = def;
+        this.comment = comment;
+        this.ts = ts;
+    }
     public long getId() {return id;}
 
     public void setId(long id) {this.id = id;}

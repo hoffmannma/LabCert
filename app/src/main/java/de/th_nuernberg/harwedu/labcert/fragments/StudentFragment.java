@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -155,19 +156,22 @@ public class StudentFragment extends Fragment {
         {
             LinearLayout ll = new LinearLayout(getActivity());
             ll.setOrientation(LinearLayout.VERTICAL);
+            ll.setPadding(0,10,0,0);
 
             TextView typeTV = new TextView(getActivity());
+            typeTV.setTextSize(18);
             typeTV.setText(req.getType());
             ll.addView(typeTV);
 
-            /*
+
             DataSource ds = new DataSource(getContext());
             ds.openR();
             ArrayList<Progress> progressList = ds.getProgress(req.getLab_name(), req.getGroup(),
                     req.getTerm(), req.getType(), student.getMatr());
-            ds.close();*/
+            ds.close();
             TextView progressTV = new TextView(getActivity());
-            progressTV.setText("Status: " + 0 + " / " + req.getCount());
+            progressTV.setTextSize(16);
+            progressTV.setText("Status: " + progressList.size() + " / " + req.getCount());
             ll.addView(progressTV);
 
             final Button btn = new Button(getActivity());

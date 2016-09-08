@@ -832,11 +832,11 @@ public class DataSource implements TaskCompleted {
         ArrayList<Progress> progressList = new ArrayList<>();
 
         String query = "SELECT * FROM " + DbHelper.TABLE_PROGRESS + " WHERE " +
-                DbHelper.COLUMN_LAB_NAME + " = " + labName + " AND " +
-                DbHelper.COLUMN_GROUP + " = " + group + " AND " +
-                DbHelper.COLUMN_TERM + " = " + term + " AND " +
-                DbHelper.COLUMN_TYPE + " = " + type + " AND " +
-                DbHelper.COLUMN_MATR + " = " + matr;
+                DbHelper.COLUMN_LAB_NAME + " =  '" + labName + "' AND " +
+                DbHelper.COLUMN_GROUP + " = '" + group + "' AND " +
+                DbHelper.COLUMN_TERM + " = '" + term + "' AND " +
+                DbHelper.COLUMN_TYPE + " = '" + type + "' AND " +
+                DbHelper.COLUMN_MATR + " = '" + matr + "'";
         Cursor cursor = database.rawQuery(query, null);
         cursor.moveToFirst();
 
@@ -868,7 +868,7 @@ public class DataSource implements TaskCompleted {
         int idType = cursor.getColumnIndex(DbHelper.COLUMN_TYPE);
         int idMatr = cursor.getColumnIndex(DbHelper.COLUMN_MATR);
         int idScore = cursor.getColumnIndex(DbHelper.COLUMN_SCORE);
-        int idDef = cursor.getColumnIndex(DbHelper.COLUMN_DEF);
+        //int idDef = cursor.getColumnIndex(DbHelper.COLUMN_DEF);
         int idComment = cursor.getColumnIndex(DbHelper.COLUMN_COMMENT);
         int idTs = cursor.getColumnIndex(DbHelper.COLUMN_TS);
 
@@ -880,11 +880,11 @@ public class DataSource implements TaskCompleted {
         String type = cursor.getString(idType);
         String matr = cursor.getString(idMatr);
         String score = cursor.getString(idScore);
-        String def = cursor.getString(idDef);
+        //String def = cursor.getString(idDef);
         String comment = cursor.getString(idComment);
         String ts = cursor.getString(idTs);
 
-        return new Progress(id, lab_name, group, term, type, matr, score, def, comment, ts);
+        return new Progress(id, lab_name, group, term, type, matr, score, comment, ts);
     }
 
 
