@@ -9,6 +9,6 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="@string/requirements"
-        android:background="#FFEB3B" />
+        android:background="#90CAF9" />
 
 </LinearLayout>

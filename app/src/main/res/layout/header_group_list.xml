@@ -9,6 +9,6 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="@string/all_groups"
-        android:background="#8BC34A" />
+        android:background="#90CAF9" />
 
 </LinearLayout>

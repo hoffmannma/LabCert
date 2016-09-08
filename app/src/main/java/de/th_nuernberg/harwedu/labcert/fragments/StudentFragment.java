@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.DbHelper;
 import de.th_nuernberg.harwedu.labcert.javamail.MailSenderAsync;
+import de.th_nuernberg.harwedu.labcert.objects.Progress;
 import de.th_nuernberg.harwedu.labcert.objects.Requirement;
 import de.th_nuernberg.harwedu.labcert.objects.Student;
 import de.th_nuernberg.harwedu.labcert.pdf.PdfFile;
@@ -82,8 +84,9 @@ public class StudentFragment extends Fragment {
                 String commentString = commEditTxt.getText().toString();
 
                 DataSource dataSource = new DataSource(getActivity());
+                dataSource.openW();
                 dataSource.updateCommentStudent(student.getId(), commentString);
-
+                dataSource.close();
                 getActivity().getFragmentManager().popBackStack();
 
                 toastMsg("Kommentar gespeichert");
@@ -145,18 +148,35 @@ public class StudentFragment extends Fragment {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
+        // TODO "Durchreichen von Daten" vereinfachen
+        // Tatsächlichen Progress einfügen
         int j = 0;
         for(final Requirement req : requirements)
         {
-            //LinearLayout ll = new LinearLayout(getActivity());
-            //ll.setOrientation(LinearLayout.HORIZONTAL);
+            LinearLayout ll = new LinearLayout(getActivity());
+            ll.setOrientation(LinearLayout.VERTICAL);
+
+            TextView typeTV = new TextView(getActivity());
+            typeTV.setText(req.getType());
+            ll.addView(typeTV);
+
+            /*
+            DataSource ds = new DataSource(getContext());
+            ds.openR();
+            ArrayList<Progress> progressList = ds.getProgress(req.getLab_name(), req.getGroup(),
+                    req.getTerm(), req.getType(), student.getMatr());
+            ds.close();*/
+            TextView progressTV = new TextView(getActivity());
+            progressTV.setText("Status: " + 0 + " / " + req.getCount());
+            ll.addView(progressTV);
+
             final Button btn = new Button(getActivity());
 
             btn.setId(j+1);
             btn.setText(req.getType() + " setzen");
 
             btn.setLayoutParams(params);
-            btn.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_ATOP);
+            btn.getBackground().setColorFilter(Color.parseColor("#EF5350"), PorterDuff.Mode.SRC_ATOP);
             btn.setTextColor(0xFFFFFFFF);
             btn.invalidate();
             final int index = j;
@@ -173,10 +193,19 @@ public class StudentFragment extends Fragment {
                 }
             });
 
-            //Add button to LinearLayout
-            //ll.addView(btn);
-            //Add button to LinearLayout defined in XML
-            linear.addView(btn);
+            ll.addView(btn);
+
+            GradientDrawable border = new GradientDrawable();
+            border.setColor(0xFFFFFFFF); //white background
+            border.setStroke(1, 0xFF000000); //black border with full opacity
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                ll.setBackgroundDrawable(border);
+            } else {
+                ll.setBackground(border);
+            }
+
+            // Layout in XML
+            linear.addView(ll);
             j++;
         }
         return rootView;

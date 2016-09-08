@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity
     public void setCurrentGroup(String grp){
         currentGroup = grp;
         for (de.th_nuernberg.harwedu.labcert.interfaces.GroupChangeListener g: listeners){
-            g.onGroupChanged(currentLab, currentGroup, CONFIG.TERM);
+            g.onGroupChanged(currentLab, currentGroup, CONFIG.getTERM());
         }
     }
 
@@ -253,17 +253,17 @@ public class MainActivity extends AppCompatActivity
             if ((scanContent != null) && (scanFormat != null)) {
                 DataSource dataSource = new DataSource(this);
                 // TODO Parameter labname, term, bib
-                if (dataSource.studentExistsByBib(currentLab, CONFIG.TERM, scanContent)) {
+                if (dataSource.studentExistsByBib(currentLab, CONFIG.getTERM(), scanContent)) {
                     //dataSource.insertAttd(scanContent, getEditor());
                     //toastMsg(getString(R.string.attd_updated));
                     // TODO Parameter labname, term, bib
-                    Student student = dataSource.getStudentByBib(currentLab, CONFIG.TERM, scanContent);
+                    Student student = dataSource.getStudentByBib(currentLab, CONFIG.getTERM(), scanContent);
                     jumpToStudent(student);
                 } else {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     UnknownStudentFragment fragment = new UnknownStudentFragment();
                     UnknownStudentFragment.newInstance(scanFormat, scanContent, currentLab,
-                            currentGroup, CONFIG.TERM);
+                            currentGroup, CONFIG.getTERM());
                     transaction.replace(R.id.fragment_container, fragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
@@ -381,7 +381,7 @@ public class MainActivity extends AppCompatActivity
             enableSpinner();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             CreateStudentFragment fragment = new CreateStudentFragment();
-            CreateStudentFragment.newInstance(currentLab, currentGroup, CONFIG.TERM);
+            CreateStudentFragment.newInstance(currentLab, currentGroup, CONFIG.getTERM());
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -396,7 +396,7 @@ public class MainActivity extends AppCompatActivity
             enableSpinner();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             RequirementTableFragment fragment = new RequirementTableFragment();
-            RequirementTableFragment.newInstance(currentLab, currentGroup, CONFIG.TERM);
+            RequirementTableFragment.newInstance(currentLab, currentGroup, CONFIG.getTERM());
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -404,7 +404,7 @@ public class MainActivity extends AppCompatActivity
             enableSpinner();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             ImportRequirementFragment fragment = new ImportRequirementFragment();
-            ImportRequirementFragment.newInstance(currentLab, currentGroup, CONFIG.TERM);
+            ImportRequirementFragment.newInstance(currentLab, currentGroup, CONFIG.getTERM());
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -412,7 +412,7 @@ public class MainActivity extends AppCompatActivity
             enableSpinner();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             CreateRequirementFragment fragment = new CreateRequirementFragment();
-            CreateRequirementFragment.newInstance(currentLab, currentGroup, CONFIG.TERM);
+            CreateRequirementFragment.newInstance(currentLab, currentGroup, CONFIG.getTERM());
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -464,7 +464,7 @@ public class MainActivity extends AppCompatActivity
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         StudentTableFragment fragment = new StudentTableFragment();
-        StudentTableFragment.newInstance(currentLab, currentGroup, CONFIG.TERM);
+        StudentTableFragment.newInstance(currentLab, currentGroup, CONFIG.getTERM());
         transaction.replace(R.id.fragment_container, fragment, STUDENT_TABLE_TAG);
         //transaction.addToBackStack(null);
         transaction.commit();
