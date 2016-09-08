@@ -13,9 +13,9 @@
     <string name="switch_group">Gruppe wechseln</string>
     <string name="new_group">Neue Gruppe</string>
 
-    <string name="import_csv">CSV importieren</string>
+    <string name="import_table">Tabelle importieren</string>
     <string name="sync_db">Datenbank synchronisieren</string>
-    <string name="show_cert">Leistungsnachweise anzeigen</string>
+    <string name="show_cert">Leistungsnachweis erzeugen</string>
 
     <string name="logout">Logout</string>
 
@@ -51,14 +51,14 @@
     <string name="str_Lab">Fach</string>
     <string name="str_Term">Semester</string>
     <string name="str_createReq">Anforderung erstellen</string>
-    <string name="import_requirement">Anforderung importieren</string>
+    <string name="import_requirement">Anforderungen übernehmen</string>
     <string name="button_create_group">Gruppe erstellen</string>
     <string name="editText_hint_lab">Fach</string>
     <string name="editText_hint_lab_id">Fachkennung</string>
     <string name="editText_hint_group_no">Gruppennummer</string>
     <string name="editText_hint_supervisor">Betreuer</string>
     <string name="all_groups">Alle Gruppen</string>
-    <string name="button_import_req">Anforderungen importieren</string>
+    <string name="button_import_req">Anforderungen übernehmen</string>
     <string name="split_blank">\\s+</string>
     <string name="str_count">Anzahl</string>
     <string name="editText_hint_email">Email</string>
