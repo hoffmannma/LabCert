@@ -2,6 +2,9 @@ package de.th_nuernberg.harwedu.labcert;
 
 
 import android.content.Context;
+import android.os.Environment;
+
+import java.io.File;
 
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.database.DbHelper;
@@ -15,7 +18,8 @@ public class CONFIG {
     private static String TERM = "WS1617";
 
     //not updateable
-    private static final String MAILHOST ="my.ohmportal.de";
+    private static final String MAILHOST = "my.ohmportal.de";
+    private static final String DirectoryPDF = Environment.getExternalStorageDirectory() + "/Documents";
 
     public static void updateConfig(Context context) {
         DataSource datasource = new DataSource(context);
@@ -40,6 +44,8 @@ public class CONFIG {
     public static String getTERM() { return TERM; }
 
     public static String getMAILHOST() { return MAILHOST; }
+
+    public static String getDirectoryPDF() { return DirectoryPDF; }
 
     public static void setContext(Context context) {
         CONFIG.context = context;

@@ -63,6 +63,9 @@ public class XLSX extends AsyncTask<String, Integer, String> {
                         int groups = 0;
                         Log.d(LOG_TAG, "Blatttitel: " + sheet.getRow(0).getCell(0).getStringCellValue());
                         String lab_id = sheet.getRow(0).getCell(0).getStringCellValue();
+                        /*String[] splitString = lab_id.split('(');
+                        String[] splitString2 = splitString[1].split(")");
+                        lab_id = splitString2[0];*/
                         //Die einzelnen Spalten durchgehen
                         try {
                             for (int r = 0; r < rowCount; r++) {
@@ -81,7 +84,9 @@ public class XLSX extends AsyncTask<String, Integer, String> {
                                     //String supervisor_ = sheet.getRow(r-3).getCell(1).getStringCellValue();
                                     //supervisor = supervisor_.substring(supervisor.indexOf(": ") + 2, supervisor.indexOf(")") - 1);
 
-                                    supervisor = sheet.getRow(r - 2).getCell(1).getStringCellValue(); //TODO supervisor noch richtig beschneiden
+                                    supervisor = sheet.getRow(r - 2).getCell(1).getStringCellValue();
+                                    //String[] supervisor2 = supervisor.split(":");
+                                    //supervisor = supervisor2[2].trim();
 
                                     Log.d(LOG_TAG, "7: " + lab_id + " " + String.valueOf(groups) + " " + CONFIG.getTERM() + " " + supervisor);
                                     //erstelle gruppe in Datenbank

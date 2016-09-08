@@ -24,6 +24,7 @@ public class MailSenderAsync extends AsyncTask<String, Integer, String> {
     private String body;
     private String senderaddress;
     private String recipientsaddress;
+    private String fileAttachment;
 
     private Context context;
     ProgressDialog prgDialog;
@@ -32,12 +33,13 @@ public class MailSenderAsync extends AsyncTask<String, Integer, String> {
 
     //public TaskCompleted delegate = null;
 
-    public MailSenderAsync(Context context, String subject, String body, String senderaddress, String recipientsaddress) {
+    public MailSenderAsync(Context context, String subject, String body, String senderaddress, String recipientsaddress, String fileAttachment) {
         this.context = context;
         this.subject = subject;
         this.body = body;
         this.senderaddress = senderaddress;
         this.recipientsaddress = recipientsaddress;
+        this.fileAttachment = fileAttachment;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class MailSenderAsync extends AsyncTask<String, Integer, String> {
         Log.d(LOG_TAG, "Authentificat with server");
         MailSender sender = new MailSender(CONFIG.getUSERNAME(), CONFIG.getPASSWORD());
         Log.d(LOG_TAG, "Sending Mail");
-        fail = !(sender.sendMail(subject, body, senderaddress, recipientsaddress));
+        fail = !(sender.sendMail(subject, body, senderaddress, recipientsaddress, fileAttachment));
         return null;
     }
     @Override

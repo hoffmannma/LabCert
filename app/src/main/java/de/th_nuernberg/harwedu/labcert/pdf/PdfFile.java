@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import de.th_nuernberg.harwedu.labcert.CONFIG;
 import de.th_nuernberg.harwedu.labcert.R;
 import de.th_nuernberg.harwedu.labcert.database.DataSource;
 import de.th_nuernberg.harwedu.labcert.objects.Group;
@@ -69,10 +70,18 @@ public class PdfFile {
      * @throws FileNotFoundException
      * @throws DocumentException
      */
-    public void createPdf(Context context, Student student, Group group) throws
+    public String createPdf(Context context, Student student, Boolean quiet) throws
             FileNotFoundException, DocumentException {
-
+        Log.d(LOG_TAG, "Erzeuge PDF");
         this.context = context;
+
+        //Gruppe initialisieren
+        Log.d(LOG_TAG, "Hole Gruppe von Studentendaten");
+        DataSource datasource = new DataSource(context);
+        datasource.openR();
+        Group group = datasource.getGroup(student.getLabName(), student.getGroup(), student.getTerm());
+        datasource.close();
+        Log.d(LOG_TAG, "Gruppe aus Studentendaten bekommen");
 
         // Speicherort (Ordner) initialisieren
         File pdfFile = null;
@@ -81,7 +90,7 @@ public class PdfFile {
         Date date = new Date();
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(date);
 
-        String fileName = (student.getMatr() + "_" + timeStamp + ".pdf");
+        String fileName = (student.getLabName() + "-" + student.getGroup() + "_" + student.getMatr() + "_" + timeStamp + ".pdf");
         // falls möglich: externen Speicher verwenden
 
         /*
@@ -89,7 +98,7 @@ public class PdfFile {
             pdfFile = new File(getExtStorageDir(context), (fileName));
         }
         */
-        File pdfFolder = new File(Environment.getExternalStorageDirectory() + "/Documents");
+        File pdfFolder = new File(CONFIG.getDirectoryPDF());
         boolean isPresent = true;
         if (!pdfFolder.exists()) {
             isPresent = pdfFolder.mkdir();
@@ -101,9 +110,16 @@ public class PdfFile {
         }
 
         // pdf mit Daten füllen
-        writeToPdf(pdfFile, student,group);
-        toastMsg(context, "PDF " + fileName + " für " + student.getFirstname() + " " +
-                student.getSurname() + " erstellt");
+        try {
+            writeToPdf(pdfFile, student, group);
+            if (!quiet)
+                toastMsg(context, "PDF " + fileName + " für " + student.getFirstname() + " " +  student.getSurname() + " erstellt");
+        } catch (Exception e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            if (!quiet)
+                toastMsg(context, "PDF konnte nicht erstellt werden.");
+        }
+        return fileName;
     }
 
     //This is to create Header and Footer for the PDF
@@ -143,16 +159,17 @@ public class PdfFile {
     private void writeToPdf(File pdfFile, Student student,Group group) throws
             FileNotFoundException, DocumentException {
         DataSource datasource = new DataSource(context);
+        datasource.openR();
 
-        ArrayList<Requirement> RequirementInformation = datasource.getGroupRequirements(group.getLab_name(), group.getGroup(), group.getTerm());
+        ArrayList<Requirement> RequirementInformation = datasource.getGroupRequirements(student.getLabName(), student.getGroup(), student.getTerm());
 
-        String subjectName = "<Fachname>";
+        String subjectName = student.getLabName(); //"<Fachname>";
         String studentName = student.getSurname() + ", "+ student.getFirstname();
         String studentMatr = student.getMatr();
-        String studentSubject = "<Studienfach>";
+        String studentSubject = student.getLabName(); //"<Studienfach>";
 
 //Defines  Group
-        String profName = "<Prof. Cool>";
+        String profName = group.getSupervisor(); //"<Prof. Cool>";
         String[] reqArray = new String[3];
         String[][] reqNumberArray = new String[3][2];
 
@@ -292,6 +309,7 @@ public class PdfFile {
 */
 //final quote
 
+        datasource.close();
         document.close();
     }
 

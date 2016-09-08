@@ -77,15 +77,12 @@ public class StudentFragment extends Fragment {
         createPdfButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO create pdf auskommentiert
-/*
                 PdfFile pdfCreator = new PdfFile();
                 try {
-                    pdfCreator.createPdf(getActivity(), student);
+                    pdfCreator.createPdf(getActivity(), student, false);
                 } catch (FileNotFoundException | DocumentException e) {
                     e.printStackTrace();
                 }
-                */
             }
         });
 
@@ -107,11 +104,22 @@ public class StudentFragment extends Fragment {
         sendMailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Pdf erzeugen
+                PdfFile pdfCreator = new PdfFile();
+                String fileAttachment = "";
+                try {
+                    fileAttachment = pdfCreator.createPdf(getActivity(), student, true);
+                } catch (FileNotFoundException | DocumentException e) {
+                    e.printStackTrace();
+                }
+
+                //Mail versenden
                 MailSenderAsync sendMailTask = new MailSenderAsync(CONFIG.getContext(),
                         "Betreffzeile",
                         "Email Text",
                         CONFIG.getEMAIL(),
-                        student.getEmail());
+                        student.getEmail(),
+                        fileAttachment);
                 sendMailTask.execute();
                 //getActivity().getFragmentManager().popBackStack();
                 toastMsg("Mail versendet");

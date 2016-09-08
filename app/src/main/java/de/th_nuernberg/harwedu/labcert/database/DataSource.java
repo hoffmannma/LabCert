@@ -688,6 +688,25 @@ public class DataSource implements TaskCompleted {
 
     /**
      *
+     * @return
+     */
+    public Group getGroup(String labName, String group, String term) {
+        Group objectGroup = null;
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DbHelper.TABLE_STUDENT +
+                " WHERE " + DbHelper.COLUMN_LAB_NAME + " = '" + labName + "' AND " +
+                DbHelper.COLUMN_GROUP + " = '" + group + "' AND " +
+                DbHelper.COLUMN_TERM + " = '" + term + "'", null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            objectGroup = cursorToGroup(cursor);
+        }
+        assert cursor != null;
+        cursor.close();
+        return objectGroup;
+    }
+
+    /**
+     *
      * @return Arraylist mit allen Gruppennamen
      */
     public ArrayList<String> getAllGroupNames() {
@@ -728,14 +747,16 @@ public class DataSource implements TaskCompleted {
         String lab_name = cursor.getString(idLabName);
         String group = cursor.getString(idGroup);
         String term = cursor.getString(idTerm);
-        String supervisor = cursor.getString(idSupervisor);
+        String supervisor = "rolf horst"; //cursor.getString(idSupervisor); //TODO Supervisor wieder einbinden
 
-        return new Group(id, lab_name, group, term, supervisor, getStudentsFromGrp(lab_name, group));
+        //Derzeit wird die Arrayliste mit den Studenten nicht benötigt
+        //return new Group(id, lab_name, group, term, supervisor, getStudentsFromGrp(lab_name, group));
+        return new Group(id, lab_name, group, term, supervisor);
     }
 
     /**
      * @param cursor
-     * @return String mit Gruppenname formatiert nach "[Nummer] _ Gruppenname"
+     * @return String mit Gruppenname formatiert nach "Gruppenname Nummer"
      */
     private String cursorToGroupName(Cursor cursor) {
         int idLabName = cursor.getColumnIndex(DbHelper.COLUMN_LAB_NAME);

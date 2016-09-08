@@ -1,24 +1,32 @@
 package de.th_nuernberg.harwedu.labcert.javamail;
 
+import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.sun.mail.smtp.SMTPAddressFailedException;
 import com.sun.mail.smtp.SMTPAddressSucceededException;
 import com.sun.mail.smtp.SMTPSendFailedException;
 //import com.sun.mail.util.MailSSLSocketFactory;
 
+import java.io.File;
+import java.io.InputStream;
 import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.mail.AuthenticationFailedException;
+import javax.mail.BodyPart;
 import javax.mail.Message;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 import de.th_nuernberg.harwedu.labcert.CONFIG;
@@ -66,14 +74,14 @@ public class MailSender extends javax.mail.Authenticator {
                 });
     }
 
-    public synchronized boolean sendMail(String subject, String body, String sender, String recipients)
+    public synchronized boolean sendMail(String subject, String bodytext, String sender, String recipients, String fileAttachment)
     {
         boolean finished = true;
         try{
             Log.d(LOG_TAG, "Create Message");
             MimeMessage message = new MimeMessage(session);
             Log.d(LOG_TAG, "Create Handler");
-            DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));
+            DataHandler handler = new DataHandler(new ByteArrayDataSource(bodytext.getBytes(), "text/plain"));
             Log.d(LOG_TAG, "Create Transport");
             Transport transport = session.getTransport("smtps");
 
@@ -91,14 +99,43 @@ public class MailSender extends javax.mail.Authenticator {
             else
                 message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
 
+            // create the Multipart and its parts to it
+            Multipart mp = new MimeMultipart();
+
+            // Anhang
+            //String fileAttachment = "asdf.txt";
+            if (fileAttachment != null && fileAttachment.length() > 0) {
+                String holeFileAttachment = CONFIG.getDirectoryPDF() + "/" + fileAttachment;
+                        Log.d(LOG_TAG, "Füge Anhang hinzu...");
+                MimeBodyPart attachment = new MimeBodyPart();
+                try {
+                    attachment.attachFile(holeFileAttachment);
+                } catch (Exception ex) {
+                    Log.d(LOG_TAG, "Datei nicht vorhanden. Kann Datei nicht öffnen");
+                    Log.e(LOG_TAG, ex.getMessage(), ex);
+                    finished = false;
+                }
+                mp.addBodyPart(attachment);
+            }
+
+            // Body (Text) plus ggf. Attachment hinzufügen
+            message.setContent(mp);
+
             Log.d(LOG_TAG, "creating transport connection");
-            transport.connect(CONFIG.getMAILHOST(), CONFIG.getUSERNAME(), CONFIG.getPASSWORD());
+            try {
+                transport.connect(CONFIG.getMAILHOST(), CONFIG.getUSERNAME(), CONFIG.getPASSWORD());
+            } catch (Exception e) {
+                Log.e(LOG_TAG, e.getMessage(), e);
+                //Toast toast = Toast.makeText(CONFIG.getContext(), "Authentifizierungsproblem!!", Toast.LENGTH_SHORT);
+                //toast.show();
+                finished = false;
+            }
             Log.d(LOG_TAG, "sending message");
             transport.sendMessage(message, message.getAllRecipients());
             Log.d(LOG_TAG, "close transport connection");
             transport.close();
             Log.d(LOG_TAG, "Message sent");
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             finished = false;
         }
