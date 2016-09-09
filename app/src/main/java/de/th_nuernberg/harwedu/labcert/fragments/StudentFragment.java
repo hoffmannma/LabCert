@@ -1,6 +1,7 @@
 package de.th_nuernberg.harwedu.labcert.fragments;
 
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -61,6 +62,7 @@ public class StudentFragment extends Fragment {
         return fragment;
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class StudentFragment extends Fragment {
 
         final TextView studentTxt = (TextView) rootView.findViewById(R.id.textview_student);
         final EditText commEditTxt = (EditText) rootView.findViewById(R.id.edittext_comm);
-        LinearLayout linear = (LinearLayout)rootView.findViewById(R.id.linear_buttons_student);
+        LinearLayout linear = (LinearLayout) rootView.findViewById(R.id.linear_buttons_student);
         Button saveDataButton = (Button) rootView.findViewById(R.id.button_save_comment);
         Button createPdfButton = (Button) rootView.findViewById(R.id.button_create_pdf);
         Button delStudentButton = (Button) rootView.findViewById(R.id.button_del_student);
@@ -152,65 +154,66 @@ public class StudentFragment extends Fragment {
         // TODO "Durchreichen von Daten" vereinfachen
         // Tatsächlichen Progress einfügen
         int j = 0;
-        for(final Requirement req : requirements)
-        {
-            LinearLayout ll = new LinearLayout(getActivity());
-            ll.setOrientation(LinearLayout.VERTICAL);
-            ll.setPadding(0,10,0,0);
+        if (requirements != null) {
+            for (final Requirement req : requirements) {
+                LinearLayout ll = new LinearLayout(getActivity());
+                ll.setOrientation(LinearLayout.VERTICAL);
+                ll.setPadding(0, 10, 0, 0);
 
-            TextView typeTV = new TextView(getActivity());
-            typeTV.setTextSize(18);
-            typeTV.setText(req.getType());
-            ll.addView(typeTV);
+                TextView typeTV = new TextView(getActivity());
+                typeTV.setTextSize(18);
+                typeTV.setText(req.getType());
+                ll.addView(typeTV);
 
 
-            DataSource ds = new DataSource(getContext());
-            ds.openR();
-            ArrayList<Progress> progressList = ds.getProgress(req.getLab_name(), req.getGroup(),
-                    req.getTerm(), req.getType(), student.getMatr());
-            ds.close();
-            TextView progressTV = new TextView(getActivity());
-            progressTV.setTextSize(16);
-            progressTV.setText("Status: " + progressList.size() + " / " + req.getCount());
-            ll.addView(progressTV);
+                DataSource ds = new DataSource(getContext());
+                ds.openR();
+                ArrayList<Progress> progressList = ds.getProgress(req.getLab_name(), req.getGroup(),
+                        req.getTerm(), req.getType(), student.getMatr());
+                ds.close();
+                TextView progressTV = new TextView(getActivity());
+                progressTV.setTextSize(16);
+                progressTV.setText("Status: " + progressList.size() + " / " + req.getCount());
+                ll.addView(progressTV);
 
-            final Button btn = new Button(getActivity());
+                final Button btn = new Button(getActivity());
 
-            btn.setId(j+1);
-            btn.setText(req.getType() + " setzen");
+                btn.setId(j + 1);
+                btn.setText(req.getType() + " setzen");
 
-            btn.setLayoutParams(params);
-            btn.getBackground().setColorFilter(Color.parseColor("#EF5350"), PorterDuff.Mode.SRC_ATOP);
-            btn.setTextColor(0xFFFFFFFF);
-            btn.invalidate();
-            final int index = j;
-            // Set click listener for button
-            btn.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    DataSource dataSource = new DataSource(getContext());
-                    dataSource.openW();
-                    // TODO Score anpassen
-                    dataSource.insertProg(student.getLabName(), student.getGroup(), student.getTerm(),
-                            req.getType(), student.getMatr(), "1");
-                    dataSource.close();
-                    toastMsg(req.getType() + " gesetzt");
+                btn.setLayoutParams(params);
+                btn.getBackground().setColorFilter(Color.parseColor("#EF5350"), PorterDuff.Mode.SRC_ATOP);
+                btn.setTextColor(0xFFFFFFFF);
+                btn.invalidate();
+                final int index = j;
+                // Set click listener for button
+                btn.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        DataSource dataSource = new DataSource(getContext());
+                        dataSource.openW();
+                        // TODO Score anpassen
+                        dataSource.insertProg(student.getLabName(), student.getGroup(), student.getTerm(),
+                                req.getType(), student.getMatr(), "1");
+                        dataSource.close();
+                        toastMsg(req.getType() + " gesetzt");
+                    }
+                });
+
+                ll.addView(btn);
+
+                GradientDrawable border = new GradientDrawable();
+                border.setColor(0xFFFFFFFF); //white background
+                border.setStroke(1, 0xFF000000); //black border with full opacity
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    ll.setBackgroundDrawable(border);
+                } else {
+                    ll.setBackground(border);
                 }
-            });
 
-            ll.addView(btn);
-
-            GradientDrawable border = new GradientDrawable();
-            border.setColor(0xFFFFFFFF); //white background
-            border.setStroke(1, 0xFF000000); //black border with full opacity
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                ll.setBackgroundDrawable(border);
-            } else {
-                ll.setBackground(border);
+                // Layout in XML
+                linear.addView(ll);
+                j++;
             }
-
-            // Layout in XML
-            linear.addView(ll);
-            j++;
         }
         return rootView;
 

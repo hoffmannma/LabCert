@@ -257,8 +257,11 @@ public class MainActivity extends AppCompatActivity
 
             if ((scanContent != null) && (scanFormat != null)) {
                 DataSource dataSource = new DataSource(this);
+                dataSource.openR();
+                boolean studentExists = dataSource.studentExistsByBib(currentLab, CONFIG.getTERM(), scanContent);
+                dataSource.close();
                 // TODO Parameter labname, term, bib
-                if (dataSource.studentExistsByBib(currentLab, CONFIG.getTERM(), scanContent)) {
+                if (studentExists) {
                     //dataSource.insertAttd(scanContent, getEditor());
                     //toastMsg(getString(R.string.attd_updated));
                     // TODO Parameter labname, term, bib
